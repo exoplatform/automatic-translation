@@ -10,7 +10,9 @@
   <artifactId>automatic-translation-services-impl</artifactId>
   <packaging>jar</packaging>
   <name>eXo Automatic Translation - IMPL Services</name>
-
+  <properties>
+    <exo.test.coverage.ratio>0.60</exo.test.coverage.ratio>
+  </properties>
 
   <dependencies>
     <dependency>

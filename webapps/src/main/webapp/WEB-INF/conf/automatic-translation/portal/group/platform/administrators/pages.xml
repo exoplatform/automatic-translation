@@ -9,14 +9,14 @@
     <access-permissions>*:/platform/administrators</access-permissions>
     <edit-permission>manager:/platform/administrators</edit-permission>
     <show-max-window>false</show-max-window>
-<!--    <portlet-application>-->
-<!--      <portlet>-->
-<!--        <application-ref>automatic-translation</application-ref>-->
-<!--        <portlet-ref>automaticTranslation</portlet-ref>-->
-<!--      </portlet>-->
-<!--      <title>Automatic Translation</title>-->
-<!--      <access-permissions>*:/platform/administrators</access-permissions>-->
-<!--      <show-info-bar>false</show-info-bar>-->
-<!--    </portlet-application>-->
+    <portlet-application>
+      <portlet>
+        <application-ref>automatic-translation</application-ref>
+        <portlet-ref>automaticTranslationAdministration</portlet-ref>
+      </portlet>
+      <title>Automatic Translation</title>
+      <access-permissions>*:/platform/administrators</access-permissions>
+      <show-info-bar>false</show-info-bar>
+    </portlet-application>
   </page>
 </page-set>
