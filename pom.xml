@@ -17,7 +17,7 @@
   <description>Automatic Translation addon for eXo Platform</description>
   <modules>
     <module>services</module>
-<!--    <module>webapps</module>-->
+    <module>webapps</module>
     <!--module>packaging</module-->
   </modules>
   <scm>
