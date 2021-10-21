@@ -12,4 +12,14 @@
     <type>org.exoplatform.automatic.translation.rest.AutomaticTranslationRestService</type>
   </component>
 
+  <external-component-plugins>
+    <target-component>org.exoplatform.automatic.translation.api.AutomaticTranslationService</target-component>
+    <component-plugin>
+      <name>google</name>
+      <set-method>addConnector</set-method>
+      <type>org.exoplatform.automatic.translation.impl.connectors.GoogleTranslateConnector</type>
+      <description>Google Translate Connector</description>
+    </component-plugin>
+  </external-component-plugins>
+
 </configuration>
