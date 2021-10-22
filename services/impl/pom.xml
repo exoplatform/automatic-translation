@@ -11,7 +11,7 @@
   <packaging>jar</packaging>
   <name>eXo Automatic Translation - IMPL Services</name>
   <properties>
-    <exo.test.coverage.ratio>0.60</exo.test.coverage.ratio>
+    <exo.test.coverage.ratio>0.90</exo.test.coverage.ratio>
   </properties>
 
   <dependencies>

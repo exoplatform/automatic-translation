@@ -16,5 +16,17 @@
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.container</artifactId>
     </dependency>
+      <dependency>
+          <groupId>org.exoplatform.gatein.portal</groupId>
+          <artifactId>exo.portal.component.api</artifactId>
+          <version>6.3.x-maintenance-SNAPSHOT</version>
+          <scope>compile</scope>
+      </dependency>
+    <dependency>
+      <groupId>org.exoplatform.gatein.portal</groupId>
+      <artifactId>exo.portal.component.api</artifactId>
+      <version>6.3.x-maintenance-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
 </project>

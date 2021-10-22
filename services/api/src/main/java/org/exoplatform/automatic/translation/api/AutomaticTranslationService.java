@@ -8,8 +8,6 @@ public interface AutomaticTranslationService {
   Map<String,AutomaticTranslationComponentPlugin> getConnectors();
   String getActiveConnector();
   boolean setActiveConnector(String name);
-  //boolean isFeatureEnabled();
+  boolean setApiKey(String connector, String apikey);
   //String translate(String message, Locale targetLang);
-  //void activateConnector(String name);
-  //String getActiveConnector();
 }

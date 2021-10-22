@@ -18,7 +18,7 @@
       <name>google</name>
       <set-method>addConnector</set-method>
       <type>org.exoplatform.automatic.translation.impl.connectors.GoogleTranslateConnector</type>
-      <description>Google Translate Connector</description>
+      <description>Google Translate</description>
     </component-plugin>
   </external-component-plugins>
 

@@ -12,9 +12,7 @@ const appId = 'automaticTranslationAdministration';
 const lang = typeof eXo !== 'undefined' ? eXo.env.portal.language : 'en';
 
 //should expose the locale ressources as REST API
-const url = `${eXo.env.portal.context}/${eXo.env.portal.rest}/i18n/bundle/locale.portlet.automaticTranslation
-.automaticTranslationAdministration-${lang}
-.json`;
+const url = `${eXo.env.portal.context}/${eXo.env.portal.rest}/i18n/bundle/locale.portlet.automaticTranslation.automaticTranslationAdministration-${lang}.json`;
 
 export function init() {
   exoi18n.loadLanguageAsync(lang, url).then(i18n => {
