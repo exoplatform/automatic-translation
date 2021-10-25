@@ -18,7 +18,7 @@
   <modules>
     <module>services</module>
     <module>webapps</module>
-    <!--module>packaging</module-->
+    <module>packaging</module>
   </modules>
   <scm>
     <connection>scm:git:git://github.com/exoplatform/automatic-translation.git</connection>
