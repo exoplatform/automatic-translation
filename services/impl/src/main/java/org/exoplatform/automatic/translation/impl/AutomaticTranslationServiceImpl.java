@@ -1,8 +1,23 @@
+/*
+ * Copyright (C) 2021 eXo Platform SAS.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.exoplatform.automatic.translation.impl;
 
 import org.exoplatform.automatic.translation.api.AutomaticTranslationComponentPlugin;
 import org.exoplatform.automatic.translation.api.AutomaticTranslationService;
-import org.exoplatform.automatic.translation.rest.AutomaticTranslationRestService;
 import org.exoplatform.commons.api.settings.ExoFeatureService;
 import org.exoplatform.commons.api.settings.SettingService;
 import org.exoplatform.commons.api.settings.SettingValue;
@@ -16,7 +31,7 @@ import java.util.Map;
 
 public class AutomaticTranslationServiceImpl implements AutomaticTranslationService {
 
-  private static final Log LOG = ExoLogger.getLogger(AutomaticTranslationService.class);
+  private static final Log LOG = ExoLogger.getLogger(AutomaticTranslationServiceImpl.class);
 
   private static final String AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR = "automaticTranslationActiveConnector";
 
@@ -45,7 +60,7 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
 
   @Override
   public String getActiveConnector() {
-    SettingValue value = settingService.get(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR);
+    SettingValue<?> value = settingService.get(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR);
 
 
     return value != null && value.getValue()!=null && !value.getValue().toString().isEmpty() && isActiveFeature() ?
