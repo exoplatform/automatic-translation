@@ -44,9 +44,7 @@ import javax.ws.rs.core.Response;
 public class AutomaticTranslationRestService implements ResourceContainer {
 
   private AutomaticTranslationService automaticTranslationService;
-
-  private static final Log LOG = ExoLogger.getLogger(AutomaticTranslationRestService.class);
-
+  
   public AutomaticTranslationRestService(AutomaticTranslationService automaticTranslationService) {
     this.automaticTranslationService = automaticTranslationService;
   }
