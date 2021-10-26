@@ -100,7 +100,7 @@ export default {
         this.connectors=data.connectors;
         this.connectors.unshift({'name': 'none','description': this.$t('automatic.translation.administration.noconnectorselected')});
         this.selectedConnector = data.active === null ? 'none' : data.active;
-        this.apiKey = data.activeApiKey === null ? 'none' : data.activeApiKey;
+        this.apiKey = data.activeApiKey === null ? '' : data.activeApiKey;
       });
     },
     changeConnector() {
