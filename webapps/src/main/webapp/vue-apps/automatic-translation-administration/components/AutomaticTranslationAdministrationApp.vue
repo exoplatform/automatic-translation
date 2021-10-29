@@ -33,39 +33,45 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           {{ $t('automatic.translation.administration.header') }}
         </v-row>
         <v-row>
-          <v-col cols="3" class="ps-0">
+          <v-col cols="4" class="ps-0">
             <v-select
+              id="connectorSelector"
+              ref="connectorSelector"
               v-model="selectedConnector"
               @change="changeConnector()"
+              @blur="closeSelect()"
               :items="connectors"
               class="pt-1"
               item-text="description"
               item-value="name"
               outlined
-              dense />
+              height="40"
+              dense>
+            </v-select>
           </v-col>
         </v-row>
         <v-row class="pt-5" v-if="this.selectedConnector!='' && this.selectedConnector!='none'">
           {{ $t('automatic.translation.administration.enterYourKey') }}
         </v-row>
         <v-row v-if="this.selectedConnector!='' && this.selectedConnector!='none'">
-          <v-col cols="3" class="ps-0">
-            <v-text-field
-              :ref="apiKey"
-              v-model="apiKey"
-              :readonly="!editingApiKey"
-              :placeholder="$t('automatic.translation.administration.apiKeyPlaceHolder')"
-              class="mx-2 pa-0"
-              dense>
-              <template v-slot:append-outer>
-                <v-slide-x-reverse-transition mode="out-in">
-                  <i
-                    :key="`icon-${apiKey}`"
-                    :class="editingApiKey ? 'uiIcon uiIconTick clickable success--text mt-1' : 'uiIcon uiIconEdit clickable primary--text mt-1'"
-                    @click="editApiKey()"></i>
-                </v-slide-x-reverse-transition>
-              </template>
-            </v-text-field>
+          <v-col cols="4" class="ps-0">
+            <div class="d-flex">
+              <v-text-field
+                :ref="apiKey"
+                v-model="apiKey"
+                :placeholder="$t('automatic.translation.administration.apiKeyPlaceHolder')"
+                class="pa-0"
+                outlined
+                dense>
+              </v-text-field>
+              <v-btn
+                class="btn btn-primary ms-8"
+                @click="editApiKey"
+                height="42">
+                {{ $t('automatic.translation.apikey.button.save') }}
+              </v-btn>
+            </div>
+
           </v-col>
         </v-row>
       </v-container>
@@ -82,8 +88,7 @@ export default {
     alert: false,
     type: '',
     message: '',
-    apiKey: '',
-    editingApiKey: false
+    apiKey: ''
   }),
   mounted() {
     this.$nextTick().then(() => this.$root.$emit('application-loaded'));
@@ -103,6 +108,13 @@ export default {
         this.apiKey = data.activeApiKey === null ? '' : data.activeApiKey;
       });
     },
+    closeSelect() {
+      if (this.$refs.connectorSelector && this.$refs.connectorSelector.isMenuActive) {
+        window.setTimeout(() => {
+          this.$refs.connectorSelector.isMenuActive = false;
+        }, 100);
+      }
+    },
     changeConnector() {
       let connector = null;
       if (this.selectedConnector !== 'none') {
@@ -112,7 +124,11 @@ export default {
         let message='';
         let type='';
         if (resp && resp.ok) {
-          message = this.$t('automatic.translation.administration.changeConnector.confirm');
+          if (connector === null) {
+            message = this.$t('automatic.translation.administration.changeConnector.noconnector.confirm');
+          } else {
+            message = this.$t('automatic.translation.administration.changeConnector.confirm');
+          }
           type='success';
         } else {
           type='error';
@@ -126,33 +142,27 @@ export default {
       });
     },
     editApiKey() {
-      if (this.editingApiKey) {
-        setApiKey(this.selectedConnector, this.apiKey).then(resp => {
-          let message='';
-          let type='';
-          if (resp && resp.ok) {
-            message = this.$t('automatic.translation.administration.changeApiKey.confirm');
-            type='success';
+      setApiKey(this.selectedConnector, this.apiKey).then(resp => {
+        let message='';
+        let type='';
+        if (resp && resp.ok) {
+          console.log(this.apiKey);
+          if (this.apiKey === '') {
+            message = this.$t('automatic.translation.administration.changeApiKey.emptykey.confirm');
           } else {
-            type='error';
-            message = this.$t('automatic.translation.administration.changeApiKey.error');
+            message = this.$t('automatic.translation.administration.changeApiKey.confirm');
           }
-          this.$root.$emit('show-alert', {
-            type: type,
-            message: message
-          });
-          this.getConfiguration();
-        }).finally(() => this.editingApiKey = false);
-
-      } else {
-        this.editingApiKey = true;
-        this.$nextTick(() => {
-          const $input = this.$refs['apiKey'];
-          if ($input) {
-            $input.focus();
-          }
+          type='success';
+        } else {
+          type='error';
+          message = this.$t('automatic.translation.administration.changeApiKey.error');
+        }
+        this.$root.$emit('show-alert', {
+          type: type,
+          message: message
         });
-      }
+        this.getConfiguration();
+      });
     },
     displayMessage(message) {
       this.message=message.message;
