@@ -62,11 +62,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               class="mx-2 pa-0"
               dense>
                 <template v-slot:append-outer>
-                  <button
+                  <v-btn
                     class="btn btn-primary"
-                    @click="editApiKey">
+                    @click="openDrawer">
                     {{ $t('automatic.translation.apikey.button.save') }}
-                  </button>
+                  </v-btn>
                 </template>
             </v-text-field>
 
