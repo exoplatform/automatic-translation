@@ -45,8 +45,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               item-text="description"
               item-value="name"
               outlined
-              dense
-              height="40">
+              height="40"
+              dense>
             </v-select>
           </v-col>
         </v-row>
@@ -55,20 +55,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         </v-row>
         <v-row v-if="this.selectedConnector!='' && this.selectedConnector!='none'">
           <v-col cols="4" class="ps-0">
-            <v-text-field
-              :ref="apiKey"
-              v-model="apiKey"
-              :placeholder="$t('automatic.translation.administration.apiKeyPlaceHolder')"
-              class="mx-2 pa-0"
-              dense>
-                <template v-slot:append-outer>
-                  <v-btn
-                    class="btn btn-primary"
-                    @click="editApiKey">
-                    {{ $t('automatic.translation.apikey.button.save') }}
-                  </v-btn>
-                </template>
-            </v-text-field>
+            <div class="d-flex">
+              <v-text-field
+                :ref="apiKey"
+                v-model="apiKey"
+                :placeholder="$t('automatic.translation.administration.apiKeyPlaceHolder')"
+                class="pa-0"
+                outlined
+                dense>
+              </v-text-field>
+              <v-btn
+                class="btn btn-primary ms-8"
+                @click="editApiKey"
+                height="42">
+                {{ $t('automatic.translation.apikey.button.save') }}
+              </v-btn>
+            </div>
 
           </v-col>
         </v-row>
