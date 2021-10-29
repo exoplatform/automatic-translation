@@ -64,7 +64,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 <template v-slot:append-outer>
                   <v-btn
                     class="btn btn-primary"
-                    @click="openDrawer">
+                    @click="editApiKey">
                     {{ $t('automatic.translation.apikey.button.save') }}
                   </v-btn>
                 </template>
