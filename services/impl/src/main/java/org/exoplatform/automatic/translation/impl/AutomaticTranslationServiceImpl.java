@@ -27,6 +27,7 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class AutomaticTranslationServiceImpl implements AutomaticTranslationService {
@@ -67,6 +68,7 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
            value.getValue().toString() : null;
   }
 
+
   private boolean isActiveFeature() {
     String enable = System.getProperty("exo.feature."+FEATURE_NAME+".enabled");
     return (enable!=null && !enable.isBlank() && enable.equals("true"));
@@ -104,6 +106,15 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
     } else {
       return connectorPlugin.setApiKey(apikey);
     }
+  }
+
+  @Override
+  public String translate(String message, Locale targetLang) {
+    String activeConnector = getActiveConnector();
+    if (activeConnector == null) {
+      return null;
+    }
+    return translationConnectors.get(activeConnector).translate(message,targetLang);
   }
 
 }
