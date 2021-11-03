@@ -22,7 +22,6 @@ import org.exoplatform.commons.api.settings.data.Context;
 import org.exoplatform.commons.api.settings.data.Scope;
 import org.exoplatform.container.component.BaseComponentPlugin;
 
-import java.lang.UnsupportedOperationException;
 import java.util.Locale;
 
 public class AutomaticTranslationComponentPlugin extends BaseComponentPlugin {

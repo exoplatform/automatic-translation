@@ -105,7 +105,7 @@ public class AutomaticTranslationServiceTest {
     AutomaticTranslationComponentPlugin translationConnector = mock(GoogleTranslateConnector.class);
     when(translationConnector.getName()).thenReturn("google");
     String message = "message to translate";
-    when(translationConnector.translate(eq(message),eq(Locale.FRANCE))).thenReturn("message translated");
+    when(translationConnector.translate(message,Locale.FRANCE)).thenReturn("message translated");
     AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService,exoFeatureService);
     translationService.addConnector(translationConnector);
     assertEquals("message translated",translationService.translate(message, Locale.FRANCE));

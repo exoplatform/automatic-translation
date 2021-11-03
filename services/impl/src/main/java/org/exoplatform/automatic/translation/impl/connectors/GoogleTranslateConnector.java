@@ -18,7 +18,6 @@ package org.exoplatform.automatic.translation.impl.connectors;
 
 import org.apache.commons.io.IOUtils;
 import org.exoplatform.automatic.translation.api.AutomaticTranslationComponentPlugin;
-import org.exoplatform.automatic.translation.impl.AutomaticTranslationServiceImpl;
 import org.exoplatform.commons.api.settings.SettingService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -58,7 +57,7 @@ public class GoogleTranslateConnector extends AutomaticTranslationComponentPlugi
       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
       connection.setRequestMethod("POST");
       connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-      connection.setRequestProperty("Content-Length", String.valueOf(data.toString().getBytes(StandardCharsets.UTF_8)));
+      connection.setRequestProperty("Content-Length", String.valueOf(data.getBytes(StandardCharsets.UTF_8)));
       connection.setDoOutput(true);
       connection.setDoInput(true);
 
@@ -71,7 +70,7 @@ public class GoogleTranslateConnector extends AutomaticTranslationComponentPlugi
 
         // read the response
         InputStream in = new BufferedInputStream(connection.getInputStream());
-        String response = IOUtils.toString(in, "UTF-8");
+        String response = IOUtils.toString(in, StandardCharsets.UTF_8);
         JSONObject jsonResponse = new JSONObject(response);
         LOG.info("remote_service={} operation={} parameters=\"message length:{},targetLocale:{}\" status=ok " +
                      "duration_ms={}",
