@@ -22,6 +22,9 @@ import org.exoplatform.commons.api.settings.data.Context;
 import org.exoplatform.commons.api.settings.data.Scope;
 import org.exoplatform.container.component.BaseComponentPlugin;
 
+import java.lang.UnsupportedOperationException;
+import java.util.Locale;
+
 public class AutomaticTranslationComponentPlugin extends BaseComponentPlugin {
 
   private static final String AUTOMATIC_TRANSLATION_API_KEY = "automaticTranslationApiKey";
@@ -47,6 +50,10 @@ public class AutomaticTranslationComponentPlugin extends BaseComponentPlugin {
       return null;
     }
 
+  }
+  
+  public String translate(String message, Locale targetLocale) {
+    throw new UnsupportedOperationException();
   }
 
 

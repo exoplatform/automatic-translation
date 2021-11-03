@@ -16,6 +16,7 @@
  */
 package org.exoplatform.automatic.translation.api;
 
+import java.util.Locale;
 import java.util.Map;
 
 public interface AutomaticTranslationService {
@@ -25,5 +26,5 @@ public interface AutomaticTranslationService {
   String getActiveConnector();
   boolean setActiveConnector(String name);
   boolean setApiKey(String connector, String apikey);
-  //String translate(String message, Locale targetLang);
+  String translate(String message, Locale targetLang);
 }
