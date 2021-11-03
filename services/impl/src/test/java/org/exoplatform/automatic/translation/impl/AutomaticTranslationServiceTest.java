@@ -18,6 +18,7 @@ package org.exoplatform.automatic.translation.impl;
 
 import org.exoplatform.automatic.translation.api.AutomaticTranslationComponentPlugin;
 import org.exoplatform.automatic.translation.api.AutomaticTranslationService;
+import org.exoplatform.automatic.translation.impl.connectors.GoogleTranslateConnector;
 import org.exoplatform.commons.api.settings.ExoFeatureService;
 import org.exoplatform.commons.api.settings.SettingService;
 import org.exoplatform.commons.api.settings.SettingValue;
@@ -28,12 +29,15 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import java.util.Locale;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -89,6 +93,22 @@ public class AutomaticTranslationServiceTest {
     when(settingService.get(Context.GLOBAL, Scope.GLOBAL,AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR)).thenReturn(setting);
     AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService,exoFeatureService);
     assertEquals("google",translationService.getActiveConnector());
+    System.setProperty("exo.feature."+FEATURE_NAME+".enabled","");
+  }
+
+  @Test
+  public void testCallTranslateForActiveConnector() {
+    SettingValue setting = new SettingValue<>("google");
+    System.setProperty("exo.feature."+FEATURE_NAME+".enabled","true");
+    when(settingService.get(Context.GLOBAL, Scope.GLOBAL,AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR)).thenReturn(setting);
+
+    AutomaticTranslationComponentPlugin translationConnector = mock(GoogleTranslateConnector.class);
+    when(translationConnector.getName()).thenReturn("google");
+    String message = "message to translate";
+    when(translationConnector.translate(message,Locale.FRANCE)).thenReturn("message translated");
+    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService,exoFeatureService);
+    translationService.addConnector(translationConnector);
+    assertEquals("message translated",translationService.translate(message, Locale.FRANCE));
     System.setProperty("exo.feature."+FEATURE_NAME+".enabled","");
   }
 
