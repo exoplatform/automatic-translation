@@ -69,12 +69,13 @@ public class AutomaticTranslationRestServiceTest {
     connectors.put("systran",systranConnector);
     when(automaticTranslationService.getConnectors()).thenReturn(connectors);
     when(automaticTranslationService.getActiveConnector()).thenReturn("google");
+    when(automaticTranslationService.isFeatureActive()).thenReturn(true);
 
     Response response = automaticTranslationRestService.configuration();
     assertEquals(200,response.getStatus());
     assertEquals("{\"connectors\":[{\"name\":\"google\",\"description\":\"google connector description\"},"
                      + "{\"name\":\"systran\",\"description\":\"systran connector description\"}],"
-                     + "\"activeApiKey\":null,\"active\":\"google\"}",
+                     + "\"activeApiKey\":null,\"active\":\"google\",\"isActive\":true}",
                  response.getEntity());
   }
   @Test

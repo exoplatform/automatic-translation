@@ -63,26 +63,27 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
   public String getActiveConnector() {
     SettingValue<?> value = settingService.get(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR);
 
-
-    return value != null && value.getValue()!=null && !value.getValue().toString().isEmpty() && isActiveFeature() ?
+    return value != null && value.getValue()!=null && !value.getValue().toString().isEmpty() && translationConnectors.get(value.getValue().toString())!=null ?
            value.getValue().toString() : null;
   }
 
-
-  private boolean isActiveFeature() {
+  @Override
+  public boolean isFeatureActive() {
     String enable = System.getProperty("exo.feature."+FEATURE_NAME+".enabled");
-    return (enable!=null && !enable.isBlank() && enable.equals("true"));
+    boolean isActiveFeature = (enable!=null && !enable.isBlank() && enable.equals("true"));
     //after feature finished, return this :
     //return exoFeatureService.isActiveFeature(FEATURE_NAME);
+
+    boolean isActiveConnector = getActiveConnector()!=null;
+    boolean haveApiKey =
+        isActiveConnector && translationConnectors.get(getActiveConnector()).getApiKey() != null && !translationConnectors.get(
+            getActiveConnector()).getApiKey().isEmpty();
+    return isActiveFeature && isActiveConnector && haveApiKey;
   }
 
   @Override
   public boolean setActiveConnector(String name) {
-    if (!isActiveFeature()) {
-      LOG.error("Try to change automatic translation connector but feature is not active");
-      return false;
-    }
-    //should return false if connector name do not exists
+        //should return false if connector name do not exists
     //but not if the name is empty (correspond to unset case)
     if (name == null) {
       name = "";
@@ -116,5 +117,7 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
     }
     return translationConnectors.get(activeConnector).translate(message,targetLang);
   }
+
+
 
 }

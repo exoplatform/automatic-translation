@@ -92,6 +92,12 @@ public class AutomaticTranslationServiceTest {
     System.setProperty("exo.feature."+FEATURE_NAME+".enabled","true");
     when(settingService.get(Context.GLOBAL, Scope.GLOBAL,AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR)).thenReturn(setting);
     AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService,exoFeatureService);
+    AutomaticTranslationComponentPlugin translationConnector = new AutomaticTranslationComponentPlugin(settingService);
+    translationConnector.setName("google");
+    translationConnector.setDescription("google");
+
+    translationService.addConnector(translationConnector);
+
     assertEquals("google",translationService.getActiveConnector());
     System.setProperty("exo.feature."+FEATURE_NAME+".enabled","");
   }
@@ -143,7 +149,7 @@ public class AutomaticTranslationServiceTest {
 
     AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService,exoFeatureService);
 
-    assertNull(translationService.getActiveConnector());
+    assertFalse(translationService.isFeatureActive());
 
   }
 
@@ -168,7 +174,8 @@ public class AutomaticTranslationServiceTest {
 
     translationService.addConnector(translationConnector);
 
-    assertFalse(translationService.setActiveConnector(connectorName));
+    assertTrue(translationService.setActiveConnector(connectorName));
+    assertFalse(translationService.isFeatureActive());
 
   }
 

@@ -14,18 +14,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.automatic.translation.api;
+import ActivityTranslatedBody from './components/ActivityTranslatedBody.vue';
+import ActivityCommentTranslatedBody from './components/ActivityCommentTranslatedBody.vue';
 
-import java.util.Locale;
-import java.util.Map;
+const components = {
+  'activity-translated-body': ActivityTranslatedBody,
+  'activity-comment-translated-body': ActivityCommentTranslatedBody,
+};
 
-public interface AutomaticTranslationService {
-
-  void addConnector(AutomaticTranslationComponentPlugin translationConnector);
-  Map<String,AutomaticTranslationComponentPlugin> getConnectors();
-  String getActiveConnector();
-  boolean setActiveConnector(String name);
-  boolean setApiKey(String connector, String apikey);
-  String translate(String message, Locale targetLang);
-  boolean isFeatureActive();
+for (const key in components) {
+  Vue.component(key, components[key]);
 }

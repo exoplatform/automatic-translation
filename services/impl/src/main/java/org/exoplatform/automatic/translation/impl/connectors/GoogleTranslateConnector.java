@@ -40,7 +40,7 @@ public class GoogleTranslateConnector extends AutomaticTranslationComponentPlugi
   private static final String API_URL="https://translation.googleapis.com/language/translate/v2";
   private static final String KEY_PARAM="key";
 
-  private static final String DATA_PATTERN = "{'q': '{message}', 'target': '{targetLocale}'}";
+  private static final String DATA_PATTERN = "{'q': '{message}', 'target': '{targetLocale}', 'format':'html'}";
 
   public GoogleTranslateConnector(SettingService settingService) {
     super(settingService);

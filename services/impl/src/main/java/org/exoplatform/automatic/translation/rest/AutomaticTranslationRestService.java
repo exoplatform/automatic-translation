@@ -22,8 +22,6 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.exoplatform.automatic.translation.api.AutomaticTranslationService;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 
 import org.json.simple.JSONArray;
@@ -83,6 +81,7 @@ public class AutomaticTranslationRestService implements ResourceContainer {
       }
     });
 
+    resultJSON.put("isActive",automaticTranslationService.isFeatureActive());
     resultJSON.put("connectors",connectors);
     resultJSON.put("active",activeConnector);
     return Response.ok(resultJSON.toString(), MediaType.APPLICATION_JSON)
