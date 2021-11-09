@@ -51,4 +51,50 @@
       </depends>
     </module>
   </portlet>
+
+  <module>
+    <name>AutomaticTranslationExtensionDisplay</name>
+    <script>
+      <minify>false</minify>
+      <path>/js/automaticTranslationExtensionDisplay.bundle.js</path>
+    </script>
+
+    <depends>
+      <module>extensionRegistry</module>
+    </depends>
+    <depends>
+      <module>eXoVueI18n</module>
+    </depends>
+    <depends>
+      <module>vue</module>
+    </depends>
+    <depends>
+      <module>commonVueComponents</module>
+    </depends>
+  </module>
+
+  <portlet>
+    <name>AutomaticTranslationExtension</name>
+    <module>
+      <script>
+        <path>/javascript/automatic-translation/extensions.js</path>
+      </script>
+      <depends>
+        <module>extensionRegistry</module>
+      </depends>
+      <depends>
+        <module>eXoVueI18n</module>
+      </depends>
+      <depends>
+        <module>vue</module>
+      </depends>
+      <depends>
+        <module>commonVueComponents</module>
+      </depends>
+      <depends>
+        <module>AutomaticTranslationExtensionDisplay</module>
+      </depends>
+    </module>
+  </portlet>
+
 </gatein-resources>

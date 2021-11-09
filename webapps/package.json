@@ -7,7 +7,7 @@
     "url": "https://github.com/exoplatform/automatic-translation"
   },
   "scripts": {
-    "watch": "webpack --config webpack.watch.js --progress --colors --watch -d",
+    "watch": "webpack --config webpack.dev.js --progress --colors --watch -d",
     "lint": "eslint --fix \"./src/main/webapp/vue-apps/**\"",
     "build": "webpack --config webpack.prod.js --mode production"
   },

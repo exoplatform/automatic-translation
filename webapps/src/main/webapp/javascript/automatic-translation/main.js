@@ -14,18 +14,5 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.automatic.translation.api;
 
-import java.util.Locale;
-import java.util.Map;
-
-public interface AutomaticTranslationService {
-
-  void addConnector(AutomaticTranslationComponentPlugin translationConnector);
-  Map<String,AutomaticTranslationComponentPlugin> getConnectors();
-  String getActiveConnector();
-  boolean setActiveConnector(String name);
-  boolean setApiKey(String connector, String apikey);
-  String translate(String message, Locale targetLang);
-  boolean isFeatureActive();
-}
+import './initComponents.js';
