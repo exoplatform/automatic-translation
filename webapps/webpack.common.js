@@ -5,7 +5,9 @@ let config = {
   // set the entry point of the application
   // can use multiple entry
   entry: {
-    automaticTranslationAdministration : './src/main/webapp/vue-apps/automatic-translation-administration/main.js'
+    automaticTranslationAdministration : './src/main/webapp/vue-apps/automatic-translation-administration/main.js',
+    automaticTranslationExtension : './src/main/webapp/javascript/automatic-translation/extensions.js',
+    automaticTranslationExtensionDisplay : './src/main/webapp/javascript/automatic-translation/main.js'
   },
   module: {
     rules: [

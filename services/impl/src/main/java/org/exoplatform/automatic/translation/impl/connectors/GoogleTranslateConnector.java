@@ -91,12 +91,13 @@ public class GoogleTranslateConnector extends AutomaticTranslationComponentPlugi
 
       } else {
         LOG.error("remote_service={} operation={} parameters=\"message length:{},targetLocale:{}\" status=ko "
-            + "duration_ms={} error_msg=\"Error sending translation request, status : {} \"",
+            + "duration_ms={} error_msg=\"{}, status : {} \"",
                   GOOGLE_TRANSLATE_SERVICE,
                   "translate",
                   message.length(),
                   targetLocale.getLanguage(),
                   System.currentTimeMillis() - startTime,
+                  "Error when using Google translator api",
                   statusCode);
         return null;
       }

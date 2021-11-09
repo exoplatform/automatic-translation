@@ -74,4 +74,11 @@ public interface AutomaticTranslationService {
    * @return The translated message
    */
   String translate(String message, Locale targetLang);
+
+  /**
+   * Return if the feature is active
+   *
+   * @return true if the feature is active
+   */
+  boolean isFeatureActive();
 }

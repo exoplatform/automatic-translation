@@ -79,16 +79,22 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
     SettingValue<?> value = settingService.get(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR);
 
     return value != null && value.getValue() != null && !value.getValue().toString().isEmpty()
-        && isActiveFeature() ? value.getValue().toString() : null;
+        && translationConnectors.get(value.getValue().toString()) != null ? value.getValue().toString() : null;
   }
 
-  private boolean isActiveFeature() {
-    return exoFeatureService.isActiveFeature(FEATURE_NAME);
+  @Override
+  public boolean isFeatureActive() {
+    boolean isActiveFeature = exoFeatureService.isActiveFeature(FEATURE_NAME);
+
+    boolean isActiveConnector = getActiveConnector() != null;
+    boolean haveApiKey = isActiveConnector && translationConnectors.get(getActiveConnector()).getApiKey() != null
+        && !translationConnectors.get(getActiveConnector()).getApiKey().isEmpty();
+    return isActiveFeature && isActiveConnector && haveApiKey;
   }
 
   @Override
   public void setActiveConnector(String name) {
-    if (!isActiveFeature()) {
+    if (!exoFeatureService.isActiveFeature(FEATURE_NAME)) {
       throw new RuntimeException("Unable to change automatic translation connector as feature is not active");
     }
     // should return false if connector name do not exists
@@ -126,5 +132,6 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
     }
     return translationConnectors.get(activeConnector).translate(message, targetLang);
   }
+
 
 }
