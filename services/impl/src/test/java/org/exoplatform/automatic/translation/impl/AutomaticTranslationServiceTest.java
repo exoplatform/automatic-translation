@@ -33,6 +33,7 @@ import org.mockito.Mockito;
 import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -90,6 +91,13 @@ public class AutomaticTranslationServiceTest {
     SettingValue setting = new SettingValue<>("google");
     when(settingService.get(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR)).thenReturn(setting);
     AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
+
+    AutomaticTranslationComponentPlugin translationConnector = new GoogleTranslateConnector(settingService);
+    translationConnector.setName("google");
+    translationConnector.setDescription("google");
+
+    translationService.addConnector(translationConnector);
+
     assertEquals("google", translationService.getActiveConnector());
   }
 
@@ -141,7 +149,7 @@ public class AutomaticTranslationServiceTest {
 
     AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
 
-    assertNull(translationService.getActiveConnector());
+    assertFalse(translationService.isFeatureActive());
 
   }
 
@@ -168,14 +176,12 @@ public class AutomaticTranslationServiceTest {
     translationConnector.setDescription("google");
 
     translationService.addConnector(translationConnector);
-
     try {
       translationService.setActiveConnector(connectorName);
       fail();
     } catch (Exception e) {
 
     }
-
   }
 
   @Test

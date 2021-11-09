@@ -46,8 +46,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               item-value="name"
               outlined
               height="40"
-              dense>
-            </v-select>
+              dense />
           </v-col>
         </v-row>
         <v-row class="pt-5" v-if="this.selectedConnector!='' && this.selectedConnector!='none'">
@@ -62,8 +61,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 :placeholder="$t('automatic.translation.administration.apiKeyPlaceHolder')"
                 class="pa-0"
                 outlined
-                dense>
-              </v-text-field>
+                dense />
               <v-btn
                 class="btn btn-primary ms-8"
                 @click="editApiKey"
@@ -71,7 +69,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 {{ $t('automatic.translation.apikey.button.save') }}
               </v-btn>
             </div>
-
           </v-col>
         </v-row>
       </v-container>
@@ -146,7 +143,6 @@ export default {
         let message='';
         let type='';
         if (resp && resp.ok) {
-          console.log(this.apiKey);
           if (this.apiKey === '') {
             message = this.$t('automatic.translation.administration.changeApiKey.emptykey.confirm');
           } else {

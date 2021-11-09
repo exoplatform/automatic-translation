@@ -66,6 +66,17 @@ public class AutomaticTranslationRestService implements ResourceContainer {
     return Response.ok(automaticTranslationService.getConfiguration(), MediaType.APPLICATION_JSON).build();
   }
 
+  @GET
+  @Path("/isEnabled")
+  @RolesAllowed("users")
+  @Produces(MediaType.TEXT_PLAIN)
+  @ApiOperation(value = "Gets status for Automatic Translation feature for users", httpMethod = "GET", response = Response.class, produces = MediaType.TEXT_PLAIN, notes = "This returns is the automatic translation feature is active")
+  @ApiResponses(value = { @ApiResponse(code = 200, message = "Request fulfilled"),
+      @ApiResponse(code = 403, message = "Unauthorized operation") })
+  public Response isEnabled() {
+    return Response.ok("" + automaticTranslationService.isFeatureActive()).build();
+  }
+
   @PUT
   @Path("/setActiveConnector")
   @RolesAllowed("administrators")

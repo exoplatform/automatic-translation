@@ -60,6 +60,7 @@ public class AutomaticTranslationRestServiceTest {
     ConversationState state = new ConversationState(identity);
     ConversationState.setCurrent(state);
   }
+
   @Test
   public void testSetActiveConnectorWhenOk() {
     doNothing().when(automaticTranslationService).setActiveConnector(any());
