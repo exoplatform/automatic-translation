@@ -21,7 +21,7 @@
     return activity.translatedBody;
   }
 
-  function fetchTranslation(content) {
+  function fetchTranslation(content, event) {
     return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/automatic-translation/translate`, {
       headers: {
        'Content-Type': 'application/x-www-form-urlencoded'
@@ -32,9 +32,15 @@
       if (resp && resp.ok) {
         return resp.json();
       } else {
+        dispatchError(event);
         throw new Error('Unable to get automatic translation result');
       }
     });
+  }
+
+  function dispatchError(event) {
+    console.warn(event)
+    document.dispatchEvent(new CustomEvent('activity-translation-error',{ detail:event }));
   }
 
   function initExtensions() {
@@ -47,10 +53,10 @@
       labelKey: 'UIActivity.label.translate',
       click: (activity, activityTypeExtension) => {
         const event = {
-          activityId: activity.id,
+          id: activity.id,
         };
         if (!activity.translatedBody) {
-          fetchTranslation(activityTypeExtension.getBody(activity)).then(translated => {
+          fetchTranslation(activityTypeExtension.getBody(activity),event).then(translated => {
             activity.translatedBody = translated.translation;
             activityTypeExtension.getTranslatedBody = getTranslatedBody;
             document.dispatchEvent(new CustomEvent('activity-translated',{ detail:event }));
@@ -67,10 +73,10 @@
       labelKey: 'UIActivity.label.translate',
       click: (activity, comment, activityTypeExtension) => {
         const event = {
-          commentId: comment.id,
+          id: comment.id,
         };
         if (!comment.translatedBody) {
-          fetchTranslation(activityTypeExtension.getBody(comment)).then(translated => {
+          fetchTranslation(activityTypeExtension.getBody(comment),event).then(translated => {
             comment.translatedBody = translated.translation;
             activityTypeExtension.getCommentTranslatedBody = getTranslatedBody;
             document.dispatchEvent(new CustomEvent('activity-comment-translated',{ detail:event }));
