@@ -81,18 +81,26 @@ public class GoogleTranslateConnector extends AutomaticTranslationComponentPlugi
                  System.currentTimeMillis() - startTime);
         return jsonResponse.getJSONObject("data").getJSONArray("translations").getJSONObject(0).getString("translatedText");
       } else {
+        InputStream in = new BufferedInputStream(connection.getErrorStream());
+        String response = IOUtils.toString(in, StandardCharsets.UTF_8);
+        JSONObject jsonResponse = new JSONObject(response);
+        String errorMessage="Error when using Google translator api";
+        if (jsonResponse.getJSONObject("error")!=null && jsonResponse.getJSONObject("error").getString("message")!=null ) {
+          errorMessage=jsonResponse.getJSONObject("error").getString("message");
+        }
         LOG.error("remote_service={} operation={} parameters=\"message length:{},targetLocale:{}\" status=ko " +
-                     "duration_ms={} error_msg=\"Error sending translation request, status : {} \"",
+            "duration_ms={} error_msg=\"{}, status : {} \"",
                  GOOGLE_TRANSLATE_SERVICE,
                  "translate",
                  message.length(),
                  targetLocale.getLanguage(),
                  System.currentTimeMillis() - startTime,
+                  errorMessage,
                   responseCode);
         return null;
       }
     } catch (Exception e) {
-      LOG.error("Error when trying to send translation request to google API");
+      LOG.error("Error when trying to send translation request to google API",e);
     }
     return null;
   }
