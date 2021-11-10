@@ -85,8 +85,9 @@ public class GoogleTranslateConnector extends AutomaticTranslationComponentPlugi
         String response = IOUtils.toString(in, StandardCharsets.UTF_8);
         JSONObject jsonResponse = new JSONObject(response);
         String errorMessage="Error when using Google translator api";
-        if (jsonResponse.getJSONObject("error")!=null && jsonResponse.getJSONObject("error").getString("message")!=null ) {
-          errorMessage=jsonResponse.getJSONObject("error").getString("message");
+        JSONObject errorObject =jsonResponse.getJSONObject("error");
+        if (errorObject!=null && errorObject.getString("message")!=null ) {
+          errorMessage=errorObject.getString("message");
         }
         LOG.error("remote_service={} operation={} parameters=\"message length:{},targetLocale:{}\" status=ko " +
             "duration_ms={} error_msg=\"{}, status : {} \"",
