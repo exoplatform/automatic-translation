@@ -27,7 +27,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <dynamic-html-element
         v-sanitized-html="translatedBody"
         :element="element"
-        class="reset-style-box text-break overflow-hidden font-italic text-light-color"
+        class="reset-style-box text-break overflow-hidden font-italic text-light-color translationContent"
         dir="auto" />
       <div
         class="font-italic text-light-color clickable caption"
@@ -60,7 +60,7 @@ export default {
   },
   data: () => ({
     translatedBody: null,
-    translationHidden: false,
+    translationHidden: true,
     alert: false,
     type: '',
     message: ''
@@ -79,8 +79,10 @@ export default {
   created() {
     document.addEventListener('activity-comment-translated', (event) => {
       if (event.detail.id === this.activity.id) {
-        this.showTranslation();
         this.retrieveCommentProperties();
+        if (this.translatedBody) {
+          this.showTranslation();
+        }
       }
     });
     document.addEventListener('activity-translation-error', (event) => {
@@ -95,19 +97,19 @@ export default {
   },
   methods: {
     retrieveCommentProperties() {
-      if (this.activityTypeExtension && this.activityTypeExtension.getCommentTranslatedBody) {
+      if (this.activityTypeExtension
+        && this.activityTypeExtension.getCommentTranslatedBody
+        && this.activityTypeExtension.getCommentTranslatedBody(this.activity)) {
         this.translatedBody = this.activityTypeExtension.getCommentTranslatedBody(this.activity);
       }
     },
     hideTranslation() {
       this.translationHidden=true;
-      const originalComment = document.querySelector(`#activity-comment-detail-${this.activity.id} .rich-editor-content`);
-      originalComment.classList.remove('hide');
+      this.$el.parentNode.parentNode.firstChild.classList.remove('hide');
     },
     showTranslation() {
       this.translationHidden=false;
-      const originalComment = document.querySelector(`#activity-comment-detail-${this.activity.id} .rich-editor-content`);
-      originalComment.classList.add('hide');
+      this.$el.parentNode.parentNode.firstChild.classList.add('hide');
     },
     displayMessage(message) {
       this.message=message.message;
