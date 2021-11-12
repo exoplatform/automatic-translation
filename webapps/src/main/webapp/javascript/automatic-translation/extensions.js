@@ -49,6 +49,7 @@
     exoi18n.loadLanguageAsync(lang, url);
     extensionRegistry.registerExtension('activity', 'action', {
       id: 'translate',
+      rank: 9007199254740992,
       isEnabled: (activity, activityTypeExtension) => true,
       labelKey: 'UIActivity.label.translate',
       click: (activity, activityTypeExtension) => {
@@ -66,9 +67,9 @@
         }
       },
     });
-
     extensionRegistry.registerExtension('activity', 'comment-action', {
       id: 'translate',
+      rank: 9007199254740992,
       isEnabled: (activity, comment, activityTypeExtension) => true,
       labelKey: 'UIActivity.label.translate',
       click: (activity, comment, activityTypeExtension) => {
