@@ -104,7 +104,7 @@ export default {
       getConfiguration().then(data => {
         this.connectors=data.connectors;
         this.connectors.unshift({'name': 'none','description': this.$t('automatic.translation.administration.noconnectorselected')});
-        this.selectedConnector = data.active === null ? 'none' : data.active;
+        this.selectedConnector = data.activeConnector === null ? 'none' : data.activeConnector;
         this.apiKey = data.activeApiKey === null ? '' : data.activeApiKey;
       });
     },
