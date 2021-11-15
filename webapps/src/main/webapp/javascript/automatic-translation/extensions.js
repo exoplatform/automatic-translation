@@ -104,23 +104,22 @@
 
   return {
     init: () => {
-      fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/automatic-translation/usersconfiguration`, {
+      fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/automatic-translation/isEnabled`, {
         headers: {
          'Content-Type': 'application/json'
         },
         method: 'GET'
       }).then(resp => {
         if (resp && resp.ok) {
-          return resp.json();
+          return resp.text();
         } else {
           throw new Error('Unable to get automatic translation configuration');
         }
-      }).then(data => {
-        if (data.isActive) {
+      }).then(result => {
+        if (result === "true") {
           initExtensions();
         }
       });
-
     },
   };
 })(extensionRegistry,exoi18n);

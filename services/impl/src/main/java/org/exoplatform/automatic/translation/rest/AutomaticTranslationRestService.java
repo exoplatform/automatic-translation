@@ -90,14 +90,14 @@ public class AutomaticTranslationRestService implements ResourceContainer {
   }
 
   @GET
-  @Path("/usersconfiguration")
+  @Path("/isEnabled")
   @RolesAllowed("users")
-  @Produces(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.TEXT_PLAIN)
   @ApiOperation(
       value = "Gets status for Automatic Translation feature for users",
       httpMethod = "GET",
       response = Response.class,
-      produces = MediaType.APPLICATION_JSON,
+      produces = MediaType.TEXT_PLAIN,
       notes = "This returns is the automatic translation feature is active"
   )
   @ApiResponses(
@@ -106,10 +106,8 @@ public class AutomaticTranslationRestService implements ResourceContainer {
           @ApiResponse(code = 403, message = "Unauthorized operation")
       }
   )
-  public Response usersConfiguration() {
-    JSONObject resultJSON = new JSONObject();
-    resultJSON.put("isActive",automaticTranslationService.isFeatureActive());
-    return Response.ok(resultJSON.toString(), MediaType.APPLICATION_JSON)
+  public Response isEnabled() {
+    return Response.ok(""+automaticTranslationService.isFeatureActive())
                    .build();
   }
 
