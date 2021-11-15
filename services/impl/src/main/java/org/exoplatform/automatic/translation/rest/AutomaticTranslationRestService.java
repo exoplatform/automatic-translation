@@ -24,7 +24,6 @@ import io.swagger.annotations.ApiResponses;
 import org.exoplatform.automatic.translation.api.AutomaticTranslationService;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import javax.annotation.security.RolesAllowed;

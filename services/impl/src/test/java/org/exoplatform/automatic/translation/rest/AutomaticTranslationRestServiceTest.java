@@ -75,13 +75,13 @@ public class AutomaticTranslationRestServiceTest {
     assertEquals(200, response.getStatus());
 
     AutomaticTranslationConfiguration resultConfiguration = (AutomaticTranslationConfiguration)response.getEntity();
-    assertEquals(2, resultConfiguration.connectors.size());
-    assertEquals("google", resultConfiguration.connectors.get(0).name);
-    assertEquals("google connector description", resultConfiguration.connectors.get(0).description);
-     assertEquals("systran", resultConfiguration.connectors.get(1).name);
-    assertEquals("systran connector description", resultConfiguration.connectors.get(1).description);
-    assertEquals(null, resultConfiguration.activeApiKey);
-    assertEquals("google", resultConfiguration.activeConnector);
+    assertEquals(2, resultConfiguration.getConnectors().size());
+    assertEquals("google", resultConfiguration.getConnectors().get(0).getName());
+    assertEquals("google connector description", resultConfiguration.getConnectors().get(0).getDescription());
+     assertEquals("systran", resultConfiguration.getConnectors().get(1).getName());
+    assertEquals("systran connector description", resultConfiguration.getConnectors().get(1).getDescription());
+    assertEquals(null, resultConfiguration.getActiveApiKey());
+    assertEquals("google", resultConfiguration.getActiveConnector());
   }
 
   @Test
