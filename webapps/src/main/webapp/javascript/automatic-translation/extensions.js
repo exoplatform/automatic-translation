@@ -104,7 +104,7 @@
 
   return {
     init: () => {
-      fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/automatic-translation/configuration`, {
+      fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/automatic-translation/usersconfiguration`, {
         headers: {
          'Content-Type': 'application/json'
         },

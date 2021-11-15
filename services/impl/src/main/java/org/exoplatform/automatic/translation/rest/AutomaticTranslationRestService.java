@@ -89,6 +89,30 @@ public class AutomaticTranslationRestService implements ResourceContainer {
 
   }
 
+  @GET
+  @Path("/usersconfiguration")
+  @RolesAllowed("users")
+  @Produces(MediaType.APPLICATION_JSON)
+  @ApiOperation(
+      value = "Gets status for Automatic Translation feature for users",
+      httpMethod = "GET",
+      response = Response.class,
+      produces = MediaType.APPLICATION_JSON,
+      notes = "This returns is the automatic translation feature is active"
+  )
+  @ApiResponses(
+      value = {
+          @ApiResponse(code = 200, message = "Request fulfilled"),
+          @ApiResponse(code = 403, message = "Unauthorized operation")
+      }
+  )
+  public Response usersConfiguration() {
+    JSONObject resultJSON = new JSONObject();
+    resultJSON.put("isActive",automaticTranslationService.isFeatureActive());
+    return Response.ok(resultJSON.toString(), MediaType.APPLICATION_JSON)
+                   .build();
+  }
+
 
   @PUT
   @Path("/setActiveConnector")
