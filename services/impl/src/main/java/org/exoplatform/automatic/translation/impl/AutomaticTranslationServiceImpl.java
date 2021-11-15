@@ -32,26 +32,29 @@ import java.util.Map;
 
 public class AutomaticTranslationServiceImpl implements AutomaticTranslationService {
 
-  private static final Log LOG = ExoLogger.getLogger(AutomaticTranslationServiceImpl.class);
+  private static final Log                                 LOG                                    =
+                                                               ExoLogger.getLogger(AutomaticTranslationServiceImpl.class);
 
-  private static final String AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR = "automaticTranslationActiveConnector";
+  private static final String                              AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR =
+                                                                                                  "automaticTranslationActiveConnector";
 
-  private static final String FEATURE_NAME = "automatic-translation";
+  private static final String                              FEATURE_NAME                           = "automatic-translation";
 
   private Map<String, AutomaticTranslationComponentPlugin> translationConnectors;
 
-  SettingService settingService;
-  ExoFeatureService exoFeatureService;
+  SettingService                                           settingService;
+
+  ExoFeatureService                                        exoFeatureService;
 
   public AutomaticTranslationServiceImpl(SettingService settingService, ExoFeatureService exoFeatureService) {
-    this.translationConnectors=new HashMap<>();
-    this.settingService=settingService;
-    this.exoFeatureService=exoFeatureService;
+    this.translationConnectors = new HashMap<>();
+    this.settingService = settingService;
+    this.exoFeatureService = exoFeatureService;
   }
 
   @Override
   public void addConnector(AutomaticTranslationComponentPlugin translationConnector) {
-    this.translationConnectors.put(translationConnector.getName(),translationConnector);
+    this.translationConnectors.put(translationConnector.getName(), translationConnector);
   }
 
   @Override
@@ -63,17 +66,15 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
   public String getActiveConnector() {
     SettingValue<?> value = settingService.get(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR);
 
-
-    return value != null && value.getValue()!=null && !value.getValue().toString().isEmpty() && isActiveFeature() ?
-           value.getValue().toString() : null;
+    return value != null && value.getValue() != null && !value.getValue().toString().isEmpty()
+        && isActiveFeature() ? value.getValue().toString() : null;
   }
 
-
   private boolean isActiveFeature() {
-    String enable = System.getProperty("exo.feature."+FEATURE_NAME+".enabled");
-    return (enable!=null && !enable.isBlank() && enable.equals("true"));
-    //after feature finished, return this :
-    //return exoFeatureService.isActiveFeature(FEATURE_NAME);
+    String enable = System.getProperty("exo.feature." + FEATURE_NAME + ".enabled");
+    return (enable != null && !enable.isBlank() && enable.equals("true"));
+    // after feature finished, return this :
+    // return exoFeatureService.isActiveFeature(FEATURE_NAME);
   }
 
   @Override
@@ -82,18 +83,18 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
       LOG.error("Try to change automatic translation connector but feature is not active");
       return false;
     }
-    //should return false if connector name do not exists
-    //but not if the name is empty (correspond to unset case)
+    // should return false if connector name do not exists
+    // but not if the name is empty (correspond to unset case)
     if (name == null) {
       name = "";
     }
     String finalName = name;
-    if (finalName.isBlank() ||
-        translationConnectors.keySet().stream().anyMatch(connectorName -> connectorName.equals(finalName))) {
+    if (finalName.isBlank()
+        || translationConnectors.keySet().stream().anyMatch(connectorName -> connectorName.equals(finalName))) {
       settingService.set(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR, new SettingValue<>(name));
       return true;
     } else {
-      LOG.error("Try to change automatic translation connector with a non existing connector name : {}",name);
+      LOG.error("Try to change automatic translation connector with a non existing connector name : {}", name);
       return false;
     }
   }
@@ -101,7 +102,7 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
   @Override
   public boolean setApiKey(String connector, String apikey) {
     AutomaticTranslationComponentPlugin connectorPlugin = translationConnectors.get(connector);
-    if (connectorPlugin==null) {
+    if (connectorPlugin == null) {
       return false;
     } else {
       return connectorPlugin.setApiKey(apikey);
@@ -114,7 +115,7 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
     if (activeConnector == null) {
       return null;
     }
-    return translationConnectors.get(activeConnector).translate(message,targetLang);
+    return translationConnectors.get(activeConnector).translate(message, targetLang);
   }
 
 }

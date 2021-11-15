@@ -22,8 +22,6 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.exoplatform.automatic.translation.api.AutomaticTranslationService;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 
 import org.json.simple.JSONArray;
@@ -47,7 +45,7 @@ import java.util.Locale;
 public class AutomaticTranslationRestService implements ResourceContainer {
 
   private AutomaticTranslationService automaticTranslationService;
-  
+
   public AutomaticTranslationRestService(AutomaticTranslationService automaticTranslationService) {
     this.automaticTranslationService = automaticTranslationService;
   }
@@ -56,18 +54,8 @@ public class AutomaticTranslationRestService implements ResourceContainer {
   @Path("/configuration")
   @RolesAllowed("administrators")
   @Produces(MediaType.APPLICATION_JSON)
-  @ApiOperation(
-      value = "Gets Automatic Translation configuration",
-      httpMethod = "GET",
-      response = Response.class,
-      produces = MediaType.APPLICATION_JSON,
-      notes = "This returns the actual configuration for automatic translation"
-  )
-  @ApiResponses(
-      value = {
-          @ApiResponse(code = 200, message = "Request fulfilled")
-      }
-  )
+  @ApiOperation(value = "Gets Automatic Translation configuration", httpMethod = "GET", response = Response.class, produces = MediaType.APPLICATION_JSON, notes = "This returns the actual configuration for automatic translation")
+  @ApiResponses(value = { @ApiResponse(code = 200, message = "Request fulfilled") })
   public Response configuration() {
     JSONObject resultJSON = new JSONObject();
 
@@ -75,38 +63,27 @@ public class AutomaticTranslationRestService implements ResourceContainer {
     JSONArray connectors = new JSONArray();
     automaticTranslationService.getConnectors().forEach((name, connector) -> {
       JSONObject jsonConnector = new JSONObject();
-      jsonConnector.put("name",name);
-      jsonConnector.put("description",connector.getDescription());
+      jsonConnector.put("name", name);
+      jsonConnector.put("description", connector.getDescription());
       connectors.add(jsonConnector);
       if (name.equals(activeConnector)) {
         resultJSON.put("activeApiKey", connector.getApiKey());
       }
     });
 
-    resultJSON.put("connectors",connectors);
-    resultJSON.put("active",activeConnector);
-    return Response.ok(resultJSON.toString(), MediaType.APPLICATION_JSON)
-                   .build();
+    resultJSON.put("connectors", connectors);
+    resultJSON.put("active", activeConnector);
+    return Response.ok(resultJSON.toString(), MediaType.APPLICATION_JSON).build();
 
   }
-
 
   @PUT
   @Path("/setActiveConnector")
   @RolesAllowed("administrators")
   @Consumes(MediaType.APPLICATION_JSON)
-  @ApiOperation(
-      value = "Set Automatic translation active connector",
-      httpMethod = "PUT",
-      response = Response.class,
-      produces = MediaType.APPLICATION_JSON
-  )
-  @ApiResponses(
-      value = {
-          @ApiResponse(code = 200, message = "Request fulfilled"),
-          @ApiResponse(code = 403, message = "Not authorized to change the connector")
-      }
-  )
+  @ApiOperation(value = "Set Automatic translation active connector", httpMethod = "PUT", response = Response.class, produces = MediaType.APPLICATION_JSON)
+  @ApiResponses(value = { @ApiResponse(code = 200, message = "Request fulfilled"),
+      @ApiResponse(code = 403, message = "Not authorized to change the connector") })
   public Response setActiveConnector(@ApiParam(value = "Connector name", required = true) @QueryParam("connector") String connector) {
     connector = (connector == null || connector.equals("null")) ? "" : connector;
     if (automaticTranslationService.setActiveConnector(connector)) {
@@ -121,22 +98,13 @@ public class AutomaticTranslationRestService implements ResourceContainer {
   @Path("/setApiKey")
   @RolesAllowed("administrators")
   @Consumes(MediaType.APPLICATION_JSON)
-  @ApiOperation(
-      value = "Set Automatic translation API key",
-      httpMethod = "PUT",
-      response = Response.class,
-      produces = MediaType.APPLICATION_JSON
-  )
-  @ApiResponses(
-      value = {
-          @ApiResponse(code = 200, message = "Request fulfilled"),
-          @ApiResponse(code = 403, message = "Not authorized to change the connector")
-      }
-  )
+  @ApiOperation(value = "Set Automatic translation API key", httpMethod = "PUT", response = Response.class, produces = MediaType.APPLICATION_JSON)
+  @ApiResponses(value = { @ApiResponse(code = 200, message = "Request fulfilled"),
+      @ApiResponse(code = 403, message = "Not authorized to change the connector") })
   public Response setApiKey(@ApiParam(value = "Connector name", required = true) @QueryParam("connector") String connector,
                             @ApiParam(value = "Api Key", required = true) @QueryParam("apikey") String apikey) {
     connector = (connector == null || connector.equals("null")) ? "" : connector;
-    if (automaticTranslationService.setApiKey(connector,apikey)) {
+    if (automaticTranslationService.setApiKey(connector, apikey)) {
       return Response.ok().build();
     } else {
       return Response.status(403).build();
@@ -144,38 +112,26 @@ public class AutomaticTranslationRestService implements ResourceContainer {
 
   }
 
-
   @POST
   @Path("/translate")
   @RolesAllowed("users")
   @Produces(MediaType.APPLICATION_JSON)
-  @ApiOperation(
-      value = "translate message passed in parameter",
-      httpMethod = "GET",
-      response = Response.class,
-      produces = MediaType.APPLICATION_JSON,
-      notes = "This returns the message transalted in the asked locale, by using the active connector"
-  )
-  @ApiResponses(
-      value = {
-          @ApiResponse(code = 200, message = "Request fulfilled")
-      }
-  )
+  @ApiOperation(value = "translate message passed in parameter", httpMethod = "GET", response = Response.class, produces = MediaType.APPLICATION_JSON, notes = "This returns the message transalted in the asked locale, by using the active connector")
+  @ApiResponses(value = { @ApiResponse(code = 200, message = "Request fulfilled") })
   public Response translate(@ApiParam(value = "message", required = true) @FormParam("message") String message,
                             @ApiParam(value = "locale", required = true) @FormParam("locale") String localeParam) {
     JSONObject resultJSON = new JSONObject();
 
     Locale locale = Locale.forLanguageTag(localeParam);
-    if (locale==null) {
+    if (locale == null) {
       return Response.status(500).build();
     }
-    String translatedMessage = automaticTranslationService.translate(message,locale);
+    String translatedMessage = automaticTranslationService.translate(message, locale);
 
-    if (translatedMessage!=null) {
+    if (translatedMessage != null) {
       resultJSON.put("locale", locale.toString());
       resultJSON.put("translation", translatedMessage);
-      return Response.ok(resultJSON.toString(), MediaType.APPLICATION_JSON)
-                     .build();
+      return Response.ok(resultJSON.toString(), MediaType.APPLICATION_JSON).build();
     } else {
       return Response.status(500).build();
     }
@@ -183,4 +139,3 @@ public class AutomaticTranslationRestService implements ResourceContainer {
   }
 
 }
-

@@ -33,14 +33,15 @@ import java.util.Locale;
 
 public class GoogleTranslateConnector extends AutomaticTranslationComponentPlugin {
 
-  private static final Log LOG = ExoLogger.getLogger(GoogleTranslateConnector.class);
+  private static final Log    LOG                      = ExoLogger.getLogger(GoogleTranslateConnector.class);
 
   private static final String GOOGLE_TRANSLATE_SERVICE = "google-translate";
 
-  private static final String API_URL="https://translation.googleapis.com/language/translate/v2";
-  private static final String KEY_PARAM="key";
+  private static final String API_URL                  = "https://translation.googleapis.com/language/translate/v2";
 
-  private static final String DATA_PATTERN = "{'q': '{message}', 'target': '{targetLocale}'}";
+  private static final String KEY_PARAM                = "key";
+
+  private static final String DATA_PATTERN             = "{'q': '{message}', 'target': '{targetLocale}'}";
 
   public GoogleTranslateConnector(SettingService settingService) {
     super(settingService);
@@ -50,8 +51,8 @@ public class GoogleTranslateConnector extends AutomaticTranslationComponentPlugi
   public String translate(String message, Locale targetLocale) {
     long startTime = System.currentTimeMillis();
 
-    String serviceUrl = API_URL+"?"+KEY_PARAM+"="+getApiKey();
-    String data = DATA_PATTERN.replace("{message}",message).replace("{targetLocale}",targetLocale.getLanguage());
+    String serviceUrl = API_URL + "?" + KEY_PARAM + "=" + getApiKey();
+    String data = DATA_PATTERN.replace("{message}", message).replace("{targetLocale}", targetLocale.getLanguage());
     try {
       URL url = new URL(serviceUrl);
       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -72,22 +73,15 @@ public class GoogleTranslateConnector extends AutomaticTranslationComponentPlugi
         InputStream in = new BufferedInputStream(connection.getInputStream());
         String response = IOUtils.toString(in, StandardCharsets.UTF_8);
         JSONObject jsonResponse = new JSONObject(response);
-        LOG.info("remote_service={} operation={} parameters=\"message length:{},targetLocale:{}\" status=ok " +
-                     "duration_ms={}",
-                 GOOGLE_TRANSLATE_SERVICE,
-                 "translate",
-                 message.length(),
-                 targetLocale.getLanguage(),
-                 System.currentTimeMillis() - startTime);
         return jsonResponse.getJSONObject("data").getJSONArray("translations").getJSONObject(0).getString("translatedText");
       } else {
-        LOG.error("remote_service={} operation={} parameters=\"message length:{},targetLocale:{}\" status=ko " +
-                     "duration_ms={} error_msg=\"Error sending translation request, status : {} \"",
-                 GOOGLE_TRANSLATE_SERVICE,
-                 "translate",
-                 message.length(),
-                 targetLocale.getLanguage(),
-                 System.currentTimeMillis() - startTime,
+        LOG.error("remote_service={} operation={} parameters=\"message length:{},targetLocale:{}\" status=ko "
+            + "duration_ms={} error_msg=\"Error sending translation request, status : {} \"",
+                  GOOGLE_TRANSLATE_SERVICE,
+                  "translate",
+                  message.length(),
+                  targetLocale.getLanguage(),
+                  System.currentTimeMillis() - startTime,
                   responseCode);
         return null;
       }
