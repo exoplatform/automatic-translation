@@ -120,7 +120,8 @@ public class AutomaticTranslationRestService implements ResourceContainer {
   public Response translate(@ApiParam(value = "message", required = true) @FormParam("message") String message,
                             @ApiParam(value = "locale", required = true) @FormParam("locale") String localeParam) {
 
-    Locale locale = Locale.forLanguageTag(localeParam);
+    // forLanguageTag need format 'IETF BCP 47' : example : fr-CA
+    Locale locale = Locale.forLanguageTag(localeParam.replace("_", "-"));
     if (locale == null) {
       return Response.status(HTTPStatus.BAD_REQUEST).entity("Locale is not recognized").build();
     }

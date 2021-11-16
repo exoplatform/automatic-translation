@@ -70,7 +70,7 @@ public class GoogleTranslateConnector extends AutomaticTranslationComponentPlugi
     long startTime = System.currentTimeMillis();
 
     String serviceUrl = API_URL + "?" + KEY_PARAM + "=" + getApiKey();
-    String data = DATA_PATTERN.replace("{message}", message).replace("{targetLocale}", targetLocale.getLanguage());
+    String data = DATA_PATTERN.replace("{message}", message).replace("{targetLocale}", targetLocale.toLanguageTag());
     try {
       HttpPost httpTypeRequest = new HttpPost(serviceUrl);
       httpTypeRequest.setEntity(new StringEntity(data, ContentType.APPLICATION_JSON));
