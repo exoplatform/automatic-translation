@@ -30,7 +30,7 @@ public abstract class AutomaticTranslationComponentPlugin extends BaseComponentP
 
   protected SettingService    settingService;
 
-  public AutomaticTranslationComponentPlugin(SettingService settingService) {
+  protected AutomaticTranslationComponentPlugin(SettingService settingService) {
     this.settingService = settingService;
   }
 
