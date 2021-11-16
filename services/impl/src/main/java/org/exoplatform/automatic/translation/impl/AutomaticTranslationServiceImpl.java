@@ -88,10 +88,7 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
   }
 
   private boolean isActiveFeature() {
-    String enable = System.getProperty("exo.feature." + FEATURE_NAME + ".enabled");
-    return (enable != null && !enable.isBlank() && enable.equals("true"));
-    // after feature finished, return this :
-    // return exoFeatureService.isActiveFeature(FEATURE_NAME);
+    return exoFeatureService.isActiveFeature(FEATURE_NAME);
   }
 
   @Override
