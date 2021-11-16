@@ -86,18 +86,17 @@ public class AutomaticTranslationServiceTest {
 
   @Test
   public void testGetActiveConnectorWhenConfigured() {
-    System.setProperty("exo.feature." + FEATURE_NAME + ".enabled", "true");
+    when(exoFeatureService.isActiveFeature("automatic-translation")).thenReturn(true);
     SettingValue setting = new SettingValue<>("google");
     when(settingService.get(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR)).thenReturn(setting);
     AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
     assertEquals("google", translationService.getActiveConnector());
-    System.setProperty("exo.feature." + FEATURE_NAME + ".enabled", "");
   }
 
   @Test
   public void testCallTranslateForActiveConnector() {
     SettingValue setting = new SettingValue<>("google");
-    System.setProperty("exo.feature." + FEATURE_NAME + ".enabled", "true");
+    when(exoFeatureService.isActiveFeature("automatic-translation")).thenReturn(true);
     when(settingService.get(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR)).thenReturn(setting);
 
     AutomaticTranslationComponentPlugin translationConnector = mock(GoogleTranslateConnector.class);
@@ -107,12 +106,11 @@ public class AutomaticTranslationServiceTest {
     AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
     translationService.addConnector(translationConnector);
     assertEquals("message translated", translationService.translate(message, Locale.FRANCE));
-    System.setProperty("exo.feature." + FEATURE_NAME + ".enabled", "");
   }
 
   @Test
   public void testSetActiveConnector() {
-    System.setProperty("exo.feature." + FEATURE_NAME + ".enabled", "true");
+    when(exoFeatureService.isActiveFeature("automatic-translation")).thenReturn(true);
 
     AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
     String connectorName = "google";
@@ -132,7 +130,6 @@ public class AutomaticTranslationServiceTest {
       fail();
     }
 
-    System.setProperty("exo.feature." + FEATURE_NAME + ".enabled", "");
 
   }
 
@@ -150,7 +147,7 @@ public class AutomaticTranslationServiceTest {
 
   @Test
   public void testSetNonExistingActiveConnector() {
-    System.setProperty("exo.feature." + FEATURE_NAME + ".enabled", "true");
+    when(exoFeatureService.isActiveFeature("automatic-translation")).thenReturn(true);
 
     AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
     String connectorName = "google";
@@ -160,7 +157,6 @@ public class AutomaticTranslationServiceTest {
       fail();
     } catch (Exception e) {
     }
-    System.setProperty("exo.feature." + FEATURE_NAME + ".enabled", "");
   }
 
   @Test
@@ -184,7 +180,7 @@ public class AutomaticTranslationServiceTest {
 
   @Test
   public void testUnSetConnector() {
-    System.setProperty("exo.feature." + FEATURE_NAME + ".enabled", "true");
+    when(exoFeatureService.isActiveFeature("automatic-translation")).thenReturn(true);
 
     AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
     String connectorName = "";
@@ -197,7 +193,6 @@ public class AutomaticTranslationServiceTest {
       fail();
     }
 
-    System.setProperty("exo.feature." + FEATURE_NAME + ".enabled", "");
   }
 
   @Test
@@ -236,7 +231,7 @@ public class AutomaticTranslationServiceTest {
 
   @Test
   public void testGetConfiguration() {
-    System.setProperty("exo.feature." + FEATURE_NAME + ".enabled", "true");
+    when(exoFeatureService.isActiveFeature("automatic-translation")).thenReturn(true);
 
     SettingValue settingConnector = new SettingValue<>("systran");
     when(settingService.get(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR)).thenReturn(settingConnector);
@@ -263,7 +258,6 @@ public class AutomaticTranslationServiceTest {
     assertEquals("systran", configuration.getActiveConnector());
     assertEquals(null, configuration.getConnectors().get(0).getApiKey());
     assertEquals("123456", configuration.getConnectors().get(1).getApiKey());
-    System.setProperty("exo.feature." + FEATURE_NAME + ".enabled", "");
 
   }
 }
