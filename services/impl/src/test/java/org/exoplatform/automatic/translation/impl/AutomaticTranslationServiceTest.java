@@ -18,6 +18,7 @@ package org.exoplatform.automatic.translation.impl;
 
 import org.exoplatform.automatic.translation.api.AutomaticTranslationComponentPlugin;
 import org.exoplatform.automatic.translation.api.AutomaticTranslationService;
+import org.exoplatform.automatic.translation.api.dto.AutomaticTranslationConfiguration;
 import org.exoplatform.automatic.translation.impl.connectors.GoogleTranslateConnector;
 import org.exoplatform.commons.api.settings.ExoFeatureService;
 import org.exoplatform.commons.api.settings.SettingService;
@@ -32,9 +33,7 @@ import org.mockito.Mockito;
 import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
@@ -87,8 +86,8 @@ public class AutomaticTranslationServiceTest {
 
   @Test
   public void testGetActiveConnectorWhenConfigured() {
-    SettingValue setting = new SettingValue<>("google");
     System.setProperty("exo.feature." + FEATURE_NAME + ".enabled", "true");
+    SettingValue setting = new SettingValue<>("google");
     when(settingService.get(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR)).thenReturn(setting);
     AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
     assertEquals("google", translationService.getActiveConnector());
@@ -232,6 +231,39 @@ public class AutomaticTranslationServiceTest {
     } catch (Exception e) {
       fail();
     }
+
+  }
+
+  @Test
+  public void testGetConfiguration() {
+    System.setProperty("exo.feature." + FEATURE_NAME + ".enabled", "true");
+
+    SettingValue settingConnector = new SettingValue<>("systran");
+    when(settingService.get(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR)).thenReturn(settingConnector);
+    SettingValue settingKey = new SettingValue<>("123456");
+    when(settingService.get(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_API_KEY + "-systran")).thenReturn(settingKey);
+
+    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
+    AutomaticTranslationComponentPlugin translationConnector = new AutomaticTranslationComponentPlugin(settingService);
+    translationConnector.setName("google");
+    translationConnector.setDescription("google");
+    translationService.addConnector(translationConnector);
+
+    AutomaticTranslationComponentPlugin translationConnector2 = new AutomaticTranslationComponentPlugin(settingService);
+    translationConnector2.setName("systran");
+    translationConnector2.setDescription("systran");
+    translationService.addConnector(translationConnector2);
+
+    AutomaticTranslationConfiguration configuration = translationService.getConfiguration();
+
+    assertEquals(2, configuration.getConnectors().size());
+    assertEquals("google", configuration.getConnectors().get(0).getName());
+    assertEquals("systran", configuration.getConnectors().get(1).getName());
+    assertEquals("123456", configuration.getActiveApiKey());
+    assertEquals("systran", configuration.getActiveConnector());
+    assertEquals(null, configuration.getConnectors().get(0).getApiKey());
+    assertEquals("123456", configuration.getConnectors().get(1).getApiKey());
+    System.setProperty("exo.feature." + FEATURE_NAME + ".enabled", "");
 
   }
 }
