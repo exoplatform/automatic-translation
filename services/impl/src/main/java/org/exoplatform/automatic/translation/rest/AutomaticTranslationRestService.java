@@ -22,7 +22,6 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.exoplatform.automatic.translation.api.AutomaticTranslationService;
-import org.exoplatform.automatic.translation.impl.AutomaticTranslationServiceImpl;
 import org.exoplatform.common.http.HTTPStatus;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
