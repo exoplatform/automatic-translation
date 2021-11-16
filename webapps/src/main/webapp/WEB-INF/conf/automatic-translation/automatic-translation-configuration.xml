@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
+        xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
+
+    <component>
+        <key>AutomaticTranslationFeatureProperties</key>
+        <type>org.exoplatform.container.ExtendedPropertyConfigurator</type>
+        <init-params>
+            <properties-param>
+                <name>AutomaticTranslationFeatureProperties</name>
+                <description>Automatic Translation Feature enablement flag</description>
+                <property name="exo.feature.automatic-translation.enabled"
+                          value="${exo.feature.automatic-translation.enabled:false}" />
+            </properties-param>
+        </init-params>
+    </component>
+</configuration>

@@ -16,14 +16,62 @@
  */
 package org.exoplatform.automatic.translation.api;
 
+import org.exoplatform.automatic.translation.api.dto.AutomaticTranslationConfiguration;
+
+import java.util.Locale;
 import java.util.Map;
 
 public interface AutomaticTranslationService {
 
+  /**
+   * Add a translation connector
+   *
+   * @param translationConnector The connector to add
+   */
   void addConnector(AutomaticTranslationComponentPlugin translationConnector);
-  Map<String,AutomaticTranslationComponentPlugin> getConnectors();
+
+  /**
+   * Get available connectors list
+   *
+   * @return The connector list
+   */
+  Map<String, AutomaticTranslationComponentPlugin> getConnectors();
+
+  /**
+   * Get the actual configuration
+   *
+   * @return The configuration
+   */
+  AutomaticTranslationConfiguration getConfiguration();
+
+  /**
+   * Get current Active connector
+   *
+   * @return The connector name
+   */
   String getActiveConnector();
-  boolean setActiveConnector(String name);
-  boolean setApiKey(String connector, String apikey);
-  //String translate(String message, Locale targetLang);
+
+  /**
+   * Set the active connector
+   *
+   * @param name The connector name to activate
+   */
+  void setActiveConnector(String name);
+
+  /**
+   * Set the apiKey for the provided connector
+   *
+   * @param connector The connector name
+   * @param apikey The apikey to set
+   */
+  void setApiKey(String connector, String apikey);
+
+  /**
+   * Translate a message in the provided locale, by using the active connector
+   *
+   * @param message The message to translate
+   * @param targetLang The locale in which we want to translate
+   * @return The translated message
+   */
+  String translate(String message, Locale targetLang);
 }

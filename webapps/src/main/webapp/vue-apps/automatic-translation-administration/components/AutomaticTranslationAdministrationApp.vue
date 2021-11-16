@@ -102,10 +102,10 @@ export default {
   methods: {
     getConfiguration() {
       getConfiguration().then(data => {
-        this.connectors=data.connectors;
+        this.connectors = data && data.connectors || [];
         this.connectors.unshift({'name': 'none','description': this.$t('automatic.translation.administration.noconnectorselected')});
-        this.selectedConnector = data.active === null ? 'none' : data.active;
-        this.apiKey = data.activeApiKey === null ? '' : data.activeApiKey;
+        this.selectedConnector = data && data.activeConnector || 'none';
+        this.apiKey = data && data.activeApiKey || '';
       });
     },
     closeSelect() {
