@@ -83,7 +83,7 @@ public class AutomaticTranslationRestService implements ResourceContainer {
       LOG.error("Unable to set active connector", e);
       return Response.status(HTTPStatus.BAD_REQUEST).entity(e.getMessage()).build();
     }
-    return Response.ok().build();
+    return Response.noContent().build();
   }
 
   @PUT
@@ -104,7 +104,7 @@ public class AutomaticTranslationRestService implements ResourceContainer {
       LOG.error("Unable to set api key connector", e);
       return Response.status(HTTPStatus.BAD_REQUEST).entity(e.getMessage()).build();
     }
-    return Response.ok().build();
+    return Response.noContent().build();
 
   }
 

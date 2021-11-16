@@ -64,7 +64,7 @@ public class AutomaticTranslationRestServiceTest {
   public void testSetActiveConnectorWhenOk() {
     doNothing().when(automaticTranslationService).setActiveConnector(any());
     Response response = automaticTranslationRestService.setActiveConnector("google");
-    assertEquals(200, response.getStatus());
+    assertEquals(HTTPStatus.NO_CONTENT, response.getStatus());
   }
 
   @Test
@@ -78,7 +78,7 @@ public class AutomaticTranslationRestServiceTest {
   public void testSetApiKeyWhenOk() {
     doNothing().when(automaticTranslationService).setApiKey(any(), any());
     Response response = automaticTranslationRestService.setApiKey("google", "123456");
-    assertEquals(200, response.getStatus());
+    assertEquals(HTTPStatus.NO_CONTENT, response.getStatus());
   }
 
   @Test

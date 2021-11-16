@@ -24,8 +24,6 @@ import org.exoplatform.commons.api.settings.SettingService;
 import org.exoplatform.commons.api.settings.SettingValue;
 import org.exoplatform.commons.api.settings.data.Context;
 import org.exoplatform.commons.api.settings.data.Scope;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,9 +31,6 @@ import java.util.Locale;
 import java.util.Map;
 
 public class AutomaticTranslationServiceImpl implements AutomaticTranslationService {
-
-  private static final Log                                 LOG                                    =
-                                                               ExoLogger.getLogger(AutomaticTranslationServiceImpl.class);
 
   private static final String                              AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR =
                                                                                                   "automaticTranslationActiveConnector";
