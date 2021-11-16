@@ -51,8 +51,6 @@ public abstract class AutomaticTranslationComponentPlugin extends BaseComponentP
 
   }
 
-  public String translate(String message, Locale targetLocale) {
-    throw new UnsupportedOperationException();
-  }
+  public abstract String translate(String message, Locale targetLocale);
 
 }
