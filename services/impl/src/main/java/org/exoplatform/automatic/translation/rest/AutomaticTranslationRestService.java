@@ -126,7 +126,7 @@ public class AutomaticTranslationRestService implements ResourceContainer {
 
     Locale locale = Locale.forLanguageTag(localeParam);
     if (locale == null) {
-      return Response.status(HTTPStatus.BAD_REQUEST).build();
+      return Response.status(HTTPStatus.BAD_REQUEST).entity("Locale is not recognized").build();
     }
     String translatedMessage = automaticTranslationService.translate(message, locale);
 
