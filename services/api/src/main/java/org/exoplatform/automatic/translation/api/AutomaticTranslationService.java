@@ -27,8 +27,6 @@ public interface AutomaticTranslationService {
    * Add a translation connector
    *
    * @param translationConnector The connector to add
-   * @LevelAPI Platform
-   * @since 1.2.0-GA
    */
   void addConnector(AutomaticTranslationComponentPlugin translationConnector);
 
@@ -36,8 +34,6 @@ public interface AutomaticTranslationService {
    * Get available connectors list
    *
    * @return The connector list
-   * @LevelAPI Platform
-   * @since 1.2.0-GA
    */
   Map<String, AutomaticTranslationComponentPlugin> getConnectors();
 
@@ -45,8 +41,6 @@ public interface AutomaticTranslationService {
    * Get the actual configuration
    *
    * @return The configuration
-   * @LevelAPI Platform
-   * @since 1.2.0-GA
    */
   AutomaticTranslationConfiguration getConfiguration();
 
@@ -54,8 +48,6 @@ public interface AutomaticTranslationService {
    * Get current Active connector
    *
    * @return The connector name
-   * @LevelAPI Platform
-   * @since 1.2.0-GA
    */
   String getActiveConnector();
 
@@ -63,8 +55,6 @@ public interface AutomaticTranslationService {
    * Set the active connector
    *
    * @param name The connector name to activate
-   * @LevelAPI Platform
-   * @since 1.2.0-GA
    */
   void setActiveConnector(String name);
 
@@ -73,8 +63,6 @@ public interface AutomaticTranslationService {
    *
    * @param connector The connector name
    * @param apikey The apikey to set
-   * @LevelAPI Platform
-   * @since 1.2.0-GA
    */
   void setApiKey(String connector, String apikey);
 
@@ -84,8 +72,6 @@ public interface AutomaticTranslationService {
    * @param message The message to translate
    * @param targetLang The locale in which we want to translate
    * @return The translated message
-   * @LevelAPI Platform
-   * @since 1.2.0-GA
    */
   String translate(String message, Locale targetLang);
 }

@@ -94,7 +94,6 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
   @Override
   public void setActiveConnector(String name) {
     if (!isActiveFeature()) {
-      LOG.error("Try to change automatic translation connector but feature is not active");
       throw new RuntimeException("Unable to change automatic translation connector as feature is not active");
     }
     // should return false if connector name do not exists
@@ -107,7 +106,6 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
         || translationConnectors.keySet().stream().anyMatch(connectorName -> connectorName.equals(finalName))) {
       settingService.set(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR, new SettingValue<>(name));
     } else {
-      LOG.error("Try to change automatic translation connector with a non existing connector name : {}", name);
       throw new RuntimeException("Unable to change automatic translation connector as provided connector name do not exists");
     }
   }
