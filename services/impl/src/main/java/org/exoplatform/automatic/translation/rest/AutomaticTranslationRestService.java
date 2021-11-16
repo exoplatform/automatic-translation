@@ -22,14 +22,12 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.exoplatform.automatic.translation.api.AutomaticTranslationService;
-import org.exoplatform.automatic.translation.api.dto.AutomaticTranslationConfiguration;
 import org.exoplatform.automatic.translation.impl.AutomaticTranslationServiceImpl;
 import org.exoplatform.common.http.HTTPStatus;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 
-import org.json.HTTP;
 import org.json.simple.JSONObject;
 
 import javax.annotation.security.RolesAllowed;
@@ -43,7 +41,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.Locale;
 
 @Path("/automatic-translation")
@@ -52,7 +49,7 @@ public class AutomaticTranslationRestService implements ResourceContainer {
 
   private AutomaticTranslationService automaticTranslationService;
 
-  private static final Log            LOG = ExoLogger.getLogger(AutomaticTranslationServiceImpl.class);
+  private static final Log            LOG = ExoLogger.getLogger(AutomaticTranslationRestService.class);
 
   public AutomaticTranslationRestService(AutomaticTranslationService automaticTranslationService) {
     this.automaticTranslationService = automaticTranslationService;
