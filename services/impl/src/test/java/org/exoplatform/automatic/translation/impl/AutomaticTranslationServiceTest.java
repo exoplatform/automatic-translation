@@ -65,7 +65,7 @@ public class AutomaticTranslationServiceTest {
   public void testAddConnector() {
 
     AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
-    AutomaticTranslationComponentPlugin translationConnector = new AutomaticTranslationComponentPlugin(settingService);
+    AutomaticTranslationComponentPlugin translationConnector = new GoogleTranslateConnector(settingService);
     translationConnector.setName("google");
     translationConnector.setDescription("google");
 
@@ -116,7 +116,7 @@ public class AutomaticTranslationServiceTest {
 
     AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
     String connectorName = "google";
-    AutomaticTranslationComponentPlugin translationConnector = new AutomaticTranslationComponentPlugin(settingService);
+    AutomaticTranslationComponentPlugin translationConnector = new GoogleTranslateConnector(settingService);
     translationConnector.setName("google");
     translationConnector.setDescription("google");
 
@@ -167,7 +167,7 @@ public class AutomaticTranslationServiceTest {
   public void testSetActiveConnectorWhenFeatureNotActive() {
     AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
     String connectorName = "google";
-    AutomaticTranslationComponentPlugin translationConnector = new AutomaticTranslationComponentPlugin(settingService);
+    AutomaticTranslationComponentPlugin translationConnector = new GoogleTranslateConnector(settingService);
     translationConnector.setName("google");
     translationConnector.setDescription("google");
 
@@ -216,7 +216,7 @@ public class AutomaticTranslationServiceTest {
   public void testSetApiKeyWhenConnectorExists() {
     AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
     String connectorName = "google";
-    AutomaticTranslationComponentPlugin translationConnector = new AutomaticTranslationComponentPlugin(settingService);
+    AutomaticTranslationComponentPlugin translationConnector = new GoogleTranslateConnector(settingService);
     translationConnector.setName("google");
     translationConnector.setDescription("google");
 
@@ -244,12 +244,12 @@ public class AutomaticTranslationServiceTest {
     when(settingService.get(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_API_KEY + "-systran")).thenReturn(settingKey);
 
     AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
-    AutomaticTranslationComponentPlugin translationConnector = new AutomaticTranslationComponentPlugin(settingService);
+    AutomaticTranslationComponentPlugin translationConnector = new GoogleTranslateConnector(settingService);
     translationConnector.setName("google");
     translationConnector.setDescription("google");
     translationService.addConnector(translationConnector);
 
-    AutomaticTranslationComponentPlugin translationConnector2 = new AutomaticTranslationComponentPlugin(settingService);
+    AutomaticTranslationComponentPlugin translationConnector2 = new GoogleTranslateConnector(settingService);
     translationConnector2.setName("systran");
     translationConnector2.setDescription("systran");
     translationService.addConnector(translationConnector2);

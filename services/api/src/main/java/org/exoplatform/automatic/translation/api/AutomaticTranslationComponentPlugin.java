@@ -24,14 +24,13 @@ import org.exoplatform.container.component.BaseComponentPlugin;
 
 import java.util.Locale;
 
-public class AutomaticTranslationComponentPlugin extends BaseComponentPlugin {
+public abstract class AutomaticTranslationComponentPlugin extends BaseComponentPlugin {
 
   private static final String AUTOMATIC_TRANSLATION_API_KEY = "automaticTranslationApiKey";
 
   protected SettingService    settingService;
 
   public AutomaticTranslationComponentPlugin(SettingService settingService) {
-    super();
     this.settingService = settingService;
   }
 

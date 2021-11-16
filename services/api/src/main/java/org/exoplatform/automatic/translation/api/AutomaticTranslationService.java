@@ -23,14 +23,69 @@ import java.util.Map;
 
 public interface AutomaticTranslationService {
 
+  /**
+   * Add a translation connector
+   *
+   * @param translationConnector The connector to add
+   * @LevelAPI Platform
+   * @since 1.2.0-GA
+   */
   void addConnector(AutomaticTranslationComponentPlugin translationConnector);
-  Map<String,AutomaticTranslationComponentPlugin> getConnectors();
 
+  /**
+   * Get available connectors list
+   *
+   * @return The connector list
+   * @LevelAPI Platform
+   * @since 1.2.0-GA
+   */
+  Map<String, AutomaticTranslationComponentPlugin> getConnectors();
+
+  /**
+   * Get the actual configuration
+   *
+   * @return The configuration
+   * @LevelAPI Platform
+   * @since 1.2.0-GA
+   */
   AutomaticTranslationConfiguration getConfiguration();
+
+  /**
+   * Get current Active connector
+   *
+   * @return The connector name
+   * @LevelAPI Platform
+   * @since 1.2.0-GA
+   */
   String getActiveConnector();
 
+  /**
+   * Set the active connector
+   *
+   * @param name The connector name to activate
+   * @LevelAPI Platform
+   * @since 1.2.0-GA
+   */
   void setActiveConnector(String name);
 
+  /**
+   * Set the apiKey for the provided connector
+   *
+   * @param connector The connector name
+   * @param apikey The apikey to set
+   * @LevelAPI Platform
+   * @since 1.2.0-GA
+   */
   void setApiKey(String connector, String apikey);
+
+  /**
+   * Translate a message in the provided locale, by using the active connector
+   *
+   * @param message The message to translate
+   * @param targetLang The locale in which we want to translate
+   * @return The translated message
+   * @LevelAPI Platform
+   * @since 1.2.0-GA
+   */
   String translate(String message, Locale targetLang);
 }
