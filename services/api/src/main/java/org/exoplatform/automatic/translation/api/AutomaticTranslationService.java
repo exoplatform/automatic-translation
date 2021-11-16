@@ -16,6 +16,8 @@
  */
 package org.exoplatform.automatic.translation.api;
 
+import org.exoplatform.automatic.translation.api.dto.AutomaticTranslationConfiguration;
+
 import java.util.Locale;
 import java.util.Map;
 
@@ -23,8 +25,12 @@ public interface AutomaticTranslationService {
 
   void addConnector(AutomaticTranslationComponentPlugin translationConnector);
   Map<String,AutomaticTranslationComponentPlugin> getConnectors();
+
+  AutomaticTranslationConfiguration getConfiguration();
   String getActiveConnector();
-  boolean setActiveConnector(String name);
-  boolean setApiKey(String connector, String apikey);
+
+  void setActiveConnector(String name);
+
+  void setApiKey(String connector, String apikey);
   String translate(String message, Locale targetLang);
 }

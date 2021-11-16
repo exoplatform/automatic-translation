@@ -49,13 +49,12 @@ public class GoogleTranslateConnector extends AutomaticTranslationComponentPlugi
 
   private static final String DATA_PATTERN             = "{'q': '{message}', 'target': '{targetLocale}'}";
 
-  private static final int DEFAULT_POOL_CONNECTION = 100;
+  private static final int    DEFAULT_POOL_CONNECTION  = 100;
 
-  private HttpClient httpClient;
+  private HttpClient          httpClient;
 
   public GoogleTranslateConnector(SettingService settingService) {
     super(settingService);
-
 
     PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
     connectionManager.setDefaultMaxPerRoute(DEFAULT_POOL_CONNECTION);
@@ -75,14 +74,14 @@ public class GoogleTranslateConnector extends AutomaticTranslationComponentPlugi
     try {
       HttpPost httpTypeRequest = new HttpPost(serviceUrl);
       httpTypeRequest.setEntity(new StringEntity(data, ContentType.APPLICATION_JSON));
-      HttpResponse httpResponse=httpClient.execute(httpTypeRequest);
+      HttpResponse httpResponse = httpClient.execute(httpTypeRequest);
       String response = null;
       int statusCode = httpResponse.getStatusLine().getStatusCode();
       if (statusCode == HttpURLConnection.HTTP_OK) {
 
         // read the response
-        if (httpResponse.getEntity()!=null) {
-          try (InputStream is = httpResponse.getEntity().getContent()){
+        if (httpResponse.getEntity() != null) {
+          try (InputStream is = httpResponse.getEntity().getContent()) {
             response = IOUtils.toString(is, StandardCharsets.UTF_8);
           }
         }
@@ -92,7 +91,7 @@ public class GoogleTranslateConnector extends AutomaticTranslationComponentPlugi
 
       } else {
         LOG.error("remote_service={} operation={} parameters=\"message length:{},targetLocale:{}\" status=ko "
-                      + "duration_ms={} error_msg=\"Error sending translation request, status : {} \"",
+            + "duration_ms={} error_msg=\"Error sending translation request, status : {} \"",
                   GOOGLE_TRANSLATE_SERVICE,
                   "translate",
                   message.length(),
@@ -103,7 +102,7 @@ public class GoogleTranslateConnector extends AutomaticTranslationComponentPlugi
       }
 
     } catch (Exception e) {
-      LOG.error("Error when trying to send translation request to google API");
+      LOG.error("Error when trying to send translation request to google API", e);
     }
     return null;
   }

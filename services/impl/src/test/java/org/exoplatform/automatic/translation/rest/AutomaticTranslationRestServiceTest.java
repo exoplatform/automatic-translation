@@ -18,6 +18,8 @@ package org.exoplatform.automatic.translation.rest;
 
 import org.exoplatform.automatic.translation.api.AutomaticTranslationComponentPlugin;
 import org.exoplatform.automatic.translation.api.AutomaticTranslationService;
+import org.exoplatform.automatic.translation.api.dto.AutomaticTranslationConfiguration;
+import org.exoplatform.common.http.HTTPStatus;
 import org.exoplatform.commons.api.settings.SettingService;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
@@ -31,6 +33,8 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -56,60 +60,32 @@ public class AutomaticTranslationRestServiceTest {
     ConversationState state = new ConversationState(identity);
     ConversationState.setCurrent(state);
   }
-
-  @Test
-  public void testGetConfiguration() {
-    Map<String, AutomaticTranslationComponentPlugin> connectors = new HashMap<>();
-    AutomaticTranslationComponentPlugin googleConnector = new AutomaticTranslationComponentPlugin(settingService);
-    googleConnector.setName("google");
-    googleConnector.setDescription("google connector description");
-    connectors.put("google", googleConnector);
-    AutomaticTranslationComponentPlugin systranConnector = new AutomaticTranslationComponentPlugin(settingService);
-    systranConnector.setName("systran");
-    systranConnector.setDescription("systran connector description");
-    connectors.put("systran", systranConnector);
-    when(automaticTranslationService.getConnectors()).thenReturn(connectors);
-    when(automaticTranslationService.getActiveConnector()).thenReturn("google");
-
-    Response response = automaticTranslationRestService.configuration();
-    assertEquals(200, response.getStatus());
-
-    AutomaticTranslationConfiguration resultConfiguration = (AutomaticTranslationConfiguration)response.getEntity();
-    assertEquals(2, resultConfiguration.getConnectors().size());
-    assertEquals("google", resultConfiguration.getConnectors().get(0).getName());
-    assertEquals("google connector description", resultConfiguration.getConnectors().get(0).getDescription());
-     assertEquals("systran", resultConfiguration.getConnectors().get(1).getName());
-    assertEquals("systran connector description", resultConfiguration.getConnectors().get(1).getDescription());
-    assertEquals(null, resultConfiguration.getActiveApiKey());
-    assertEquals("google", resultConfiguration.getActiveConnector());
-  }
-
   @Test
   public void testSetActiveConnectorWhenOk() {
-    when(automaticTranslationService.setActiveConnector(any())).thenReturn(true);
+    doNothing().when(automaticTranslationService).setActiveConnector(any());
     Response response = automaticTranslationRestService.setActiveConnector("google");
     assertEquals(200, response.getStatus());
   }
 
   @Test
   public void testSetActiveConnectorWhenKo() {
-    when(automaticTranslationService.setActiveConnector(any())).thenReturn(false);
+    doThrow(new RuntimeException("Error")).when(automaticTranslationService).setActiveConnector(any());
     Response response = automaticTranslationRestService.setActiveConnector("google");
-    assertEquals(403, response.getStatus());
+    assertEquals(HTTPStatus.BAD_REQUEST, response.getStatus());
   }
 
   @Test
   public void testSetApiKeyWhenOk() {
-    when(automaticTranslationService.setApiKey(any(), any())).thenReturn(true);
+    doNothing().when(automaticTranslationService).setApiKey(any(), any());
     Response response = automaticTranslationRestService.setApiKey("google", "123456");
     assertEquals(200, response.getStatus());
   }
 
   @Test
   public void testSetApiKeyWhenKo() {
-    when(automaticTranslationService.setApiKey(any(), any())).thenReturn(false);
+    doThrow(new RuntimeException("Error")).when(automaticTranslationService).setApiKey(any(), any());
     Response response = automaticTranslationRestService.setApiKey("google", "123456");
-    assertEquals(403, response.getStatus());
+    assertEquals(HTTPStatus.BAD_REQUEST, response.getStatus());
   }
 
 }

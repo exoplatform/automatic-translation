@@ -18,6 +18,7 @@ package org.exoplatform.automatic.translation.impl;
 
 import org.exoplatform.automatic.translation.api.AutomaticTranslationComponentPlugin;
 import org.exoplatform.automatic.translation.api.AutomaticTranslationService;
+import org.exoplatform.automatic.translation.api.dto.AutomaticTranslationConfiguration;
 import org.exoplatform.commons.api.settings.ExoFeatureService;
 import org.exoplatform.commons.api.settings.SettingService;
 import org.exoplatform.commons.api.settings.SettingValue;
@@ -26,6 +27,7 @@ import org.exoplatform.commons.api.settings.data.Scope;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -63,6 +65,21 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
   }
 
   @Override
+  public AutomaticTranslationConfiguration getConfiguration() {
+    String activeConnector = getActiveConnector();
+    AutomaticTranslationConfiguration configuration = new AutomaticTranslationConfiguration(new ArrayList<>(), activeConnector);
+    getConnectors().forEach((name, connector) -> {
+      if (name.equals(activeConnector)) {
+        configuration.setActiveApiKey(connector.getApiKey());
+        configuration.addConnector(name, connector.getDescription(), connector.getApiKey());
+      } else {
+        configuration.addConnector(name, connector.getDescription(), null);
+      }
+    });
+    return configuration;
+  }
+
+  @Override
   public String getActiveConnector() {
     SettingValue<?> value = settingService.get(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR);
 
@@ -78,10 +95,10 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
   }
 
   @Override
-  public boolean setActiveConnector(String name) {
+  public void setActiveConnector(String name) {
     if (!isActiveFeature()) {
       LOG.error("Try to change automatic translation connector but feature is not active");
-      return false;
+      throw new RuntimeException("Unable to change automatic translation connector as feature is not active");
     }
     // should return false if connector name do not exists
     // but not if the name is empty (correspond to unset case)
@@ -92,20 +109,19 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
     if (finalName.isBlank()
         || translationConnectors.keySet().stream().anyMatch(connectorName -> connectorName.equals(finalName))) {
       settingService.set(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR, new SettingValue<>(name));
-      return true;
     } else {
       LOG.error("Try to change automatic translation connector with a non existing connector name : {}", name);
-      return false;
+      throw new RuntimeException("Unable to change automatic translation connector as provided connector name do not exists");
     }
   }
 
   @Override
-  public boolean setApiKey(String connector, String apikey) {
+  public void setApiKey(String connector, String apikey) {
     AutomaticTranslationComponentPlugin connectorPlugin = translationConnectors.get(connector);
     if (connectorPlugin == null) {
-      return false;
+      throw new RuntimeException("Provided connector do not exists " + connector);
     } else {
-      return connectorPlugin.setApiKey(apikey);
+      connectorPlugin.setApiKey(apikey);
     }
   }
 
@@ -113,7 +129,10 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
   public String translate(String message, Locale targetLang) {
     String activeConnector = getActiveConnector();
     if (activeConnector == null) {
-      return null;
+      throw new RuntimeException("Automatic Translation No active connector configured");
+    }
+    if (translationConnectors.get(activeConnector) == null) {
+      throw new RuntimeException("Automatic Translation Connector " + activeConnector + " not found");
     }
     return translationConnectors.get(activeConnector).translate(message, targetLang);
   }

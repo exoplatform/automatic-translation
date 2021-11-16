@@ -35,6 +35,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -122,11 +123,15 @@ public class AutomaticTranslationServiceTest {
 
     translationService.addConnector(translationConnector);
 
-    assertTrue(translationService.setActiveConnector(connectorName));
-    verify(settingService, times(1)).set(eq(Context.GLOBAL),
-                                         eq(Scope.GLOBAL),
-                                         eq(AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR),
-                                         argThat(argument -> argument.getValue().equals(connectorName)));
+    try {
+      translationService.setActiveConnector(connectorName);
+      verify(settingService, times(1)).set(eq(Context.GLOBAL),
+                                           eq(Scope.GLOBAL),
+                                           eq(AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR),
+                                           argThat(argument -> argument.getValue().equals(connectorName)));
+    } catch (Exception e) {
+      fail();
+    }
 
     System.setProperty("exo.feature." + FEATURE_NAME + ".enabled", "");
 
@@ -151,7 +156,11 @@ public class AutomaticTranslationServiceTest {
     AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
     String connectorName = "google";
 
-    assertFalse(translationService.setActiveConnector(connectorName));
+    try {
+      translationService.setActiveConnector(connectorName);
+      fail();
+    } catch (Exception e) {
+    }
     System.setProperty("exo.feature." + FEATURE_NAME + ".enabled", "");
   }
 
@@ -165,7 +174,12 @@ public class AutomaticTranslationServiceTest {
 
     translationService.addConnector(translationConnector);
 
-    assertFalse(translationService.setActiveConnector(connectorName));
+    try {
+      translationService.setActiveConnector(connectorName);
+      fail();
+    } catch (Exception e) {
+
+    }
 
   }
 
@@ -176,10 +190,14 @@ public class AutomaticTranslationServiceTest {
     AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
     String connectorName = "";
 
-    assertTrue(translationService.setActiveConnector(connectorName));
+    try {
+      translationService.setActiveConnector(connectorName);
+      connectorName = null;
+      translationService.setActiveConnector(connectorName);
+    } catch (Exception e) {
+      fail();
+    }
 
-    connectorName = null;
-    assertTrue(translationService.setActiveConnector(connectorName));
     System.setProperty("exo.feature." + FEATURE_NAME + ".enabled", "");
   }
 
@@ -188,8 +206,11 @@ public class AutomaticTranslationServiceTest {
     AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
     String connectorName = "google";
 
-    assertFalse(translationService.setApiKey(connectorName, "123456"));
-
+    try {
+      translationService.setApiKey(connectorName, "123456");
+      fail();
+    } catch (Exception e) {
+    }
   }
 
   @Test
@@ -202,11 +223,15 @@ public class AutomaticTranslationServiceTest {
 
     translationService.addConnector(translationConnector);
 
-    assertTrue(translationService.setApiKey(connectorName, "123456"));
-    verify(settingService, times(1)).set(eq(Context.GLOBAL),
-                                         eq(Scope.GLOBAL),
-                                         eq(AUTOMATIC_TRANSLATION_API_KEY + "-" + connectorName),
-                                         argThat(argument -> argument.getValue().equals("123456")));
+    try {
+      translationService.setApiKey(connectorName, "123456");
+      verify(settingService, times(1)).set(eq(Context.GLOBAL),
+                                           eq(Scope.GLOBAL),
+                                           eq(AUTOMATIC_TRANSLATION_API_KEY + "-" + connectorName),
+                                           argThat(argument -> argument.getValue().equals("123456")));
+    } catch (Exception e) {
+      fail();
+    }
 
   }
 }

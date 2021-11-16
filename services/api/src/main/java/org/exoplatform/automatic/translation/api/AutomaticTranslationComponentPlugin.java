@@ -28,32 +28,32 @@ public class AutomaticTranslationComponentPlugin extends BaseComponentPlugin {
 
   private static final String AUTOMATIC_TRANSLATION_API_KEY = "automaticTranslationApiKey";
 
-  protected SettingService settingService;
-  public AutomaticTranslationComponentPlugin (SettingService settingService) {
+  protected SettingService    settingService;
+
+  public AutomaticTranslationComponentPlugin(SettingService settingService) {
     super();
     this.settingService = settingService;
   }
 
-  public boolean setApiKey(String apiKey) {
+  public void setApiKey(String apiKey) {
     SettingValue<String> settingValue = new SettingValue<>(apiKey);
-    settingService.set(Context.GLOBAL, Scope.GLOBAL,AUTOMATIC_TRANSLATION_API_KEY+"-"+this.getName(),settingValue);
-    return true;
+    settingService.set(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_API_KEY + "-" + this.getName(), settingValue);
   }
 
   public String getApiKey() {
-    SettingValue<?> setting = settingService.get(Context.GLOBAL, Scope.GLOBAL,
-                                                    AUTOMATIC_TRANSLATION_API_KEY+"-"+this.getName());
-    if (setting!=null && setting.getValue()!=null) {
+    SettingValue<?> setting = settingService.get(Context.GLOBAL,
+                                                 Scope.GLOBAL,
+                                                 AUTOMATIC_TRANSLATION_API_KEY + "-" + this.getName());
+    if (setting != null && setting.getValue() != null) {
       return setting.getValue().toString();
     } else {
       return null;
     }
 
   }
-  
+
   public String translate(String message, Locale targetLocale) {
     throw new UnsupportedOperationException();
   }
-
 
 }

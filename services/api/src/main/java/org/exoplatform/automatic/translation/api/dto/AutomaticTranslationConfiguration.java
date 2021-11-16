@@ -14,14 +14,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.automatic.translation.rest;
+package org.exoplatform.automatic.translation.api.dto;
 
 import java.io.Serializable;
 import java.util.List;
 
 public class AutomaticTranslationConfiguration implements Serializable {
 
-  private String activeConnector;
+  private String          activeConnector;
 
   private List<Connector> connectors;
 
@@ -49,44 +49,6 @@ public class AutomaticTranslationConfiguration implements Serializable {
 
   public void setActiveApiKey(String activeApiKey) {
     this.activeApiKey = activeApiKey;
-  }
-
-  public class Connector implements Serializable {
-    private String name;
-
-    private String description;
-
-    private String apiKey;
-
-    public String getName() {
-      return name;
-    }
-
-    public void setName(String name) {
-      this.name = name;
-    }
-
-    public String getDescription() {
-      return description;
-    }
-
-    public void setDescription(String description) {
-      this.description = description;
-    }
-
-    public String getApiKey() {
-      return apiKey;
-    }
-
-    public void setApiKey(String apiKey) {
-      this.apiKey = apiKey;
-    }
-
-    public Connector(String name, String description, String apiKey) {
-      this.name = name;
-      this.description = description;
-      this.apiKey = apiKey;
-    }
   }
 
   public AutomaticTranslationConfiguration(List<Connector> connectors, String activeConnector) {
