@@ -70,7 +70,13 @@ public class GoogleTranslateConnector extends AutomaticTranslationComponentPlugi
     long startTime = System.currentTimeMillis();
 
     String serviceUrl = API_URL + "?" + KEY_PARAM + "=" + getApiKey();
-    String data = DATA_PATTERN.replace("{message}", message).replace("{targetLocale}", targetLocale.toLanguageTag());
+    // we use here targetLocale.getLanguage instead of targetLocale.toLanguageTag as
+    // Google Cloud Translation supports
+    // only the language and not the country,
+    // except for chinese. But as zh correspond to simplified chinese, we can deal
+    // with that :
+    // https://cloud.google.com/translate/docs/languages
+    String data = DATA_PATTERN.replace("{message}", message).replace("{targetLocale}", targetLocale.getLanguage());
     try {
       HttpPost httpTypeRequest = new HttpPost(serviceUrl);
       httpTypeRequest.setEntity(new StringEntity(data, ContentType.APPLICATION_JSON));
