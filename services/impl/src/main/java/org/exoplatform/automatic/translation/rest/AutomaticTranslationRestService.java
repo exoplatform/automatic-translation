@@ -129,14 +129,16 @@ public class AutomaticTranslationRestService implements ResourceContainer {
       @ApiResponse(code = HTTPStatus.FORBIDDEN, message = "Not authorized to use translation"),
       @ApiResponse(code = HTTPStatus.INTERNAL_ERROR, message = "Internal Server Error") })
   public Response translate(@ApiParam(value = "message", required = true) @FormParam("message") String message,
-                            @ApiParam(value = "locale", required = true) @FormParam("locale") String localeParam) {
+                            @ApiParam(value = "locale", required = true) @FormParam("locale") String localeParam,
+                            @ApiParam(value = "contentType") @FormParam("contentType") String contentType,
+                            @ApiParam(value = "spaceId") @FormParam("spaceId") long spaceId) {
 
     // forLanguageTag need format 'IETF BCP 47' : example : fr-CA
     Locale locale = Locale.forLanguageTag(localeParam.replace("_", "-"));
     if (locale == null) {
       return Response.status(HTTPStatus.BAD_REQUEST).entity("Locale is not recognized").build();
     }
-    String translatedMessage = automaticTranslationService.translate(message, locale);
+    String translatedMessage = automaticTranslationService.translate(message, locale, contentType, spaceId);
 
     if (translatedMessage != null) {
       JSONObject resultJSON = new JSONObject();

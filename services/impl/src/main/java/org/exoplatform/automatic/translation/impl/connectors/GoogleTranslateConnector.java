@@ -90,6 +90,13 @@ public class GoogleTranslateConnector extends AutomaticTranslationComponentPlugi
         return jsonResponse.getJSONObject("data").getJSONArray("translations").getJSONObject(0).getString("translatedText");
 
       } else {
+        String errorMessage = "Error when calling Google Api Translation";
+        try (InputStream is = httpResponse.getEntity().getContent()) {
+          JSONObject jsonResponse = new JSONObject(IOUtils.toString(is, StandardCharsets.UTF_8));
+          if (jsonResponse.getJSONObject("error") != null && jsonResponse.getJSONObject("error").getString("message") != null) {
+            errorMessage = jsonResponse.getJSONObject("error").getString("message");
+          }
+        }
         LOG.error("remote_service={} operation={} parameters=\"message length:{},targetLocale:{}\" status=ko "
             + "duration_ms={} error_msg=\"{}, status : {} \"",
                   GOOGLE_TRANSLATE_SERVICE,
@@ -97,7 +104,7 @@ public class GoogleTranslateConnector extends AutomaticTranslationComponentPlugi
                   message.length(),
                   targetLocale.getLanguage(),
                   System.currentTimeMillis() - startTime,
-                  "Error when using Google translator api",
+                  errorMessage,
                   statusCode);
         return null;
       }
