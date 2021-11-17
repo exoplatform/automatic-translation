@@ -87,7 +87,7 @@
           spaceId: activity && activity.activityStream && activity.activityStream.space && activity.activityStream.space.id
         };
         if (!comment.translatedBody) {
-          fetchTranslation(activityTypeExtension.getBody(comment),event,'comment').then(translated => {
+          fetchTranslation(activityTypeExtension.getBody(comment),event).then(translated => {
             comment.translatedBody = translated.translation;
             activityTypeExtension.getCommentTranslatedBody = getTranslatedBody;
             document.dispatchEvent(new CustomEvent('activity-comment-translated',{ detail:event }));
