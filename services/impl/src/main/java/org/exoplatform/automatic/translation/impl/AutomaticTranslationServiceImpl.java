@@ -20,7 +20,6 @@ import org.exoplatform.automatic.translation.api.AutomaticTranslationComponentPl
 import org.exoplatform.automatic.translation.api.AutomaticTranslationService;
 import org.exoplatform.automatic.translation.api.dto.AutomaticTranslationConfiguration;
 import org.exoplatform.automatic.translation.api.dto.AutomaticTranslationEvent;
-import org.exoplatform.automatic.translation.rest.AutomaticTranslationRestService;
 import org.exoplatform.commons.api.settings.ExoFeatureService;
 import org.exoplatform.commons.api.settings.SettingService;
 import org.exoplatform.commons.api.settings.SettingValue;
