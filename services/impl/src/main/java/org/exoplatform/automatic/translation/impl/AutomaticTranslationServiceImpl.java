@@ -48,7 +48,7 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
   private Map<String, AutomaticTranslationComponentPlugin> translationConnectors;
 
   private static final Log                                 LOG                                    =
-                                                               ExoLogger.getLogger(AutomaticTranslationRestService.class);
+                                                               ExoLogger.getLogger(AutomaticTranslationServiceImpl.class);
 
   SettingService                                           settingService;
 

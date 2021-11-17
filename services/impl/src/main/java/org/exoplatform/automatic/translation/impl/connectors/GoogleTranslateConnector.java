@@ -51,6 +51,8 @@ public class GoogleTranslateConnector extends AutomaticTranslationComponentPlugi
 
   private static final int    DEFAULT_POOL_CONNECTION  = 100;
 
+  private static final String ERROR                    = "error";
+
   private HttpClient          httpClient;
 
   public GoogleTranslateConnector(SettingService settingService) {
@@ -99,8 +101,8 @@ public class GoogleTranslateConnector extends AutomaticTranslationComponentPlugi
         String errorMessage = "Error when calling Google Api Translation";
         try (InputStream is = httpResponse.getEntity().getContent()) {
           JSONObject jsonResponse = new JSONObject(IOUtils.toString(is, StandardCharsets.UTF_8));
-          if (jsonResponse.getJSONObject("error") != null && jsonResponse.getJSONObject("error").getString("message") != null) {
-            errorMessage = jsonResponse.getJSONObject("error").getString("message");
+          if (jsonResponse.getJSONObject(ERROR) != null && jsonResponse.getJSONObject(ERROR).getString("message") != null) {
+            errorMessage = jsonResponse.getJSONObject(ERROR).getString("message");
           }
         }
         LOG.error("remote_service={} operation={} parameters=\"message length:{},targetLocale:{}\" status=ko "
