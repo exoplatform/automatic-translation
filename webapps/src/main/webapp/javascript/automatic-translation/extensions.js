@@ -22,12 +22,19 @@
   }
 
   function fetchTranslation(content, event) {
+    let data = 'message='+encodeURIComponent(content)+'&locale='+eXo.env.portal.language;
+    if (event.type) {
+      data += '&contentType='+event.type;
+    }
+    if (event.spaceId) {
+      data += '&spaceId='+event.spaceId;
+    }
     return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/automatic-translation/translate`, {
       headers: {
        'Content-Type': 'application/x-www-form-urlencoded'
       },
       method: 'POST',
-      body: 'message='+encodeURIComponent(content)+'&locale='+eXo.env.portal.language
+      body: data
     }).then(resp => {
       if (resp && resp.ok) {
         return resp.json();
@@ -39,7 +46,6 @@
   }
 
   function dispatchError(event) {
-    console.warn(event)
     document.dispatchEvent(new CustomEvent('activity-translation-error',{ detail:event }));
   }
 
@@ -55,6 +61,8 @@
       click: (activity, activityTypeExtension) => {
         const event = {
           id: activity.id,
+          type: 'activity',
+          spaceId: activity && activity.activityStream && activity.activityStream.space && activity.activityStream.space.id
         };
         if (!activity.translatedBody) {
           fetchTranslation(activityTypeExtension.getBody(activity),event).then(translated => {
@@ -75,6 +83,8 @@
       click: (activity, comment, activityTypeExtension) => {
         const event = {
           id: comment.id,
+          type: 'comment',
+          spaceId: activity && activity.activityStream && activity.activityStream.space && activity.activityStream.space.id
         };
         if (!comment.translatedBody) {
           fetchTranslation(activityTypeExtension.getBody(comment),event).then(translated => {
