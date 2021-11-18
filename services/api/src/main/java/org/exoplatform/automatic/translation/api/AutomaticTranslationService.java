@@ -71,9 +71,12 @@ public interface AutomaticTranslationService {
    *
    * @param message The message to translate
    * @param targetLang The locale in which we want to translate
+   * @param contentType The type of the content translated (activity, comment,
+   *          news ...)
+   * @param spaceId The space in which the content is present
    * @return The translated message
    */
-  String translate(String message, Locale targetLang);
+  String translate(String message, Locale targetLang, String contentType, long spaceId);
 
   /**
    * Return if the feature is active

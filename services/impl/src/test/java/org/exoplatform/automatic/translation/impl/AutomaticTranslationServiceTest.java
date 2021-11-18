@@ -25,6 +25,7 @@ import org.exoplatform.commons.api.settings.SettingService;
 import org.exoplatform.commons.api.settings.SettingValue;
 import org.exoplatform.commons.api.settings.data.Context;
 import org.exoplatform.commons.api.settings.data.Scope;
+import org.exoplatform.services.listener.ListenerService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -56,16 +57,22 @@ public class AutomaticTranslationServiceTest {
   @Mock
   ExoFeatureService           exoFeatureService;
 
+  @Mock
+  ListenerService             listenerService;
+
   @Before
   public void setUp() {
     settingService = Mockito.mock(SettingService.class);
     exoFeatureService = Mockito.mock(ExoFeatureService.class);
+    listenerService = Mockito.mock(ListenerService.class);
   }
 
   @Test
   public void testAddConnector() {
 
-    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
+    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService,
+                                                                                         exoFeatureService,
+                                                                                         listenerService);
     AutomaticTranslationComponentPlugin translationConnector = new GoogleTranslateConnector(settingService);
     translationConnector.setName("google");
     translationConnector.setDescription("google");
@@ -80,7 +87,9 @@ public class AutomaticTranslationServiceTest {
 
     when(settingService.get(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR)).thenReturn(null);
     when(exoFeatureService.isActiveFeature(FEATURE_NAME)).thenReturn(true);
-    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
+    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService,
+                                                                                         exoFeatureService,
+                                                                                         listenerService);
 
     assertNull(translationService.getActiveConnector());
   }
@@ -90,7 +99,9 @@ public class AutomaticTranslationServiceTest {
     when(exoFeatureService.isActiveFeature("automatic-translation")).thenReturn(true);
     SettingValue setting = new SettingValue<>("google");
     when(settingService.get(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR)).thenReturn(setting);
-    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
+    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService,
+                                                                                         exoFeatureService,
+                                                                                         listenerService);
 
     AutomaticTranslationComponentPlugin translationConnector = new GoogleTranslateConnector(settingService);
     translationConnector.setName("google");
@@ -111,16 +122,20 @@ public class AutomaticTranslationServiceTest {
     when(translationConnector.getName()).thenReturn("google");
     String message = "message to translate";
     when(translationConnector.translate(message, Locale.FRANCE)).thenReturn("message translated");
-    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
+    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService,
+                                                                                         exoFeatureService,
+                                                                                         listenerService);
     translationService.addConnector(translationConnector);
-    assertEquals("message translated", translationService.translate(message, Locale.FRANCE));
+    assertEquals("message translated", translationService.translate(message, Locale.FRANCE, "test", 1L));
   }
 
   @Test
   public void testSetActiveConnector() {
     when(exoFeatureService.isActiveFeature("automatic-translation")).thenReturn(true);
 
-    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
+    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService,
+                                                                                         exoFeatureService,
+                                                                                         listenerService);
     String connectorName = "google";
     AutomaticTranslationComponentPlugin translationConnector = new GoogleTranslateConnector(settingService);
     translationConnector.setName("google");
@@ -147,7 +162,9 @@ public class AutomaticTranslationServiceTest {
     SettingValue setting = new SettingValue<>("google");
     when(settingService.get(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR)).thenReturn(setting);
 
-    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
+    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService,
+                                                                                         exoFeatureService,
+                                                                                         listenerService);
 
     assertFalse(translationService.isFeatureActive());
 
@@ -157,7 +174,9 @@ public class AutomaticTranslationServiceTest {
   public void testSetNonExistingActiveConnector() {
     when(exoFeatureService.isActiveFeature("automatic-translation")).thenReturn(true);
 
-    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
+    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService,
+                                                                                         exoFeatureService,
+                                                                                         listenerService);
     String connectorName = "google";
 
     try {
@@ -169,7 +188,9 @@ public class AutomaticTranslationServiceTest {
 
   @Test
   public void testSetActiveConnectorWhenFeatureNotActive() {
-    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
+    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService,
+                                                                                         exoFeatureService,
+                                                                                         listenerService);
     String connectorName = "google";
     AutomaticTranslationComponentPlugin translationConnector = new GoogleTranslateConnector(settingService);
     translationConnector.setName("google");
@@ -188,7 +209,9 @@ public class AutomaticTranslationServiceTest {
   public void testUnSetConnector() {
     when(exoFeatureService.isActiveFeature("automatic-translation")).thenReturn(true);
 
-    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
+    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService,
+                                                                                         exoFeatureService,
+                                                                                         listenerService);
     String connectorName = "";
 
     try {
@@ -203,7 +226,9 @@ public class AutomaticTranslationServiceTest {
 
   @Test
   public void testSetApiKeyWhenConnectorNotExists() {
-    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
+    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService,
+                                                                                         exoFeatureService,
+                                                                                         listenerService);
     String connectorName = "google";
 
     try {
@@ -215,7 +240,9 @@ public class AutomaticTranslationServiceTest {
 
   @Test
   public void testSetApiKeyWhenConnectorExists() {
-    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
+    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService,
+                                                                                         exoFeatureService,
+                                                                                         listenerService);
     String connectorName = "google";
     AutomaticTranslationComponentPlugin translationConnector = new GoogleTranslateConnector(settingService);
     translationConnector.setName("google");
@@ -244,7 +271,9 @@ public class AutomaticTranslationServiceTest {
     SettingValue settingKey = new SettingValue<>("123456");
     when(settingService.get(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_API_KEY + "-systran")).thenReturn(settingKey);
 
-    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService, exoFeatureService);
+    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService,
+                                                                                         exoFeatureService,
+                                                                                         listenerService);
     AutomaticTranslationComponentPlugin translationConnector = new GoogleTranslateConnector(settingService);
     translationConnector.setName("google");
     translationConnector.setDescription("google");

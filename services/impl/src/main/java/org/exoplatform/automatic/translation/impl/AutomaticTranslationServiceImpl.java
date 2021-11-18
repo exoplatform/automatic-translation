@@ -19,11 +19,15 @@ package org.exoplatform.automatic.translation.impl;
 import org.exoplatform.automatic.translation.api.AutomaticTranslationComponentPlugin;
 import org.exoplatform.automatic.translation.api.AutomaticTranslationService;
 import org.exoplatform.automatic.translation.api.dto.AutomaticTranslationConfiguration;
+import org.exoplatform.automatic.translation.api.dto.AutomaticTranslationEvent;
 import org.exoplatform.commons.api.settings.ExoFeatureService;
 import org.exoplatform.commons.api.settings.SettingService;
 import org.exoplatform.commons.api.settings.SettingValue;
 import org.exoplatform.commons.api.settings.data.Context;
 import org.exoplatform.commons.api.settings.data.Scope;
+import org.exoplatform.services.listener.ListenerService;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,18 +39,29 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
   private static final String                              AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR =
                                                                                                   "automaticTranslationActiveConnector";
 
+  private static final String                              EXO_TRANSLATION_EVENT_TRANSLATE        =
+                                                                                           "exo.automatic-translation.event.translate";
+
   private static final String                              FEATURE_NAME                           = "automatic-translation";
 
   private Map<String, AutomaticTranslationComponentPlugin> translationConnectors;
+
+  private static final Log                                 LOG                                    =
+                                                               ExoLogger.getLogger(AutomaticTranslationServiceImpl.class);
 
   SettingService                                           settingService;
 
   ExoFeatureService                                        exoFeatureService;
 
-  public AutomaticTranslationServiceImpl(SettingService settingService, ExoFeatureService exoFeatureService) {
+  ListenerService                                          listenerService;
+
+  public AutomaticTranslationServiceImpl(SettingService settingService,
+                                         ExoFeatureService exoFeatureService,
+                                         ListenerService listenerService) {
     this.translationConnectors = new HashMap<>();
     this.settingService = settingService;
     this.exoFeatureService = exoFeatureService;
+    this.listenerService = listenerService;
   }
 
   @Override
@@ -122,7 +137,7 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
   }
 
   @Override
-  public String translate(String message, Locale targetLang) {
+  public String translate(String message, Locale targetLang, String contentType, long spaceId) {
     String activeConnector = getActiveConnector();
     if (activeConnector == null) {
       throw new RuntimeException("Automatic Translation No active connector configured");
@@ -130,7 +145,22 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
     if (translationConnectors.get(activeConnector) == null) {
       throw new RuntimeException("Automatic Translation Connector " + activeConnector + " not found");
     }
-    return translationConnectors.get(activeConnector).translate(message, targetLang);
+    String translatedMessage = translationConnectors.get(activeConnector).translate(message, targetLang);
+    if (translatedMessage != null) {
+      try {
+        AutomaticTranslationEvent event = new AutomaticTranslationEvent();
+        event.setSpaceId(spaceId);
+        event.setMessageLength(message.length());
+        event.setTargetLanguage(targetLang.getLanguage());
+        event.setConnectorName(translationConnectors.get(activeConnector).getName());
+        event.setContentType(contentType);
+        listenerService.broadcast(EXO_TRANSLATION_EVENT_TRANSLATE, this, event);
+      } catch (Exception e) {
+        LOG.error("Unable to broadcast event {}", EXO_TRANSLATION_EVENT_TRANSLATE, e);
+      }
+
+    }
+    return translatedMessage;
   }
 
 
