@@ -58,7 +58,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               <v-text-field
                 :ref="apiKey"
                 v-model="apiKey"
-                :placeholder="this.$t('automatic.translation.administration.apiKeyPlaceHolder')"
+                :placeholder="$t('automatic.translation.administration.apiKeyPlaceHolder')"
                 class="pa-0 me-8"
                 outlined
                 dense
