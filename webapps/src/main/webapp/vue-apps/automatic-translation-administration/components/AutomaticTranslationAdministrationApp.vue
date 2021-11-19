@@ -96,9 +96,6 @@ export default {
   },
   mounted() {
     this.$nextTick().then(() => this.$root.$emit('application-loaded'));
-    if (this.apiKey === '') {
-      this.selectedConnector = 'none';
-    }
   },
   created() {
     this.$root.$on('show-alert', message => {
