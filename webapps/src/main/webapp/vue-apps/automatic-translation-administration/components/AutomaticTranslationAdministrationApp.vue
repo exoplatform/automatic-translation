@@ -59,11 +59,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 :ref="apiKey"
                 v-model="apiKey"
                 :placeholder="$t('automatic.translation.administration.apiKeyPlaceHolder')"
-                class="pa-0"
+                class="pa-0 me-8"
                 outlined
-                dense />
+                dense
+                required /> *
               <v-btn
-                class="btn btn-primary ms-8"
+                class="btn btn-primary ms-2"
+                :disabled="disableSaveKeyButton"
                 @click="editApiKey"
                 height="42">
                 {{ $t('automatic.translation.apikey.button.save') }}
@@ -87,6 +89,11 @@ export default {
     message: '',
     apiKey: ''
   }),
+  computed: {
+    disableSaveKeyButton() {
+      return !this.apiKey;
+    }
+  },
   mounted() {
     this.$nextTick().then(() => this.$root.$emit('application-loaded'));
   },
@@ -94,15 +101,18 @@ export default {
     this.$root.$on('show-alert', message => {
       this.displayMessage(message);
     });
-    this.getConfiguration();
+    this.getConfiguration(true);
   },
   methods: {
-    getConfiguration() {
+    getConfiguration(checkConnector) {
       getConfiguration().then(data => {
         this.connectors = data && data.connectors || [];
         this.connectors.unshift({'name': 'none','description': this.$t('automatic.translation.administration.noconnectorselected')});
         this.selectedConnector = data && data.activeConnector || 'none';
         this.apiKey = data && data.activeApiKey || '';
+        if (checkConnector && this.apiKey === '') {
+          this.selectedConnector = 'none';
+        }
       });
     },
     closeSelect() {
@@ -135,7 +145,7 @@ export default {
           type: type,
           message: message
         });
-        this.getConfiguration();
+        this.getConfiguration(false);
       });
     },
     editApiKey() {
@@ -157,7 +167,7 @@ export default {
           type: type,
           message: message
         });
-        this.getConfiguration();
+        this.getConfiguration(false);
       });
     },
     displayMessage(message) {
