@@ -98,7 +98,7 @@ public class GoogleTranslateConnector extends AutomaticTranslationComponentPlugi
         return jsonResponse.getJSONObject("data").getJSONArray("translations").getJSONObject(0).getString("translatedText");
 
       } else {
-        String errorMessage = "Error when calling Google Api Translation";
+        String errorMessage = "Error when calling Google Translation API";
         try (InputStream is = httpResponse.getEntity().getContent()) {
           JSONObject jsonResponse = new JSONObject(IOUtils.toString(is, StandardCharsets.UTF_8));
           if (jsonResponse.getJSONObject(ERROR) != null && jsonResponse.getJSONObject(ERROR).getString("message") != null) {
