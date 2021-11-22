@@ -26,7 +26,7 @@
                             <boolean>${exo.automatic-translation.portalConfig.metadata.override:true}</boolean>
                         </field>
                         <field name="importMode">
-                            <string>${exo.automatic-translation.portalConfig.metadata.importmode:insert}</string>
+                            <string>${exo.automatic-translation.portalConfig.metadata.importmode:merge}</string>
                         </field>
                         <field name="templateLocation">
                             <string>war:/conf/automatic-translation/portal</string>
