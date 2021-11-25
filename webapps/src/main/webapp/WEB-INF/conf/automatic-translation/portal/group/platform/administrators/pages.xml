@@ -108,7 +108,7 @@
                   "multipleChartsField": null,
                   "limit": 0,
                   "timeZone": null,
-                  "title": "Characters translated"
+                  "title": "automatic.translation.analytics.title.charTranslated"
                   }
                 </value>
               </preference>
