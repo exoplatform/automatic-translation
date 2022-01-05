@@ -5,7 +5,7 @@
   <parent>
     <artifactId>automatic-translation-services</artifactId>
     <groupId>org.exoplatform.addons.automatic-translation</groupId>
-    <version>1.0.x-SNAPSHOT</version>
+    <version>1.0.x-ux-SNAPSHOT</version>
   </parent>
   <artifactId>automatic-translation-services-impl</artifactId>
   <packaging>jar</packaging>
