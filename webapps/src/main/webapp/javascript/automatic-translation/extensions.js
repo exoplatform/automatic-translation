@@ -58,6 +58,7 @@
       rank: 9007199254740992,
       isEnabled: (activity, activityTypeExtension) => true,
       labelKey: 'UIActivity.label.translate',
+      icon: 'fa-globe-americas',
       click: (activity, activityTypeExtension) => {
         const event = {
           id: activity.id,
