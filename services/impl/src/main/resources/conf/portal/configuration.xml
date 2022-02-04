@@ -22,4 +22,13 @@
     </component-plugin>
   </external-component-plugins>
 
+  <external-component-plugins profiles="analytics">
+    <target-component>org.exoplatform.services.listener.ListenerService</target-component>
+    <component-plugin>
+      <name>exo.automatic-translation.event.translate</name>
+      <set-method>addListener</set-method>
+      <type>org.exoplatform.automatic.translation.listener.analytics.AutomaticTranslationListener</type>
+    </component-plugin>
+  </external-component-plugins>
+
 </configuration>

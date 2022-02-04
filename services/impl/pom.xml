@@ -11,7 +11,7 @@
   <packaging>jar</packaging>
   <name>eXo Automatic Translation - IMPL Services</name>
   <properties>
-    <exo.test.coverage.ratio>0.55</exo.test.coverage.ratio>
+    <exo.test.coverage.ratio>0.52</exo.test.coverage.ratio>
   </properties>
 
   <dependencies>
@@ -26,6 +26,11 @@
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.container</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.addons.analytics</groupId>
+      <artifactId>analytics-api</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
