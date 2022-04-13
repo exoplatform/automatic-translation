@@ -1,4 +1,6 @@
 const path = require('path');
+const ESLintPlugin = require('eslint-webpack-plugin');
+const { VueLoaderPlugin } = require('vue-loader')
 
 let config = {
   context: path.resolve(__dirname, '.'),
@@ -15,11 +17,21 @@ let config = {
         test: /\.vue$/,
         use: [
           'vue-loader',
-          'eslint-loader',
         ]
       }
     ]
   },
+  plugins: [
+    new ESLintPlugin({
+      files: [
+        './src/main/webapp/vue-apps/*.js',
+        './src/main/webapp/vue-apps/*.vue',
+        './src/main/webapp/vue-apps/**/*.js',
+        './src/main/webapp/vue-apps/**/*.vue',
+      ],
+    }),
+    new VueLoaderPlugin()
+  ],
   externals: {
     vuetify: 'Vuetify',
     vue: 'Vue',

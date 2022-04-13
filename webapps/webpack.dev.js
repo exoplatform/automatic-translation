@@ -1,5 +1,5 @@
 const path = require('path');
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const webpackCommonConfig = require('./webpack.common.js');
 
 // the display name of the war
@@ -9,6 +9,7 @@ const app = 'automatic-translation';
 const exoServerPath = "/exo-server";
 
 let config = merge(webpackCommonConfig, {
+  mode: 'development',
   output: {
     path: path.resolve(`${exoServerPath}/webapps/${app}/`),
     filename: 'js/[name].bundle.js',
