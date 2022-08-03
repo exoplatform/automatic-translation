@@ -33,6 +33,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -86,6 +87,20 @@ public class AutomaticTranslationRestServiceTest {
   public void testSetApiKeyWhenKo() {
     doThrow(new RuntimeException("Error")).when(automaticTranslationService).setApiKey(any(), any());
     Response response = automaticTranslationRestService.setApiKey("google", "123456");
+    assertEquals(HTTPStatus.BAD_REQUEST, response.getStatus());
+  }
+
+  @Test
+  public void testTranslateWhenOk() {
+    when(automaticTranslationService.translate(any(), any(), any(), anyLong())).thenReturn("translated message !");
+    Response response = automaticTranslationRestService.translate("google", "123456", "test/html", 1);
+    assertEquals(HTTPStatus.OK, response.getStatus());
+  }
+
+  @Test
+  public void testTranslateWhenKo() {
+    when(automaticTranslationService.translate(any(), any(), any(), anyLong())).thenReturn(null);
+    Response response = automaticTranslationRestService.translate("google", "AR", "text/html", 1);
     assertEquals(HTTPStatus.BAD_REQUEST, response.getStatus());
   }
 
