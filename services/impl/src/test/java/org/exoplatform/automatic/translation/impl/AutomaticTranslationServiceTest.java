@@ -295,4 +295,18 @@ public class AutomaticTranslationServiceTest {
     assertEquals("123456", configuration.getConnectors().get(1).getApiKey());
 
   }
+
+  @Test
+  public void testGoogleConnectorTranslate() {
+    when(exoFeatureService.isActiveFeature("automatic-translation")).thenReturn(true);
+
+    SettingValue settingConnector = new SettingValue<>("systran");
+    when(settingService.get(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR)).thenReturn(settingConnector);
+    SettingValue settingKey = new SettingValue<>("123456");
+    when(settingService.get(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_API_KEY + "-systran")).thenReturn(settingKey);
+
+    GoogleTranslateConnector googleTranslateConnector = new GoogleTranslateConnector(settingService);
+    String result = googleTranslateConnector.translate("message to translate", Locale.ENGLISH);
+    assertNull(result);
+  }
 }
