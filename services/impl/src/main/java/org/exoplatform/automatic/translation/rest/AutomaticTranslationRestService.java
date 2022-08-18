@@ -16,11 +16,13 @@
  */
 package org.exoplatform.automatic.translation.rest;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.exoplatform.automatic.translation.api.AutomaticTranslationService;
 import org.exoplatform.common.http.HTTPStatus;
 import org.exoplatform.services.log.ExoLogger;
@@ -43,7 +45,7 @@ import javax.ws.rs.core.Response;
 import java.util.Locale;
 
 @Path("/automatic-translation")
-@Api(value = "/automatic-translation")
+@Tag(name = "/automatic-translation", description = "Manage automatic translation operations")
 public class AutomaticTranslationRestService implements ResourceContainer {
 
   private AutomaticTranslationService automaticTranslationService;
@@ -58,10 +60,10 @@ public class AutomaticTranslationRestService implements ResourceContainer {
   @Path("/configuration")
   @RolesAllowed("administrators")
   @Produces(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Gets Automatic Translation configuration", httpMethod = "GET", response = Response.class, produces = MediaType.APPLICATION_JSON, notes = "This returns the actual configuration for automatic translation")
-  @ApiResponses(value = { @ApiResponse(code = HTTPStatus.OK, message = "Request fulfilled"),
-      @ApiResponse(code = HTTPStatus.FORBIDDEN, message = "Not authorized to get the configuration"),
-      @ApiResponse(code = HTTPStatus.INTERNAL_ERROR, message = "Internal Server Error") })
+  @Operation(summary = "Gets Automatic Translation configuration", method = "GET", description = "This returns the actual configuration for automatic translation")
+  @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Request fulfilled"),
+      @ApiResponse(responseCode = "401", description = "Not authorized to get the configuration"),
+      @ApiResponse(responseCode = "500", description = "Internal Server Error") })
   public Response configuration() {
     return Response.ok(automaticTranslationService.getConfiguration(), MediaType.APPLICATION_JSON).build();
   }
@@ -70,9 +72,9 @@ public class AutomaticTranslationRestService implements ResourceContainer {
   @Path("/isEnabled")
   @RolesAllowed("users")
   @Produces(MediaType.TEXT_PLAIN)
-  @ApiOperation(value = "Gets status for Automatic Translation feature for users", httpMethod = "GET", response = Response.class, produces = MediaType.TEXT_PLAIN, notes = "This returns is the automatic translation feature is active")
-  @ApiResponses(value = { @ApiResponse(code = 200, message = "Request fulfilled"),
-      @ApiResponse(code = 403, message = "Unauthorized operation") })
+  @Operation(summary = "Gets status for Automatic Translation feature for users", method = "GET", description = "This returns is the automatic translation feature is active")
+  @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Request fulfilled"),
+      @ApiResponse(responseCode = "403", description = "Unauthorized operation") })
   public Response isEnabled() {
     return Response.ok("" + automaticTranslationService.isFeatureActive()).build();
   }
@@ -81,12 +83,12 @@ public class AutomaticTranslationRestService implements ResourceContainer {
   @Path("/setActiveConnector")
   @RolesAllowed("administrators")
   @Consumes(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Set Automatic translation active connector", httpMethod = "PUT", response = Response.class, produces = MediaType.APPLICATION_JSON)
-  @ApiResponses(value = { @ApiResponse(code = HTTPStatus.OK, message = "Request fulfilled"),
-      @ApiResponse(code = HTTPStatus.BAD_REQUEST, message = "Invalid Query Input"),
-      @ApiResponse(code = HTTPStatus.FORBIDDEN, message = "Not authorized to change the connector"),
-      @ApiResponse(code = HTTPStatus.INTERNAL_ERROR, message = "Internal Server Error") })
-  public Response setActiveConnector(@ApiParam(value = "Connector name", required = true) @QueryParam("connector") String connector) {
+  @Operation(summary = "Set Automatic translation active connector", method = "PUT")
+  @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Request fulfilled"),
+      @ApiResponse(responseCode = "400", description = "Invalid Query Input"),
+      @ApiResponse(responseCode = "401", description = "Not authorized to change the connector"),
+      @ApiResponse(responseCode = "500", description = "Internal Server Error") })
+  public Response setActiveConnector(@Parameter(description = "Connector name", required = true) @QueryParam("connector") String connector) {
     connector = (connector == null || connector.equals("null")) ? "" : connector;
     try {
       automaticTranslationService.setActiveConnector(connector);
@@ -101,13 +103,13 @@ public class AutomaticTranslationRestService implements ResourceContainer {
   @Path("/setApiKey")
   @RolesAllowed("administrators")
   @Consumes(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "Set Automatic translation API key", httpMethod = "PUT", response = Response.class, produces = MediaType.APPLICATION_JSON)
-  @ApiResponses(value = { @ApiResponse(code = HTTPStatus.OK, message = "Request fulfilled"),
-      @ApiResponse(code = HTTPStatus.BAD_REQUEST, message = "Invalid Query Input"),
-      @ApiResponse(code = HTTPStatus.FORBIDDEN, message = "Not authorized to change the apiKey"),
-      @ApiResponse(code = HTTPStatus.INTERNAL_ERROR, message = "Internal Server Error") })
-  public Response setApiKey(@ApiParam(value = "Connector name", required = true) @QueryParam("connector") String connector,
-                            @ApiParam(value = "Api Key", required = true) @QueryParam("apikey") String apikey) {
+  @Operation(summary = "Set Automatic translation API key", method = "PUT")
+  @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Request fulfilled"),
+      @ApiResponse(responseCode = "400", description = "Invalid Query Input"),
+      @ApiResponse(responseCode = "401", description = "Not authorized to change the apiKey"),
+      @ApiResponse(responseCode = "500", description = "Internal Server Error") })
+  public Response setApiKey(@Parameter(description = "Connector name", required = true) @QueryParam("connector") String connector,
+                            @Parameter(description = "Api Key", required = true) @QueryParam("apikey") String apikey) {
     connector = (connector == null || connector.equals("null")) ? "" : connector;
     try {
       automaticTranslationService.setApiKey(connector, apikey);
@@ -123,15 +125,15 @@ public class AutomaticTranslationRestService implements ResourceContainer {
   @Path("/translate")
   @RolesAllowed("users")
   @Produces(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "translate message passed in parameter", httpMethod = "GET", response = Response.class, produces = MediaType.APPLICATION_JSON, notes = "This returns the message transalted in the asked locale, by using the active connector")
-  @ApiResponses(value = { @ApiResponse(code = HTTPStatus.OK, message = "Request fulfilled"),
-      @ApiResponse(code = HTTPStatus.BAD_REQUEST, message = "Invalid Query Input"),
-      @ApiResponse(code = HTTPStatus.FORBIDDEN, message = "Not authorized to use translation"),
-      @ApiResponse(code = HTTPStatus.INTERNAL_ERROR, message = "Internal Server Error") })
-  public Response translate(@ApiParam(value = "message", required = true) @FormParam("message") String message,
-                            @ApiParam(value = "locale", required = true) @FormParam("locale") String localeParam,
-                            @ApiParam(value = "contentType") @FormParam("contentType") String contentType,
-                            @ApiParam(value = "spaceId") @FormParam("spaceId") long spaceId) {
+  @Operation(summary = "translate message passed in parameter", method = "GET", description = "This returns the message transalted in the asked locale, by using the active connector")
+  @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Request fulfilled"),
+      @ApiResponse(responseCode = "400", description = "Invalid Query Input"),
+      @ApiResponse(responseCode = "401", description = "Not authorized to use translation"),
+      @ApiResponse(responseCode = "500", description = "Internal Server Error") })
+  public Response translate(@Parameter(description = "message", required = true) @FormParam("message") String message,
+                            @Parameter(description = "locale", required = true) @FormParam("locale") String localeParam,
+                            @Parameter(description = "contentType") @FormParam("contentType") String contentType,
+                            @Parameter(description = "spaceId") @FormParam("spaceId") long spaceId) {
 
     // forLanguageTag need format 'IETF BCP 47' : example : fr-CA
     Locale locale = Locale.forLanguageTag(localeParam.replace("_", "-"));
