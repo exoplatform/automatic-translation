@@ -65,6 +65,102 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             </div>
           </v-col>
         </v-row>
+        <v-row
+          class="ms-n3"
+          no-gutters>
+          <v-col>
+            <p class="font-weight-bold mb-0">
+              {{ $t('automatic.translation.administration.modules.label') }}
+            </p>
+            <p class="text-caption mb-0">
+              {{ $t('automatic.translation.administration.modules.description') }}
+            </p>
+          </v-col>
+        </v-row>
+        <v-row
+          class="ms-n6 mt-n2 translation-module">
+          <v-col>
+            <span class="font-weight-bold">
+              {{ $t('automatic.translation.administration.module.stream.label') }}
+            </span>
+            <v-row
+              no-gutters
+              class="ps-2">
+              <v-col>
+                {{ $t('automatic.translation.administration.module.stream.short.message') }}
+              </v-col>
+              <v-col>
+                actions of sub 1
+              </v-col>
+            </v-row>
+            <v-row
+              no-gutters
+              class="ps-2">
+              <v-col>
+                {{ $t('automatic.translation.administration.module.stream.comments') }}
+              </v-col>
+              <v-col>
+                actions of sub 2
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+        <v-row
+          class="ms-n6 mt-n5 translation-module">
+          <v-col>
+            <span class="font-weight-bold">
+              {{ $t('automatic.translation.administration.module.news.label') }}
+            </span>
+            <v-row
+              no-gutters
+              class="ps-2">
+              <v-col>
+                {{ $t('automatic.translation.administration.module.news.write') }}
+              </v-col>
+              <v-col>
+                actions of sub 1
+              </v-col>
+            </v-row>
+            <v-row
+              no-gutters
+              class="ps-2">
+              <v-col>
+                {{ $t('automatic.translation.administration.module.news.view') }}
+              </v-col>
+              <v-col>
+                actions of sub 2
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+        <v-row
+          class="ms-n6 mt-n5 translation-module">
+          <v-col>
+            <span class="font-weight-bold">
+              {{ $t('automatic.translation.administration.module.notes.label') }}
+            </span>
+            <v-row
+              no-gutters
+              class="ps-2">
+              <v-col>
+                {{ $t('automatic.translation.administration.module.notes.write') }}
+              </v-col>
+              <v-col>
+                actions of sub 1
+              </v-col>
+            </v-row>
+            <v-row
+              no-gutters
+              class="ps-2">
+              <v-col>
+                {{ $t('automatic.translation.administration.module.notes.view') }}
+              </v-col>
+              <v-col>
+                actions of sub 2
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
       </v-container>
     </v-main>
   </v-app>
