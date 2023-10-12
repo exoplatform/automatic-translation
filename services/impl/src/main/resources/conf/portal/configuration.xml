@@ -20,6 +20,12 @@
       <type>org.exoplatform.automatic.translation.impl.connectors.GoogleTranslateConnector</type>
       <description>Google Translate</description>
     </component-plugin>
+    <component-plugin>
+      <name>deepl</name>
+      <set-method>addConnector</set-method>
+      <type>org.exoplatform.automatic.translation.impl.connectors.DeepLTranslateConnector</type>
+      <description>DeepL Translate</description>
+    </component-plugin>
   </external-component-plugins>
 
   <external-component-plugins profiles="analytics">
