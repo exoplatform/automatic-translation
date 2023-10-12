@@ -78,6 +78,7 @@ public class GoogleTranslateConnector extends AutomaticTranslationComponentPlugi
     // except for chinese. But as zh correspond to simplified chinese, we can deal
     // with that :
     // https://cloud.google.com/translate/docs/languages
+    message = message.replace("'", "\\'");
     String data = DATA_PATTERN.replace("{message}", message).replace("{targetLocale}", targetLocale.getLanguage());
     try {
       HttpPost httpTypeRequest = new HttpPost(serviceUrl);
