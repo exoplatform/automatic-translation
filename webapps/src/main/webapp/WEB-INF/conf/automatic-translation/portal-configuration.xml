@@ -41,14 +41,8 @@
             <type>org.exoplatform.portal.config.NewPortalConfigListener</type>
             <description>this listener init the portal configuration</description>
             <init-params>
-                <value-param>
-                    <name>override</name>
-                    <description>The flag parameter to decide if portal metadata is overriden on restarting server</description>
-                    <value> ${exo.automatic-translation.portalConfig.administration.metadata.override:true} </value>
-                </value-param>
                 <object-param>
                     <name>portal.configuration</name>
-                    <description>description</description>
                     <object type="org.exoplatform.portal.config.NewPortalConfig">
                         <field name="predefinedOwner">
                             <collection type="java.util.HashSet">
@@ -67,7 +61,7 @@
                             <boolean>${exo.automatic-translation.portalConfig.administration.override:true}</boolean>
                         </field>
                         <field name="importMode">
-                            <string>${exo.automatic-translation.portalConfig.administration.importmode:insert}</string>
+                            <string>${exo.automatic-translation.portalConfig.administration.importmode:merge}</string>
                         </field>
                     </object>
                 </object-param>
