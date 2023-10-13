@@ -16,10 +16,12 @@
  */
 import ActivityTranslatedBody from './components/ActivityTranslatedBody.vue';
 import ActivityCommentTranslatedBody from './components/ActivityCommentTranslatedBody.vue';
+import NoteAutomaticTranslation from './components/NoteAutomaticTranslation.vue';
 
 const components = {
   'activity-translated-body': ActivityTranslatedBody,
   'activity-comment-translated-body': ActivityCommentTranslatedBody,
+  'note-automatic-translation': NoteAutomaticTranslation
 };
 
 for (const key in components) {
