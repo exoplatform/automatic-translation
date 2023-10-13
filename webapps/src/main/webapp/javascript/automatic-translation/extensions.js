@@ -23,10 +23,10 @@
 
   function fetchTranslation(content, event) {
     let data = 'message='+encodeURIComponent(content)+'&locale='+eXo.env.portal.language;
-    if (event.type) {
+    if (event?.type) {
       data += '&contentType='+event.type;
     }
-    if (event.spaceId) {
+    if (event?.spaceId) {
       data += '&spaceId='+event.spaceId;
     }
     return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/automatic-translation/translate`, {
@@ -100,6 +100,17 @@
       },
     });
 
+    extensionRegistry.registerExtension('notes', 'translation-menu-extension', {
+      id: 'auto-translate',
+      rank: 1000,
+      isEnabled: () => true,
+      labelKey: 'UIActivity.label.translate',
+      translate: (message, callback) => {
+        fetchTranslation(message).then(translated => {
+          callback(translated.translation);
+        });
+      },
+    });
 
     extensionRegistry.registerComponent('ActivityContent', 'activity-content-extensions', {
       id: 'translatedBody',
@@ -112,6 +123,8 @@
       vueComponent: Vue.options.components['activity-comment-translated-body'],
       rank: 1,
     });
+
+    document.dispatchEvent(new CustomEvent('automatic-translation-extensions-updated'));
   }
 
   return {
