@@ -14,24 +14,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- (function(extensionRegistry,exoi18n) {
+(function(extensionRegistry,exoi18n) {
 
 
   function getTranslatedBody(activity) {
     return activity.translatedBody;
   }
-
   function fetchTranslation(content, event) {
-    let data = 'message='+encodeURIComponent(content)+'&locale='+eXo.env.portal.language;
+    let data = `message=${encodeURIComponent(content)}&locale=${eXo.env.portal.language}`;
     if (event?.type) {
-      data += '&contentType='+event.type;
+      data += `&contentType=${event.type}`;
     }
     if (event?.spaceId) {
-      data += '&spaceId='+event.spaceId;
+      data += `&spaceId=${event.spaceId}`;
     }
     return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/automatic-translation/translate`, {
       headers: {
-       'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded'
       },
       method: 'POST',
       body: data
@@ -46,7 +45,7 @@
   }
 
   function dispatchError(event) {
-    document.dispatchEvent(new CustomEvent('activity-translation-error',{ detail:event }));
+    document.dispatchEvent(new CustomEvent('activity-translation-error',{ detail: event }));
   }
 
   function initExtensions() {
@@ -56,7 +55,7 @@
     extensionRegistry.registerExtension('activity', 'action', {
       id: 'translate',
       rank: 9007199254740992,
-      isEnabled: (activity, activityTypeExtension) => true,
+      isEnabled: () => true,
       labelKey: 'UIActivity.label.translate',
       icon: 'fa-globe-americas',
       click: (activity, activityTypeExtension) => {
@@ -69,17 +68,17 @@
           fetchTranslation(activityTypeExtension.getBody(activity),event).then(translated => {
             activity.translatedBody = translated.translation;
             activityTypeExtension.getTranslatedBody = getTranslatedBody;
-            document.dispatchEvent(new CustomEvent('activity-translated',{ detail:event }));
+            document.dispatchEvent(new CustomEvent('activity-translated',{ detail: event }));
           });
         } else {
-          document.dispatchEvent(new CustomEvent('activity-translated',{ detail:event }));
+          document.dispatchEvent(new CustomEvent('activity-translated',{ detail: event }));
         }
       },
     });
     extensionRegistry.registerExtension('activity', 'comment-action', {
       id: 'translate',
       rank: 9007199254740992,
-      isEnabled: (activity, comment, activityTypeExtension) => true,
+      isEnabled: () => true,
       labelKey: 'UIActivity.label.translate',
       icon: 'fa-globe-americas',
       click: (activity, comment, activityTypeExtension) => {
@@ -92,10 +91,10 @@
           fetchTranslation(activityTypeExtension.getBody(comment),event).then(translated => {
             comment.translatedBody = translated.translation;
             activityTypeExtension.getCommentTranslatedBody = getTranslatedBody;
-            document.dispatchEvent(new CustomEvent('activity-comment-translated',{ detail:event }));
+            document.dispatchEvent(new CustomEvent('activity-comment-translated',{ detail: event }));
           });
         } else {
-          document.dispatchEvent(new CustomEvent('activity-comment-translated',{ detail:event }));
+          document.dispatchEvent(new CustomEvent('activity-comment-translated',{ detail: event }));
         }
       },
     });
@@ -103,12 +102,8 @@
     extensionRegistry.registerExtension('notes', 'translation-menu-extension', {
       id: 'auto-translate',
       rank: 1000,
-      isEnabled: () => true,
-      labelKey: 'UIActivity.label.translate',
-      translate: (message, callback) => {
-        fetchTranslation(message).then(translated => {
-          callback(translated.translation);
-        });
+      componentOptions: {
+        vueComponent: Vue.options.components['note-automatic-translation'],
       },
     });
 
@@ -131,7 +126,7 @@
     init: () => {
       fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/automatic-translation/isEnabled`, {
         headers: {
-         'Content-Type': 'application/json'
+          'Content-Type': 'application/json'
         },
         method: 'GET'
       }).then(resp => {
@@ -141,7 +136,7 @@
           throw new Error('Unable to get automatic translation configuration');
         }
       }).then(result => {
-        if (result === "true") {
+        if (result === 'true') {
           initExtensions();
         }
       });
