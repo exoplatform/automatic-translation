@@ -100,10 +100,18 @@
     });
 
     extensionRegistry.registerExtension('notes', 'translation-menu-extension', {
-      id: 'auto-translate',
+      id: 'notes-auto-translate',
       rank: 1000,
       componentOptions: {
         vueComponent: Vue.options.components['note-automatic-translation'],
+      },
+    });
+
+    extensionRegistry.registerExtension('news', 'translation-menu-extension', {
+      id: 'news-auto-translate',
+      rank: 1000,
+      componentOptions: {
+        vueComponent: Vue.options.components['news-automatic-translation'],
       },
     });
 

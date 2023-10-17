@@ -22,6 +22,10 @@
 
 <script>
 
+import {
+  fetchAutoTranslation
+} from '../../../vue-apps/automatic-translation-administration/automaticTranslationServices.js';
+
 export default {
   data() {
     return {
@@ -59,9 +63,9 @@ export default {
   methods: {
     autoTranslate() {
       this.isAutoTranslating = true;
-      this.fetchAutoTranslation(this.note.title).then(translated => {
+      fetchAutoTranslation(this.note.title).then(translated => {
         this.handleTranslatedTitle(translated.translation);
-        this.fetchAutoTranslation(this.note.content).then(translated => {
+        fetchAutoTranslation(this.note.content).then(translated => {
           this.handleTranslatedContent(translated.translation);
         });
       });
@@ -114,22 +118,6 @@ export default {
         document.dispatchEvent(new CustomEvent('hideTopBarLoading'));
       }
     },
-    fetchAutoTranslation(content) {
-      const data = `message=${  encodeURIComponent(content)  }&locale=${  eXo.env.portal.language}`;
-      return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/automatic-translation/translate`, {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        method: 'POST',
-        body: data
-      }).then(resp => {
-        if (resp?.ok) {
-          return resp.json();
-        } else {
-          throw new Error('Unable to get automatic translation result');
-        }
-      });
-    }
   }
 };
 </script>

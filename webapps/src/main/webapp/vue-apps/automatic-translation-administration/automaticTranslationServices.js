@@ -48,3 +48,19 @@ export function setApiKey(connector,apikey) {
     });
 }
 
+export function fetchAutoTranslation(content) {
+  const data = `message=${  encodeURIComponent(content)  }&locale=${  eXo.env.portal.language}`;
+  return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/automatic-translation/translate`, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    method: 'POST',
+    body: data
+  }).then(resp => {
+    if (resp?.ok) {
+      return resp.json();
+    } else {
+      throw new Error('Unable to get automatic translation result');
+    }
+  });
+}
