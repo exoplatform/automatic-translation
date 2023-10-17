@@ -65,7 +65,8 @@ export default {
       this.isAutoTranslating = true;
       fetchAutoTranslation(this.note.title).then(translated => {
         this.handleTranslatedTitle(translated.translation);
-        fetchAutoTranslation(this.note.content).then(translated => {
+        const content = this.note.content.replace(/&nbsp;/gi, '@nbsp@');
+        fetchAutoTranslation(content).then(translated => {
           this.handleTranslatedContent(translated.translation);
         });
       });
@@ -100,7 +101,7 @@ export default {
       this.checkAutoTranslatedStatus();
     },
     handleTranslatedContent(translatedText) {
-      this.autoTranslatedContent = translatedText.replace('<p></p>', '<p>&nbsp;</p>');
+      this.autoTranslatedContent = translatedText.replace(/@nbsp@/gi, '&nbsp;');
       this.updateNoteContent(this.autoTranslatedContent);
       this.previouslySelectedVersion = this.selectedTranslation;
       this.updateSelectedTranslation(this.autoTranslation);
