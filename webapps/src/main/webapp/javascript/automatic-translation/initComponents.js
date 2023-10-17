@@ -17,11 +17,13 @@
 import ActivityTranslatedBody from './components/ActivityTranslatedBody.vue';
 import ActivityCommentTranslatedBody from './components/ActivityCommentTranslatedBody.vue';
 import NoteAutomaticTranslation from './components/NoteAutomaticTranslation.vue';
+import NewsAutomaticTranslation from './components/NewsAutomaticTranslation.vue';
 
 const components = {
   'activity-translated-body': ActivityTranslatedBody,
   'activity-comment-translated-body': ActivityCommentTranslatedBody,
-  'note-automatic-translation': NoteAutomaticTranslation
+  'note-automatic-translation': NoteAutomaticTranslation,
+  'news-automatic-translation': NewsAutomaticTranslation
 };
 
 for (const key in components) {
