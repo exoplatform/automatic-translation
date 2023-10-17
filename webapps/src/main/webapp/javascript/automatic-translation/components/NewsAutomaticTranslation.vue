@@ -32,7 +32,8 @@ export default {
       isAutoTranslating: false,
       autoTranslatedContent: null,
       autoTranslatedTitle: null,
-      autoTranslatedSummary: null
+      autoTranslatedSummary: null,
+      hasSummary: false,
     };
   },
   props: {
@@ -53,7 +54,8 @@ export default {
   },
   computed: {
     hasAutoTranslation() {
-      return this.autoTranslatedTitle && this.autoTranslatedContent && this.autoTranslatedSummary;
+      return this.hasSummary && this.autoTranslatedTitle && this.autoTranslatedContent && this.autoTranslatedSummary
+          || this.autoTranslatedTitle && this.autoTranslatedContent;
     }
   },
   methods: {
@@ -62,22 +64,44 @@ export default {
         this.resetAutoTranslation();
       } else {
         this.isAutoTranslating = true;
-        fetchAutoTranslation(this.news.title).then(translated => {
+        fetchAutoTranslation(this.news?.title).then(translated => {
           this.handleTranslatedTitle(translated.translation);
-          fetchAutoTranslation(this.news.summary).then(translated => {
-            this.handleTranslatedSummary(translated.translation);
-            fetchAutoTranslation(this.news.body).then(translated => {
-              this.handleTranslatedContent(translated.translation);
-            });
-          });
-        });
+          if (this.news?.summary) {
+            this.hasSummary = true;
+            fetchAutoTranslation(this.news?.summary).then(translated => {
+              this.handleTranslatedSummary(translated.translation);
+              this.fetchBodyTranslation();
+            }).catch(() => this.isAutoTranslating = false);
+          } else {
+            this.hasSummary = false;
+            this.fetchBodyTranslation();
+          }
+        }).catch(() => this.isAutoTranslating = false);
       }
+    },
+    excludeHtmlSpaceEntities(content) {
+      return content.replace(/&nbsp;/gi, '<span class="notranslate">&nbsp;</span>');
+    },
+    restoreHtmlSpaceEntities(content) {
+      return content.replace(/<span class="notranslate">&nbsp;<\/span>/gi, '&nbsp;');
+    },
+    fetchBodyTranslation() {
+      const content = this.excludeHtmlSpaceEntities(this.toHtml(this.news.body));
+      fetchAutoTranslation(this.toHtml(content)).then(translated => {
+        this.handleTranslatedContent(translated.translation);
+        this.isAutoTranslating = false;
+      }).catch(() => this.isAutoTranslating = false);
+    },
+    toHtml(content) {
+      const domParser = new DOMParser();
+      const docElement = domParser.parseFromString(content, 'text/html').documentElement;
+      return docElement?.children[1].innerHTML;
     },
     resetAutoTranslation() {
       this.isResetAutoTranslating = true;
       this.autoTranslatedTitle = this.autoTranslatedSummary = this.autoTranslatedContent = null;
       this.updateNewsTitle(this.news.title);
-      this.updateNewsSummary(this.news.title);
+      this.updateNewsSummary(this.news.summary);
       this.updateNewsContent(this.news.body);
       this.isResetAutoTranslating = false;
     },
@@ -90,9 +114,8 @@ export default {
       this.updateNewsSummary(translatedText);
     },
     handleTranslatedContent(translatedText) {
-      this.autoTranslatedContent = translatedText.replace('<p></p>', '<p>&nbsp;</p>');
+      this.autoTranslatedContent = this.restoreHtmlSpaceEntities(translatedText);
       this.updateNewsContent(this.autoTranslatedContent);
-      this.checkAutoTranslatedStatus();
     },
     updateNewsTitle(title) {
       this.$root.$emit('update-news-title', title);
@@ -102,11 +125,6 @@ export default {
     },
     updateNewsContent(content) {
       this.$root.$emit('update-news-body', content);
-    },
-    checkAutoTranslatedStatus() {
-      if (this.autoTranslatedTitle && this.autoTranslatedContent && this.autoTranslatedSummary) {
-        this.isAutoTranslating = false;
-      }
     },
     toggleTopBarLoading(loading) {
       if (loading) {
