@@ -66,12 +66,18 @@ export default {
           this.handleTranslatedTitle(translated.translation);
           fetchAutoTranslation(this.news.summary).then(translated => {
             this.handleTranslatedSummary(translated.translation);
-            fetchAutoTranslation(this.news.body).then(translated => {
+            const content = this.toHtml(this.news.body).replace(/&nbsp;/gi, '@nbsp@');
+            fetchAutoTranslation(this.toHtml(content)).then(translated => {
               this.handleTranslatedContent(translated.translation);
             });
           });
         });
       }
+    },
+    toHtml(content) {
+      const domParser = new DOMParser();
+      const docElement = domParser.parseFromString(content, 'text/html').documentElement;
+      return docElement?.children[1].innerHTML;
     },
     resetAutoTranslation() {
       this.isResetAutoTranslating = true;
@@ -90,7 +96,7 @@ export default {
       this.updateNewsSummary(translatedText);
     },
     handleTranslatedContent(translatedText) {
-      this.autoTranslatedContent = translatedText.replace('<p></p>', '<p>&nbsp;</p>');
+      this.autoTranslatedContent = translatedText.replace(/@nbsp@/gi, '&nbsp;');
       this.updateNewsContent(this.autoTranslatedContent);
       this.checkAutoTranslatedStatus();
     },
