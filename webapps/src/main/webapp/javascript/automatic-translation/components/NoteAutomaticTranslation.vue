@@ -1,23 +1,19 @@
 <template>
   <v-chip
-    v-if="autoTranslatedContent"
     small
-    close
     :outlined="!isAutoTranslationSelected"
+    :close="!!autoTranslatedContent"
     color="primary"
     class="my-auto mx-1"
-    @click="setAutoTranslationSelected"
+    @click="autoTranslate"
     @click:close="resetAutoTranslation">
     {{ $t('notes.automatic.translation.label') }}
+    <span
+      v-if="sourceLanguageVersion"
+      class="text-uppercase ms-1">
+      ({{ sourceLanguageVersion }})
+    </span>
   </v-chip>
-  <v-btn
-    v-else
-    text
-    color="primary"
-    class="px-1 py-0 text-decoration-underline"
-    @click="autoTranslate">
-    {{ $t('UIActivity.label.translate') }}
-  </v-btn>
 </template>
 
 <script>
@@ -32,7 +28,7 @@ export default {
       isAutoTranslating: false,
       isResetAutoTranslating: false,
       autoTranslation: { value: 'autoTranslation', text: this.$t('notes.automatic.translation.label') },
-      previouslySelectedVersion: null,
+      previouslyTranslatedVersion: null,
       autoTranslatedContent: null,
       autoTranslatedTitle: null,
       hasContent: false
@@ -59,25 +55,34 @@ export default {
   computed: {
     isAutoTranslationSelected() {
       return this.selectedTranslation?.value === this.autoTranslation?.value;
+    },
+    sourceLanguageVersion() {
+      return !!this.autoTranslatedContent && this.previouslyTranslatedVersion?.value;
     }
   },
   methods: {
     autoTranslate() {
-      this.isAutoTranslating = true;
-      fetchAutoTranslation(this.note.title).then(translated => {
-        this.handleTranslatedTitle(translated.translation);
-        if (this.note?.content) {
-          this.hasContent = true;
-          const content = this.excludeHtmlSpaceEntities(this.note.content);
-          fetchAutoTranslation(content).then(translated => {
-            this.handleTranslatedContent(translated.translation);
+      if (this.autoTranslatedContent) {
+        this.setAutoTranslationSelected();
+      } else {
+        this.isAutoTranslating = true;
+        fetchAutoTranslation(this.note.title).then(translated => {
+          this.handleTranslatedTitle(translated.translation);
+          if (this.note?.content) {
+            this.hasContent = true;
+            const content = this.excludeHtmlSpaceEntities(this.note.content);
+            fetchAutoTranslation(content).then(translated => {
+              this.handleTranslatedContent(translated.translation);
+              this.setAutoTranslationSelected();
+              this.previouslyTranslatedVersion = this.selectedTranslation;
+              this.isAutoTranslating = false;
+            }).catch(() => this.isAutoTranslating = false);
+          } else {
+            this.hasContent = false;
             this.isAutoTranslating = false;
-          }).catch(() => this.isAutoTranslating = false);
-        } else {
-          this.hasContent = false;
-          this.isAutoTranslating = false;
-        }
-      }).catch(() => this.isAutoTranslating = false);
+          }
+        }).catch(() => this.isAutoTranslating = false);
+      }
     },
     excludeHtmlSpaceEntities(content) {
       return content.replace(/&nbsp;/gi, '<span class="notranslate">&nbsp;</span>');
@@ -111,7 +116,7 @@ export default {
       this.autoTranslatedContent = this.autoTranslatedTitle = null;
       this.updateNoteTitle(this.note.title);
       this.updateNoteContent(this.note.content);
-      this.updateSelectedTranslation(this.previouslySelectedVersion);
+      this.updateSelectedTranslation(this.previouslyTranslatedVersion);
       this.isResetAutoTranslating = false;
     },
     handleTranslatedTitle(translatedText) {
@@ -121,7 +126,6 @@ export default {
     handleTranslatedContent(translatedText) {
       this.autoTranslatedContent = this.restoreHtmlSpaceEntities(translatedText);
       this.updateNoteContent(this.autoTranslatedContent);
-      this.previouslySelectedVersion = this.selectedTranslation;
       this.updateSelectedTranslation(this.autoTranslation);
     },
     toggleTopBarLoading(loading) {
