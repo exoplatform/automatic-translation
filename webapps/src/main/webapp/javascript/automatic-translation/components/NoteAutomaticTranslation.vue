@@ -34,7 +34,8 @@ export default {
       autoTranslation: { value: 'autoTranslation', text: this.$t('notes.automatic.translation.label') },
       previouslySelectedVersion: null,
       autoTranslatedContent: null,
-      autoTranslatedTitle: null
+      autoTranslatedTitle: null,
+      hasContent: false
     };
   },
   props: {
@@ -65,18 +66,36 @@ export default {
       this.isAutoTranslating = true;
       fetchAutoTranslation(this.note.title).then(translated => {
         this.handleTranslatedTitle(translated.translation);
-        const content = this.note.content.replace(/&nbsp;/gi, '@nbsp@');
-        fetchAutoTranslation(content).then(translated => {
-          this.handleTranslatedContent(translated.translation);
-        });
-      });
+        if (this.note?.content) {
+          this.hasContent = true;
+          const content = this.excludeHtmlSpaceEntities(this.note.content);
+          fetchAutoTranslation(content).then(translated => {
+            this.handleTranslatedContent(translated.translation);
+            this.isAutoTranslating = false;
+          }).catch(() => this.isAutoTranslating = false);
+        } else {
+          this.hasContent = false;
+          this.isAutoTranslating = false;
+        }
+      }).catch(() => this.isAutoTranslating = false);
+    },
+    excludeHtmlSpaceEntities(content) {
+      return content.replace(/&nbsp;/gi, '<span class="notranslate">&nbsp;</span>');
+    },
+    restoreHtmlSpaceEntities(content) {
+      return content.replace(/<span class="notranslate">&nbsp;<\/span>/gi, '&nbsp;');
     },
     setAutoTranslationSelected() {
-      if (!this.isAutoTranslationSelected && this.autoTranslatedTitle && this.autoTranslatedContent) {
-        this.handleTranslatedTitle(this.autoTranslatedTitle);
-        this.handleTranslatedContent(this.autoTranslatedContent);
-        this.updateSelectedTranslation(this.autoTranslation);
+      if (this.isAutoTranslationSelected) {
+        return;
       }
+      if (this.autoTranslatedTitle) {
+        this.handleTranslatedTitle(this.autoTranslatedTitle);
+      }
+      if (this.autoTranslatedContent) {
+        this.handleTranslatedContent(this.autoTranslatedContent);
+      }
+      this.updateSelectedTranslation(this.autoTranslation);
     },
     updateNoteContent(content) {
       this.$root.$emit('update-note-content', content);
@@ -98,19 +117,12 @@ export default {
     handleTranslatedTitle(translatedText) {
       this.autoTranslatedTitle = translatedText;
       this.updateNoteTitle(translatedText);
-      this.checkAutoTranslatedStatus();
     },
     handleTranslatedContent(translatedText) {
-      this.autoTranslatedContent = translatedText.replace(/@nbsp@/gi, '&nbsp;');
+      this.autoTranslatedContent = this.restoreHtmlSpaceEntities(translatedText);
       this.updateNoteContent(this.autoTranslatedContent);
       this.previouslySelectedVersion = this.selectedTranslation;
       this.updateSelectedTranslation(this.autoTranslation);
-      this.checkAutoTranslatedStatus();
-    },
-    checkAutoTranslatedStatus() {
-      if (this.autoTranslatedTitle && this.autoTranslatedContent) {
-        this.isAutoTranslating = false;
-      }
     },
     toggleTopBarLoading(loading) {
       if (loading) {
