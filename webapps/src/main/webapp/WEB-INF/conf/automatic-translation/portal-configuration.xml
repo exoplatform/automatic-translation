@@ -42,6 +42,7 @@
       <set-method>initListener</set-method>
       <type>org.exoplatform.portal.config.NewPortalConfigListener</type>
       <description>this listener init the portal configuration</description>
+      <priority>680</priority>
       <init-params>
         <object-param>
           <name>portal.configuration</name>
@@ -63,7 +64,7 @@
               <boolean>${exo.automatic-translation.portalConfig.administration.override:true}</boolean>
             </field>
             <field name="importMode">
-              <string>${exo.automatic-translation.portalConfig.administration.importmode:merge}</string>
+              <string>${exo.automatic-translation.portalConfig.administration.importmode:insert}</string>
             </field>
           </object>
         </object-param>
