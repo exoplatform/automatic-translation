@@ -47,7 +47,7 @@ public class GoogleTranslateConnector extends AutomaticTranslationComponentPlugi
 
   private static final String KEY_PARAM                = "key";
 
-  private static final String DATA_PATTERN             = "{'q': '{message}', 'target': '{targetLocale}'}";
+  private static final String DATA_PATTERN             = "{\"q\": \"{message}\", \"target\": \"{targetLocale}\"}";
 
   private static final int    DEFAULT_POOL_CONNECTION  = 100;
 
