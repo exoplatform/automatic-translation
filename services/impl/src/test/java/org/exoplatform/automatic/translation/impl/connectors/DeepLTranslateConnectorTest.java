@@ -52,7 +52,6 @@ public class DeepLTranslateConnectorTest {
     // Need real auth-key to have a real result
     TextTranslationOptions textTranslationOptions = new TextTranslationOptions();
     textTranslationOptions.setTagHandling("html");
-    textTranslationOptions.setPreserveFormatting(true);
     textTranslationOptions.setSentenceSplittingMode(SentenceSplittingMode.All);
     TextResult textResult = new TextResult("<h1>Hello</h1>", "fr");
     Field textTranslationOptionsField = deepLTranslateConnector.getClass().getDeclaredField("textTranslationOptions");

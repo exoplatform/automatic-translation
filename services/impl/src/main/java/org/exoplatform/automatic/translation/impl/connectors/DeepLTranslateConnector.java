@@ -37,7 +37,6 @@ public class DeepLTranslateConnector extends AutomaticTranslationComponentPlugin
     super(settingService);
     textTranslationOptions = new TextTranslationOptions();
     textTranslationOptions.setTagHandling("html");
-    textTranslationOptions.setPreserveFormatting(true);
     textTranslationOptions.setSentenceSplittingMode(SentenceSplittingMode.All);
   }
 
