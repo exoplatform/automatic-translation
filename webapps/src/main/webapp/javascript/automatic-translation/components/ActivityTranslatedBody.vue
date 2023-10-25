@@ -15,13 +15,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div>
-    <v-alert
-      v-model="alert"
-      :type="type"
-      dismissible>
-      {{ message }}
-    </v-alert>
+  <div
     <div
       v-if="isTranslatedBodyNotEmpty && !translationHidden">
       <v-divider class="mb-2" />
@@ -59,9 +53,6 @@ export default {
   data: () => ({
     translatedBody: null,
     translationHidden: false,
-    alert: false,
-    type: '',
-    message: ''
   }),
   computed: {
     isTranslatedBodyNotEmpty() {
@@ -83,10 +74,7 @@ export default {
     });
     document.addEventListener('activity-translation-error', (event) => {
       if (event.detail.id === this.activity.id) {
-        this.displayMessage({
-          type: 'error',
-          message: this.$t('automaticTranslation.errorTranslation')
-        });
+        this.$root.$emit('alert-message', this.$t('automaticTranslation.errorTranslation'), 'error');
       }
     });
     this.retrieveActivityProperties();
@@ -99,12 +87,6 @@ export default {
     },
     hideTranslation() {
       this.translationHidden=true;
-    },
-    displayMessage(message) {
-      this.message=message.message;
-      this.type=message.type;
-      this.alert = true;
-      window.setTimeout(() => this.alert = false, 5000);
     }
   },
 };
