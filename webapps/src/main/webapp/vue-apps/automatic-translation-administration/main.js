@@ -35,14 +35,10 @@ export function init() {
     const appElement = document.createElement('div');
     appElement.id = appId;
 
-    // init Vue app when locale ressources are ready
-    new Vue({
-      mounted() {
-        document.dispatchEvent(new CustomEvent('hideTopBarLoading'));
-      },
+    Vue.createApp({
       template: `<automatic-translation-administration-app v-cacheable id="${appId}" />`,
       vuetify,
       i18n
-    }).$mount(appElement);
+    }, appElement, 'Automatic Translation Administration');
   });
 }

@@ -16,26 +16,24 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
   <div
-    <div
-      v-if="isTranslatedBodyNotEmpty && !translationHidden">
-      <v-divider class="mb-2" />
-      <dynamic-html-element
-        v-sanitized-html="translatedBody"
-        :element="element"
-        class="reset-style-box text-break overflow-hidden font-italic text-light-color"
-        dir="auto" />
+    v-if="isTranslatedBodyNotEmpty && !translationHidden">
+    <v-divider class="mb-2" />
+    <dynamic-html-element
+      v-sanitized-html="translatedBody"
+      :element="element"
+      class="reset-style-box text-break overflow-hidden font-italic text-light-color"
+      dir="auto" />
 
-      <div
-        class="font-italic text-light-color clickable caption"
-        :class="$vuetify.rtl ? 'float-left' : 'float-right'"
-        @click="hideTranslation">
-        <v-icon size="12">mdi-translate</v-icon>
-        <span>
-          {{ $t('automaticTranslation.hideTranslation') }}
-        </span>
-      </div>
+    <div
+      class="font-italic text-light-color clickable caption"
+      :class="$vuetify.rtl ? 'float-left' : 'float-right'"
+      @click="hideTranslation">
+      <v-icon size="12">mdi-translate</v-icon>
+      <span>
+        {{ $t('automaticTranslation.hideTranslation') }}
+      </span>
     </div>
-  </div>
+    </div>
 </template>
 
 <script>
