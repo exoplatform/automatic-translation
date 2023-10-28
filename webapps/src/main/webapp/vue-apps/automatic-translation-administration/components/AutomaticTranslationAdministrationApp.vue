@@ -16,12 +16,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
   <v-app role="main" id="automaticTranslationAdministration">
-    <v-alert
-      v-model="alert"
-      :type="type"
-      dismissible>
-      {{ message }}
-    </v-alert>
     <v-main class="white rounded-lg pa-5">
       <v-container fluid>
         <v-row>
@@ -82,31 +76,25 @@ export default {
   data: () => ({
     connectors: [],
     selectedConnector: '',
-    alert: false,
-    type: '',
-    message: '',
     apiKey: ''
   }),
   mounted() {
     this.$nextTick().then(() => this.$root.$emit('application-loaded'));
   },
   created() {
-    this.$root.$on('show-alert', message => {
-      this.displayMessage(message);
-    });
     this.getConfiguration();
   },
   methods: {
     getConfiguration() {
       getConfiguration().then(data => {
-        this.connectors = data && data.connectors || [];
+        this.connectors = data?.connectors || [];
         this.connectors.unshift({'name': 'none','description': this.$t('automatic.translation.administration.noconnectorselected')});
-        this.selectedConnector = data && data.activeConnector || 'none';
-        this.apiKey = data && data.activeApiKey || '';
+        this.selectedConnector = data?.activeConnector || 'none';
+        this.apiKey = data?.activeApiKey || '';
       });
     },
     closeSelect() {
-      if (this.$refs.connectorSelector && this.$refs.connectorSelector.isMenuActive) {
+      if (this.$refs.connectorSelector?.isMenuActive) {
         window.setTimeout(() => {
           this.$refs.connectorSelector.isMenuActive = false;
         }, 100);
@@ -120,7 +108,7 @@ export default {
       setActiveConnector(connector).then(resp => {
         let message='';
         let type='';
-        if (resp && resp.ok) {
+        if (resp?.ok) {
           if (connector === null) {
             message = this.$t('automatic.translation.administration.changeConnector.noconnector.confirm');
           } else {
@@ -131,10 +119,7 @@ export default {
           type='error';
           message = this.$t('automatic.translation.administration.changeConnector.error');
         }
-        this.$root.$emit('show-alert', {
-          type: type,
-          message: message
-        });
+        this.$root.$emit('alert-message', message, type);
         this.getConfiguration();
       });
     },
@@ -142,7 +127,7 @@ export default {
       setApiKey(this.selectedConnector, this.apiKey).then(resp => {
         let message='';
         let type='';
-        if (resp && resp.ok) {
+        if (resp?.ok) {
           if (this.apiKey === '') {
             message = this.$t('automatic.translation.administration.changeApiKey.emptykey.confirm');
           } else {
@@ -153,18 +138,9 @@ export default {
           type='error';
           message = this.$t('automatic.translation.administration.changeApiKey.error');
         }
-        this.$root.$emit('show-alert', {
-          type: type,
-          message: message
-        });
+        this.$root.$emit('alert-message', message, type);
         this.getConfiguration();
       });
-    },
-    displayMessage(message) {
-      this.message=message.message;
-      this.type=message.type;
-      this.alert = true;
-      window.setTimeout(() => this.alert = false, 5000);
     }
   }
 };

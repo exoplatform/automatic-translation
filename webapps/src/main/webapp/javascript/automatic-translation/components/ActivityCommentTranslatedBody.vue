@@ -15,29 +15,21 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div>
-    <v-alert
-      v-model="alert"
-      :type="type"
-      dismissible>
-      {{ message }}
-    </v-alert>
+  <div
+    v-if="isTranslatedBodyNotEmpty && !translationHidden">
+    <dynamic-html-element
+      v-sanitized-html="translatedBody"
+      :element="element"
+      class="reset-style-box text-break overflow-hidden font-italic text-light-color translationContent"
+      dir="auto" />
     <div
-      v-if="isTranslatedBodyNotEmpty && !translationHidden">
-      <dynamic-html-element
-        v-sanitized-html="translatedBody"
-        :element="element"
-        class="reset-style-box text-break overflow-hidden font-italic text-light-color translationContent"
-        dir="auto" />
-      <div
-        class="font-italic text-light-color clickable caption"
-        :class="$vuetify.rtl ? 'float-left' : 'float-right'"
-        @click="hideTranslation">
-        <v-icon size="12">mdi-translate</v-icon>
-        <span>
-          {{ $t('automaticTranslation.hideTranslation') }}
-        </span>
-      </div>
+      class="font-italic text-light-color clickable caption"
+      :class="$vuetify.rtl ? 'float-left' : 'float-right'"
+      @click="hideTranslation">
+      <v-icon size="12">mdi-translate</v-icon>
+      <span>
+        {{ $t('automaticTranslation.hideTranslation') }}
+      </span>
     </div>
   </div>
 </template>
@@ -61,9 +53,6 @@ export default {
   data: () => ({
     translatedBody: null,
     translationHidden: true,
-    alert: false,
-    type: '',
-    message: ''
   }),
   computed: {
     isTranslatedBodyNotEmpty() {
@@ -87,10 +76,7 @@ export default {
     });
     document.addEventListener('activity-translation-error', (event) => {
       if (event.detail.id === this.activity.id) {
-        this.displayMessage({
-          type: 'error',
-          message: this.$t('automaticTranslation.errorTranslation')
-        });
+        this.$root.$emit('alert-message', this.$t('automaticTranslation.errorTranslation'), 'error');
       }
     });
     this.retrieveCommentProperties();
@@ -111,13 +97,6 @@ export default {
       this.translationHidden=false;
       this.$el.parentNode.parentNode.firstChild.classList.add('hide');
     },
-    displayMessage(message) {
-      this.message=message.message;
-      this.type=message.type;
-      this.alert = true;
-      window.setTimeout(() => this.alert = false, 5000);
-    }
-
   },
 };
 </script>
