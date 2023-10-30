@@ -32,7 +32,7 @@
           <portlet-ref>automaticTranslationAdministration</portlet-ref>
         </portlet>
         <title>Automatic Translation</title>
-        <access-permissions>*:/platform/administrators</access-permissions>
+        <access-permissions>Everyone</access-permissions>
         <show-info-bar>false</show-info-bar>
       </portlet-application>
     </container>
