@@ -63,7 +63,8 @@
           </object>
         </object-param>
       </init-params>
-    </component-plugin>    <component-plugin>
+    </component-plugin>
+    <component-plugin>
       <name>addPlugin</name>
       <set-method>addPlugin</set-method>
       <type>org.exoplatform.commons.addons.AddOnPluginImpl</type>
