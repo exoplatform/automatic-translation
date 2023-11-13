@@ -107,6 +107,14 @@
       },
     });
 
+    extensionRegistry.registerExtension('notesEditor', 'translation-extension', {
+      id: 'notes-editor-auto-translate',
+      rank: 1000,
+      componentOptions: {
+        vueComponent: Vue.options.components['note-editor-automatic-translation'],
+      },
+    });
+
     extensionRegistry.registerExtension('news', 'translation-menu-extension', {
       id: 'news-auto-translate',
       rank: 1000,
