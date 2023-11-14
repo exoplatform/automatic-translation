@@ -35,11 +35,11 @@ export default {
         if (noteContent.content) {
           const content = this.excludeHtmlSpaceEntities(noteContent.content);
           fetchAutoTranslation(content,noteContent.lang).then(translated => {
-            this.updateNoteContent(translated.translation);
+            const translatedContent = this.restoreHtmlSpaceEntities(translated.translation);
+            this.updateNoteContent(translatedContent);
           });
         } 
-      });
-      
+      }); 
     },
     excludeHtmlSpaceEntities(content) {
       return content.replace(/&nbsp;/gi, '<span class="notranslate">&nbsp;</span>');
@@ -51,6 +51,7 @@ export default {
     updateNoteContent(content) {
       this.$root.$emit('update-note-content', content);
     },
+
     updateNoteTitle(title) {
       this.$root.$emit('update-note-title', title);
     },
