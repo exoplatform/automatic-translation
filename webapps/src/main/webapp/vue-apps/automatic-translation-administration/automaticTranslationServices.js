@@ -48,8 +48,11 @@ export function setApiKey(connector,apikey) {
     });
 }
 
-export function fetchAutoTranslation(content) {
-  const data = `message=${  encodeURIComponent(content)  }&locale=${  eXo.env.portal.language}`;
+export function fetchAutoTranslation(content,lang) {
+  if (!lang){
+    lang = eXo.env.portal.language;
+  }
+  const data = `message=${  encodeURIComponent(content)  }&locale=${ lang }`;
   return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/automatic-translation/translate`, {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
