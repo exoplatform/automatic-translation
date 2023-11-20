@@ -19,6 +19,7 @@ package org.exoplatform.automatic.translation.impl;
 import org.exoplatform.automatic.translation.api.AutomaticTranslationComponentPlugin;
 import org.exoplatform.automatic.translation.api.AutomaticTranslationService;
 import org.exoplatform.automatic.translation.api.dto.AutomaticTranslationConfiguration;
+import org.exoplatform.automatic.translation.api.dto.AutomaticTranslationFeaturesOptions;
 import org.exoplatform.automatic.translation.impl.connectors.GoogleTranslateConnector;
 import org.exoplatform.commons.api.settings.ExoFeatureService;
 import org.exoplatform.commons.api.settings.SettingService;
@@ -33,10 +34,7 @@ import org.mockito.Mockito;
 
 import java.util.Locale;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -48,6 +46,8 @@ public class AutomaticTranslationServiceTest {
   private static final String AUTOMATIC_TRANSLATION_API_KEY          = "automaticTranslationApiKey";
 
   private static final String AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR = "automaticTranslationActiveConnector";
+
+  private static final String AUTOMATIC_TRANSLATION_FEATURES_OPTIONS = "automaticTranslationFeaturesOptions";
 
   private static final String FEATURE_NAME                           = "automatic-translation";
 
@@ -309,4 +309,29 @@ public class AutomaticTranslationServiceTest {
     String result = googleTranslateConnector.translate("message to translate", Locale.ENGLISH);
     assertNull(result);
   }
+
+  @Test
+  public void testGetFeatureOptions() {
+    AutomaticTranslationService translationService = new AutomaticTranslationServiceImpl(settingService,
+            exoFeatureService,
+            listenerService);
+    AutomaticTranslationFeaturesOptions automaticTranslationFeaturesOptions = translationService.getFeaturesOptions();
+    assertTrue(automaticTranslationFeaturesOptions.getNewsTranslateView());
+    assertTrue(automaticTranslationFeaturesOptions.getNotesTranslateEdition());
+    assertTrue(automaticTranslationFeaturesOptions.getNotesTranslateView());
+    assertTrue(automaticTranslationFeaturesOptions.getStreamTranslateShort());
+    assertTrue(automaticTranslationFeaturesOptions.getStreamTranslateComment());
+    automaticTranslationFeaturesOptions.setNewsTranslateView(false);
+    automaticTranslationFeaturesOptions.setNotesTranslateView(false);
+    translationService.setFeaturesOptions(automaticTranslationFeaturesOptions);
+    SettingValue settingKey = new SettingValue<>("{\"streamTranslateShort\":true,\"streamTranslateComment\":true,\"newsTranslateView\":false,\"notesTranslateView\":false,\"notesTranslateEdition\":true}");
+    when(settingService.get(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_FEATURES_OPTIONS)).thenReturn(settingKey);
+    automaticTranslationFeaturesOptions = translationService.getFeaturesOptions();
+    assertFalse(automaticTranslationFeaturesOptions.getNewsTranslateView());
+    assertFalse(automaticTranslationFeaturesOptions.getNotesTranslateView());
+    assertTrue(automaticTranslationFeaturesOptions.getStreamTranslateShort());
+    assertTrue(automaticTranslationFeaturesOptions.getStreamTranslateComment());
+    assertTrue(automaticTranslationFeaturesOptions.getNotesTranslateEdition());
+  }
+
 }

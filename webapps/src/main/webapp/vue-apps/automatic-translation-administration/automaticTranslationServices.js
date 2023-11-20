@@ -48,6 +48,18 @@ export function setApiKey(connector,apikey) {
     });
 }
 
+
+export function updateFeaturesOptions(featuresOptions) {
+  return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/automatic-translation/setFeaturesOptions`,
+    {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      method: 'PUT',
+      body: JSON.stringify(featuresOptions)
+    });
+}
+
 export function fetchAutoTranslation(content,lang) {
   if (!lang){
     lang = eXo.env.portal.language;
