@@ -33,7 +33,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         {{ $t('automaticTranslation.hideTranslation') }}
       </span>
     </div>
-    </div>
+  </div>
 </template>
 
 <script>
