@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 eXo Platform SAS.
+ * Copyright (C) 2023 eXo Platform SAS.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,27 +17,27 @@
 package org.exoplatform.automatic.translation.api.dto;
 
 import java.io.Serializable;
-import java.util.List;
 
 import lombok.Data;
 
 @Data
-public class AutomaticTranslationConfiguration implements Serializable {
+public class AutomaticTranslationFeaturesOptions implements Serializable {
 
-  private String          activeConnector;
+  private Boolean streamTranslateShort;
 
-  private List<Connector> connectors;
+  private Boolean streamTranslateComment;
 
-  private String          activeApiKey;
+  private Boolean newsTranslateView;
 
-  private AutomaticTranslationFeaturesOptions featuresOptions;
+  private Boolean notesTranslateEdition;
 
-  public AutomaticTranslationConfiguration(List<Connector> connectors, String activeConnector) {
-    this.connectors = connectors;
-    this.activeConnector = activeConnector;
-  }
+  private Boolean notesTranslateView;
 
-  public void addConnector(String name, String description, String apiKey) {
-    connectors.add(new Connector(name, description, apiKey));
+  public AutomaticTranslationFeaturesOptions() {
+    this.streamTranslateShort = true;
+    this.streamTranslateComment = true;
+    this.newsTranslateView = true;
+    this.notesTranslateEdition = true;
+    this.notesTranslateView = true;
   }
 }

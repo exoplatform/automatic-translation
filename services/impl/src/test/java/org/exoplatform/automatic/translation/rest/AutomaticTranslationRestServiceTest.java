@@ -19,6 +19,7 @@ package org.exoplatform.automatic.translation.rest;
 import org.exoplatform.automatic.translation.api.AutomaticTranslationComponentPlugin;
 import org.exoplatform.automatic.translation.api.AutomaticTranslationService;
 import org.exoplatform.automatic.translation.api.dto.AutomaticTranslationConfiguration;
+import org.exoplatform.automatic.translation.api.dto.AutomaticTranslationFeaturesOptions;
 import org.exoplatform.common.http.HTTPStatus;
 import org.exoplatform.commons.api.settings.SettingService;
 import org.exoplatform.services.security.ConversationState;
@@ -32,6 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
@@ -88,6 +90,33 @@ public class AutomaticTranslationRestServiceTest {
     doThrow(new RuntimeException("Error")).when(automaticTranslationService).setApiKey(any(), any());
     Response response = automaticTranslationRestService.setApiKey("google", "123456");
     assertEquals(HTTPStatus.BAD_REQUEST, response.getStatus());
+  }
+
+  @Test
+  public void testSetFeatureOptionsWhenOk() {
+    doNothing().when(automaticTranslationService).setFeaturesOptions(any());
+    Response response = automaticTranslationRestService.setFeatureOptions(new AutomaticTranslationFeaturesOptions());
+    assertEquals(HTTPStatus.NO_CONTENT, response.getStatus());
+  }
+
+  @Test
+  public void testSetFeatureOptionsWhenKo() {
+    doThrow(new RuntimeException("Error")).when(automaticTranslationService).setFeaturesOptions(any());
+    Response response = automaticTranslationRestService.setFeatureOptions(new AutomaticTranslationFeaturesOptions());
+    assertEquals(HTTPStatus.BAD_REQUEST, response.getStatus());
+  }
+
+  @Test
+  public void testGetFeatureOptions() {
+    when(automaticTranslationService.getFeaturesOptions()).thenReturn(new AutomaticTranslationFeaturesOptions());
+    Response response = automaticTranslationRestService.getFeaturesOptions();
+    assertEquals(HTTPStatus.OK, response.getStatus());
+    AutomaticTranslationFeaturesOptions featuresOptions = (AutomaticTranslationFeaturesOptions)response.getEntity();
+    assertTrue(featuresOptions.getNewsTranslateView());
+    assertTrue(featuresOptions.getNotesTranslateEdition());
+    assertTrue(featuresOptions.getNotesTranslateView());
+    assertTrue(featuresOptions.getStreamTranslateShort());
+    assertTrue(featuresOptions.getStreamTranslateComment());
   }
 
   @Test

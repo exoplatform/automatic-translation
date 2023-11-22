@@ -16,10 +16,12 @@
  */
 package org.exoplatform.automatic.translation.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.automatic.translation.api.AutomaticTranslationComponentPlugin;
 import org.exoplatform.automatic.translation.api.AutomaticTranslationService;
 import org.exoplatform.automatic.translation.api.dto.AutomaticTranslationConfiguration;
 import org.exoplatform.automatic.translation.api.dto.AutomaticTranslationEvent;
+import org.exoplatform.automatic.translation.api.dto.AutomaticTranslationFeaturesOptions;
 import org.exoplatform.commons.api.settings.ExoFeatureService;
 import org.exoplatform.commons.api.settings.SettingService;
 import org.exoplatform.commons.api.settings.SettingValue;
@@ -28,7 +30,11 @@ import org.exoplatform.commons.api.settings.data.Scope;
 import org.exoplatform.services.listener.ListenerService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.ws.frameworks.json.JsonGenerator;
+import org.exoplatform.ws.frameworks.json.JsonParser;
+import org.exoplatform.ws.frameworks.json.impl.*;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
@@ -38,6 +44,9 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
 
   private static final String                              AUTOMATIC_TRANSLATION_ACTIVE_CONNECTOR =
                                                                                                   "automaticTranslationActiveConnector";
+
+  private static final String AUTOMATIC_TRANSLATION_FEATURES_OPTIONS =
+          "automaticTranslationFeaturesOptions";
 
   private static final String                              EXO_TRANSLATION_EVENT_TRANSLATE        =
                                                                                            "exo.automatic-translation.event.translate";
@@ -86,6 +95,7 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
         configuration.addConnector(name, connector.getDescription(), null);
       }
     });
+    configuration.setFeaturesOptions(getFeaturesOptions());
     return configuration;
   }
 
@@ -96,6 +106,25 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
     return value != null && value.getValue() != null && !value.getValue().toString().isEmpty()
         && translationConnectors.get(value.getValue().toString()) != null ? value.getValue().toString() : null;
   }
+
+  @Override
+  public AutomaticTranslationFeaturesOptions getFeaturesOptions() {
+    SettingValue<?> settingsValue = settingService.get(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_FEATURES_OPTIONS);
+    String settingsValueString = settingsValue == null || settingsValue.getValue() == null ? null
+            : settingsValue.getValue().toString();
+    AutomaticTranslationFeaturesOptions featuresOptions = new AutomaticTranslationFeaturesOptions();
+    if (StringUtils.isNotEmpty(settingsValueString)) {
+      featuresOptions = fromJsonString(settingsValueString);
+    }
+    return featuresOptions;
+  }
+
+  @Override
+  public void setFeaturesOptions(AutomaticTranslationFeaturesOptions featuresOptions) {
+    String settingsString = toJsonString(featuresOptions);
+    settingService.set(Context.GLOBAL, Scope.GLOBAL, AUTOMATIC_TRANSLATION_FEATURES_OPTIONS, SettingValue.create(settingsString));
+  }
+
 
   @Override
   public boolean isFeatureActive() {
@@ -162,6 +191,31 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
     }
     return translatedMessage;
   }
+
+  private static String toJsonString(Object object) {
+    try {
+      JsonGenerator jsonGenerator = new JsonGeneratorImpl();
+      return jsonGenerator.createJsonObject(object).toString();
+    } catch (JsonException e) {
+      throw new IllegalStateException("Error parsing object to string " + object, e);
+    }
+  }
+
+  private static AutomaticTranslationFeaturesOptions fromJsonString(String value) {
+    try {
+      if (StringUtils.isBlank(value)) {
+        return null;
+      }
+      JsonDefaultHandler jsonDefaultHandler = new JsonDefaultHandler();
+      JsonParser jsonParser = new JsonParserImpl();
+      jsonParser.parse(new ByteArrayInputStream(value.getBytes()), jsonDefaultHandler);
+      return ObjectBuilder.createObject(AutomaticTranslationFeaturesOptions.class, jsonDefaultHandler.getJsonObject());
+    } catch (JsonException e) {
+      throw new IllegalStateException("Error creating object from string : " + value, e);
+    }
+  }
+
+
 
 
 }

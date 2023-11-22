@@ -17,6 +17,7 @@
 package org.exoplatform.automatic.translation.api;
 
 import org.exoplatform.automatic.translation.api.dto.AutomaticTranslationConfiguration;
+import org.exoplatform.automatic.translation.api.dto.AutomaticTranslationFeaturesOptions;
 
 import java.util.Locale;
 import java.util.Map;
@@ -77,6 +78,21 @@ public interface AutomaticTranslationService {
    * @return The translated message
    */
   String translate(String message, Locale targetLang, String contentType, long spaceId);
+
+
+  /**
+   * Get features options for automatic translations
+   *
+   * @return The AutomaticTranslationFeaturesOptions object
+   */
+  AutomaticTranslationFeaturesOptions getFeaturesOptions();
+
+  /**
+   * Set the features options for automatic translations
+   *
+   * @param featuresOptions The features Options
+   */
+  void setFeaturesOptions(AutomaticTranslationFeaturesOptions featuresOptions);
 
   /**
    * Return if the feature is active

@@ -53,7 +53,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 :ref="apiKey"
                 v-model="apiKey"
                 :placeholder="$t('automatic.translation.administration.apiKeyPlaceHolder')"
-                class="pa-0"
+                class="pa-0 my-auto"
                 outlined
                 dense />
               <v-btn
@@ -65,18 +65,120 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             </div>
           </v-col>
         </v-row>
+        <v-row
+          class="ms-n3"
+          no-gutters>
+          <v-col>
+            <p class="font-weight-bold mb-0">
+              {{ $t('automatic.translation.administration.modules.label') }}
+            </p>
+            <p class="text-caption mb-0">
+              {{ $t('automatic.translation.administration.modules.description') }}
+            </p>
+          </v-col>
+        </v-row>
+        <v-row
+          class="ms-n6 translation-module">
+          <v-col>
+            <span class="font-weight-bold">
+              {{ $t('automatic.translation.administration.module.stream.label') }}
+            </span>
+            <v-row
+              no-gutters
+              class="ps-2">
+              <v-col class="my-auto">
+                {{ $t('automatic.translation.administration.module.stream.short.message') }}
+              </v-col>
+              <v-col class="my-auto">
+                <v-switch
+                  v-model="featuresOptions.streamTranslateShort"
+                  class="pa-0 mb-0  mt-2"
+                  @click="updateFeaturesOptions" />
+              </v-col>
+            </v-row>
+            <v-row
+              no-gutters
+              class="ps-2">
+              <v-col class="my-auto">
+                {{ $t('automatic.translation.administration.module.stream.comments') }}
+              </v-col>
+              <v-col class="my-auto">
+                <v-switch
+                  v-model="featuresOptions.streamTranslateComment"
+                  class="pa-0 mb-0  mt-2"
+                  @click="updateFeaturesOptions" />
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+        <v-row
+          class="ms-n6 mt-n3 translation-module">
+          <v-col class="my-auto">
+            <span class="font-weight-bold">
+              {{ $t('automatic.translation.administration.module.news.label') }}
+            </span>
+            <v-row
+              no-gutters
+              class="ps-2">
+              <v-col class="my-auto">
+                {{ $t('automatic.translation.administration.module.news.view') }}
+              </v-col>
+              <v-col class="my-auto">
+                <v-switch
+                  v-model="featuresOptions.newsTranslateView"
+                  class="pa-0 mb-0  mt-2"
+                  @click="updateFeaturesOptions" />
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+        <v-row
+          class="ms-n6 mt-n3 translation-module">
+          <v-col>
+            <span class="font-weight-bold">
+              {{ $t('automatic.translation.administration.module.notes.label') }}
+            </span>
+            <v-row
+              no-gutters
+              class="ps-2">
+              <v-col class="my-auto">
+                {{ $t('automatic.translation.administration.module.notes.write') }}
+              </v-col>
+              <v-col class="my-auto">
+                <v-switch
+                  v-model="featuresOptions.notesTranslateEdition"
+                  class="pa-0 mb-0  mt-2"
+                  @click="updateFeaturesOptions" />
+              </v-col>
+            </v-row>
+            <v-row
+              no-gutters
+              class="ps-2">
+              <v-col class="my-auto">
+                {{ $t('automatic.translation.administration.module.notes.view') }}
+              </v-col>
+              <v-col class="my-auto">
+                <v-switch
+                  v-model="featuresOptions.notesTranslateView"
+                  class="pa-0 mb-0  mt-2"
+                  @click="updateFeaturesOptions" />
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
       </v-container>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import {getConfiguration, setActiveConnector, setApiKey} from '../automaticTranslationServices';
+import {getConfiguration, setActiveConnector, setApiKey, updateFeaturesOptions} from '../automaticTranslationServices';
 export default {
   data: () => ({
     connectors: [],
     selectedConnector: '',
-    apiKey: ''
+    apiKey: '',
+    featuresOptions: {}
   }),
   mounted() {
     this.$nextTick().then(() => this.$root.$emit('application-loaded'));
@@ -91,6 +193,7 @@ export default {
         this.connectors.unshift({'name': 'none','description': this.$t('automatic.translation.administration.noconnectorselected')});
         this.selectedConnector = data?.activeConnector || 'none';
         this.apiKey = data?.activeApiKey || '';
+        this.featuresOptions = data?.featuresOptions || {};
       });
     },
     closeSelect() {
@@ -140,6 +243,22 @@ export default {
         }
         this.$root.$emit('alert-message', message, type);
         this.getConfiguration();
+      });
+    },
+    updateFeaturesOptions() {
+      updateFeaturesOptions(this.featuresOptions).then(resp => {
+        let message='';
+        let type='';
+        if (resp?.ok) {
+          message = this.$t('automatic.translation.administration.changeFeatureOption.confirm');
+          type='success';
+        } else {
+          type='error';
+          message = this.$t('automatic.translation.administration.changeFeatureOption.error');
+          this.getConfiguration();
+        }
+        this.$root.$emit('alert-message', message, type);
+        
       });
     }
   }

@@ -18,12 +18,12 @@ package org.exoplatform.automatic.translation.rest;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.exoplatform.automatic.translation.api.AutomaticTranslationService;
+import org.exoplatform.automatic.translation.api.dto.AutomaticTranslationFeaturesOptions;
 import org.exoplatform.common.http.HTTPStatus;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -115,6 +115,41 @@ public class AutomaticTranslationRestService implements ResourceContainer {
       automaticTranslationService.setApiKey(connector, apikey);
     } catch (RuntimeException e) {
       LOG.error("Unable to set api key connector", e);
+      return Response.status(HTTPStatus.BAD_REQUEST).entity(e.getMessage()).build();
+    }
+    return Response.noContent().build();
+
+  }
+
+  @GET
+  @Path("/getFeaturesOptions")
+  @RolesAllowed("users")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Operation(summary = "Gets Automatic Translation Features options", method = "GET", description = "This returns the actual Features options for automatic translation")
+  @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Request fulfilled"),
+          @ApiResponse(responseCode = "500", description = "Internal Server Error")})
+  public Response getFeaturesOptions() {
+    try {
+      return Response.ok(automaticTranslationService.getFeaturesOptions(), MediaType.APPLICATION_JSON).build();
+    } catch (RuntimeException e) {
+      LOG.error("Unable to get Automatic Translation Features Options", e);
+      return Response.status(HTTPStatus.BAD_REQUEST).entity(e.getMessage()).build();
+    }
+  }
+
+  @PUT
+  @Path("/setFeaturesOptions")
+  @RolesAllowed("administrators")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Operation(summary = "Set Automatic translation Features options", method = "PUT")
+  @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Request fulfilled"),
+          @ApiResponse(responseCode = "500", description = "Internal Server Error")})
+  public Response setFeatureOptions(@RequestBody(description = "Automatic Translation Features Options object to be set", required = true)
+                            AutomaticTranslationFeaturesOptions featuresOptions) {
+    try {
+      automaticTranslationService.setFeaturesOptions(featuresOptions);
+    } catch (RuntimeException e) {
+      LOG.error("Unable to set Automatic Translation Features Options", e);
       return Response.status(HTTPStatus.BAD_REQUEST).entity(e.getMessage()).build();
     }
     return Response.noContent().build();
