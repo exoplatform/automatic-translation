@@ -95,6 +95,7 @@ export default {
             }).catch(() => this.isAutoTranslating = false);
           } else {
             this.hasContent = false;
+            this.setAutoTranslationSelected();
             this.isAutoTranslating = false;
           }
         }).catch(() => this.isAutoTranslating = false);
