@@ -16,7 +16,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
   <v-app role="main" id="automaticTranslationAdministration">
-    <v-main class="white rounded-lg pa-5">
+    <v-main class="white card-border-radius pa-5">
       <v-container fluid>
         <v-row>
           <h4 class="font-weight-bold">
