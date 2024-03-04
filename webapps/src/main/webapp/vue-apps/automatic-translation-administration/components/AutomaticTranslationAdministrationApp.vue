@@ -172,7 +172,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 </template>
 
 <script>
-import {getConfiguration, setActiveConnector, setApiKey, updateFeaturesOptions} from '../automaticTranslationServices';
 export default {
   data: () => ({
     connectors: [],
@@ -188,7 +187,7 @@ export default {
   },
   methods: {
     getConfiguration() {
-      getConfiguration().then(data => {
+      this.$automaticTranslationAdministrationService.getConfiguration().then(data => {
         this.connectors = data?.connectors || [];
         this.connectors.unshift({'name': 'none','description': this.$t('automatic.translation.administration.noconnectorselected')});
         this.selectedConnector = data?.activeConnector || 'none';
@@ -208,7 +207,7 @@ export default {
       if (this.selectedConnector !== 'none') {
         connector=this.selectedConnector;
       }
-      setActiveConnector(connector).then(resp => {
+      this.$automaticTranslationAdministrationService.setActiveConnector(connector).then(resp => {
         let message='';
         let type='';
         if (resp?.ok) {
@@ -227,7 +226,7 @@ export default {
       });
     },
     editApiKey() {
-      setApiKey(this.selectedConnector, this.apiKey).then(resp => {
+      this.$automaticTranslationAdministrationService.setApiKey(this.selectedConnector, this.apiKey).then(resp => {
         let message='';
         let type='';
         if (resp?.ok) {
@@ -246,7 +245,7 @@ export default {
       });
     },
     updateFeaturesOptions() {
-      updateFeaturesOptions(this.featuresOptions).then(resp => {
+      this.$automaticTranslationAdministrationService.updateFeaturesOptions(this.featuresOptions).then(resp => {
         let message='';
         let type='';
         if (resp?.ok) {

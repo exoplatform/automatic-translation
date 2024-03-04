@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 eXo Platform SAS.
+ * Copyright (C) 2024 eXo Platform SAS.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,16 +16,10 @@
  */
 import ActivityTranslatedBody from './components/ActivityTranslatedBody.vue';
 import ActivityCommentTranslatedBody from './components/ActivityCommentTranslatedBody.vue';
-import NoteAutomaticTranslation from './components/NoteAutomaticTranslation.vue';
-import NoteEditorAutomaticTranslation from './components/NoteEditorAutomaticTranslation.vue';
-import NewsAutomaticTranslation from './components/NewsAutomaticTranslation.vue';
 
 const components = {
   'activity-translated-body': ActivityTranslatedBody,
-  'activity-comment-translated-body': ActivityCommentTranslatedBody,
-  'note-automatic-translation': NoteAutomaticTranslation,
-  'note-editor-automatic-translation': NoteEditorAutomaticTranslation,
-  'news-automatic-translation': NewsAutomaticTranslation
+  'activity-comment-translated-body': ActivityCommentTranslatedBody
 };
 
 for (const key in components) {

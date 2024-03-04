@@ -15,7 +15,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 import './initComponents.js';
+import * as  automaticTranslationAdministrationService from './js/AutomaticTranslationAdministrationService.js';
 
+if (!Vue.prototype.$automaticTranslationAdministrationService) {
+  window.Object.defineProperty(Vue.prototype, '$automaticTranslationAdministrationService', {
+    value: automaticTranslationAdministrationService,
+  });
+}
 
 Vue.use(Vuetify);
 const vuetify = new Vuetify(eXo.env.portal.vuetifyPreset);

@@ -8,8 +8,10 @@ let config = {
   // can use multiple entry
   entry: {
     automaticTranslationAdministration : './src/main/webapp/vue-apps/automatic-translation-administration/main.js',
-    automaticTranslationExtension : './src/main/webapp/javascript/automatic-translation/extensions.js',
-    automaticTranslationExtensionDisplay : './src/main/webapp/javascript/automatic-translation/main.js'
+    automaticTranslationActivityStreamExtensions : './src/main/webapp/vue-apps/automatic-translation-extensions/activity-stream-extensions/main.js',
+	automaticTranslationNewsExtension : './src/main/webapp/vue-apps/automatic-translation-extensions/news-extension/main.js',
+	automaticTranslationNotesEditorExtension : './src/main/webapp/vue-apps/automatic-translation-extensions/notes-editor-extension/main.js',
+	automaticTranslationNotesExtension : './src/main/webapp/vue-apps/automatic-translation-extensions/notes-extension/main.js',
   },
   module: {
     rules: [

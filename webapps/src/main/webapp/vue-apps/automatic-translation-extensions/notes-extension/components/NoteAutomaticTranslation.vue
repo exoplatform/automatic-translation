@@ -1,5 +1,5 @@
 <!--
-Copyright (C) 2023 eXo Platform SAS.
+Copyright (C) 2024 eXo Platform SAS.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -33,10 +33,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 </template>
 
 <script>
-
-import {
-  fetchAutoTranslation
-} from '../../../vue-apps/automatic-translation-administration/automaticTranslationServices.js';
 
 export default {
   data() {
@@ -82,12 +78,12 @@ export default {
         this.setAutoTranslationSelected();
       } else {
         this.isAutoTranslating = true;
-        fetchAutoTranslation(this.note.title).then(translated => {
+        this.$automaticTranslationExtensionsService.fetchAutoTranslation(this.note.title).then(translated => {
           this.handleTranslatedTitle(translated.translation);
           if (this.note?.content) {
             this.hasContent = true;
             const content = this.excludeHtmlSpaceEntities(this.note.content);
-            fetchAutoTranslation(content).then(translated => {
+            this.$automaticTranslationExtensionsService.fetchAutoTranslation(content).then(translated => {
               this.handleTranslatedContent(translated.translation);
               this.setAutoTranslationSelected();
               this.previouslyTranslatedVersion = this.selectedTranslation;
