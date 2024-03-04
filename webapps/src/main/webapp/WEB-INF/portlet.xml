@@ -34,25 +34,4 @@
       <role-link>admin</role-link>
     </security-role-ref>
   </portlet>
-
-  <portlet>
-    <portlet-name>AutomaticTranslationExtension</portlet-name>
-    <display-name>Automatic Translation Extension Application</display-name>
-    <portlet-class>org.exoplatform.commons.api.portlet.GenericDispatchedViewPortlet</portlet-class>
-    <init-param>
-      <name>portlet-view-dispatched-file-path</name>
-      <value>/html/automaticTranslationExtension.html</value>
-    </init-param>
-    <expiration-cache>-1</expiration-cache>
-    <cache-scope>PUBLIC</cache-scope>
-    <supports>
-      <mime-type>text/html</mime-type>
-    </supports>
-    <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.automaticTranslation.automaticTranslationExtension</resource-bundle>
-    <portlet-info>
-      <title>Automatic Translation Extension Application</title>
-      <keywords>Automatic Translation Extension Application</keywords>
-    </portlet-info>
-  </portlet>
 </portlet-app>
