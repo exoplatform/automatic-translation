@@ -53,10 +53,11 @@
   </portlet>
 
   <module>
-    <name>AutomaticTranslationExtensionDisplay</name>
+    <name>AutomaticTranslationActivityStreamExtensions</name>
+	<load-group>ActivityStreamGRP</load-group>
     <script>
       <minify>false</minify>
-      <path>/js/automaticTranslationExtensionDisplay.bundle.js</path>
+      <path>/js/automaticTranslationActivityStreamExtensions.bundle.js</path>
     </script>
 
     <depends>
@@ -72,29 +73,70 @@
       <module>commonVueComponents</module>
     </depends>
   </module>
+  
+  <module>
+    <name>AutomaticTranslationNewsActivityStreamExtension</name>
+	<load-group>ActivityStreamGRP</load-group>
+    <script>
+      <minify>false</minify>
+      <path>/js/automaticTranslationNewsExtension.bundle.js</path>
+    </script>
 
-  <portlet>
-    <name>AutomaticTranslationExtension</name>
-    <module>
-      <script>
-        <path>/javascript/automatic-translation/extensions.js</path>
-      </script>
-      <depends>
-        <module>extensionRegistry</module>
-      </depends>
-      <depends>
-        <module>eXoVueI18n</module>
-      </depends>
-      <depends>
-        <module>vue</module>
-      </depends>
-      <depends>
-        <module>commonVueComponents</module>
-      </depends>
-      <depends>
-        <module>AutomaticTranslationExtensionDisplay</module>
-      </depends>
-    </module>
-  </portlet>
+    <depends>
+      <module>extensionRegistry</module>
+    </depends>
+    <depends>
+      <module>eXoVueI18n</module>
+    </depends>
+    <depends>
+      <module>vue</module>
+    </depends>
+    <depends>
+      <module>commonVueComponents</module>
+    </depends>
+  </module>
+    
+  <module>
+    <name>AutomaticTranslationNotesEditorExtension</name>
+	<load-group>NotesEditorGRP</load-group>
+    <script>
+      <minify>false</minify>
+      <path>/js/automaticTranslationNotesEditorExtension.bundle.js</path>
+    </script>
 
+    <depends>
+      <module>extensionRegistry</module>
+    </depends>
+    <depends>
+      <module>eXoVueI18n</module>
+    </depends>
+    <depends>
+      <module>vue</module>
+    </depends>
+    <depends>
+      <module>commonVueComponents</module>
+    </depends>
+  </module>
+  
+  <module>
+    <name>AutomaticTranslationNotesExtension</name>
+	<load-group>NotesGRP</load-group>
+    <script>
+      <minify>false</minify>
+      <path>/js/automaticTranslationNotesExtension.bundle.js</path>
+    </script>
+
+    <depends>
+      <module>extensionRegistry</module>
+    </depends>
+    <depends>
+      <module>eXoVueI18n</module>
+    </depends>
+    <depends>
+      <module>vue</module>
+    </depends>
+    <depends>
+      <module>commonVueComponents</module>
+    </depends>
+  </module>
 </gatein-resources>
