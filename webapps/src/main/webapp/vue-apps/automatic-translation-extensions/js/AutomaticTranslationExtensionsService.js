@@ -34,3 +34,18 @@ export function fetchAutoTranslation(content, lang) {
     }
   });
 }
+
+export function getFeaturesOptions() {
+  return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/automatic-translation/getFeaturesOptions`, {
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    method: 'GET'
+  }).then(resp => {
+    if (resp && resp.ok) {
+      return resp.json();
+    } else {
+      throw new Error('Unable to get automatic translation Features Options');
+    }
+  });   
+}
