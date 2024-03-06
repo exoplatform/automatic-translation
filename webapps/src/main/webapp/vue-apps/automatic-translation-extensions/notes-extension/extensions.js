@@ -28,7 +28,7 @@ export function initExt() {
     }
   }).then(result => {
     if (result === 'true') {
-      getFeaturesOptions().then(data => {
+      Vue.prototype.$automaticTranslationExtensionsService.getFeaturesOptions().then(data => {
         let featuresOptions = {
           notesTranslateView: true,
         };
@@ -39,21 +39,6 @@ export function initExt() {
       });
     }
   });
-}
-
-export function getFeaturesOptions() {
-  return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/automatic-translation/getFeaturesOptions`, {
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    method: 'GET'
-  }).then(resp => {
-    if (resp && resp.ok) {
-      return resp.json();
-    } else {
-      throw new Error('Unable to get automatic translation Features Options');
-    }
-  });   
 }
 
 export function initExtensions(featuresOptions) {
