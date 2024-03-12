@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 eXo Platform SAS.
+ * Copyright (C) 2024 eXo Platform SAS.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,3 +16,15 @@
  */
 
 import './initComponents.js';
+import {initExt} from './extensions.js';
+import * as  automaticTranslationExtensionsService from '../js/AutomaticTranslationExtensionsService.js';
+
+if (!Vue.prototype.$automaticTranslationExtensionsService) {
+  window.Object.defineProperty(Vue.prototype, '$automaticTranslationExtensionsService', {
+    value: automaticTranslationExtensionsService,
+  });
+}
+
+export function init() {
+  initExt();
+}

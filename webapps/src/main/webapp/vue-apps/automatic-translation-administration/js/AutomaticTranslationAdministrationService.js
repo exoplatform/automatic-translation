@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 eXo Platform SAS.
+ * Copyright (C) 2024 eXo Platform SAS.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -58,24 +58,4 @@ export function updateFeaturesOptions(featuresOptions) {
       method: 'PUT',
       body: JSON.stringify(featuresOptions)
     });
-}
-
-export function fetchAutoTranslation(content,lang) {
-  if (!lang){
-    lang = eXo.env.portal.language;
-  }
-  const data = `message=${  encodeURIComponent(content)  }&locale=${ lang }`;
-  return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/automatic-translation/translate`, {
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    method: 'POST',
-    body: data
-  }).then(resp => {
-    if (resp?.ok) {
-      return resp.json();
-    } else {
-      throw new Error('Unable to get automatic translation result');
-    }
-  });
 }

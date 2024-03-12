@@ -1,5 +1,5 @@
 <!--
-Copyright (C) 2023 eXo Platform SAS.
+Copyright (C) 2024 eXo Platform SAS.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -36,10 +36,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 </template>
 
 <script>
-
-import {
-  fetchAutoTranslation
-} from '../../../vue-apps/automatic-translation-administration/automaticTranslationServices.js';
 
 export default {
   data() {
@@ -80,11 +76,11 @@ export default {
         this.resetAutoTranslation();
       } else {
         this.isAutoTranslating = true;
-        fetchAutoTranslation(this.news?.title).then(translated => {
+        this.$automaticTranslationExtensionsService.fetchAutoTranslation(this.news?.title).then(translated => {
           this.handleTranslatedTitle(translated.translation);
           if (this.news?.summary) {
             this.hasSummary = true;
-            fetchAutoTranslation(this.news?.summary).then(translated => {
+            this.$automaticTranslationExtensionsService.fetchAutoTranslation(this.news?.summary).then(translated => {
               this.handleTranslatedSummary(translated.translation);
               this.fetchBodyTranslation();
             }).catch(() => this.isAutoTranslating = false);
@@ -103,7 +99,7 @@ export default {
     },
     fetchBodyTranslation() {
       const content = this.excludeHtmlSpaceEntities(this.toHtml(this.news.body));
-      fetchAutoTranslation(this.toHtml(content)).then(translated => {
+      this.$automaticTranslationExtensionsService.fetchAutoTranslation(this.toHtml(content)).then(translated => {
         this.handleTranslatedContent(translated.translation);
         this.isAutoTranslating = false;
       }).catch(() => this.isAutoTranslating = false);
