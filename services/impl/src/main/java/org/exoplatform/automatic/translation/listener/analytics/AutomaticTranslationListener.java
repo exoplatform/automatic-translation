@@ -16,8 +16,8 @@
  */
 package org.exoplatform.automatic.translation.listener.analytics;
 
-import org.exoplatform.analytics.model.StatisticData;
-import org.exoplatform.analytics.utils.AnalyticsUtils;
+import io.meeds.analytics.model.StatisticData;
+import io.meeds.analytics.utils.AnalyticsUtils;
 import org.exoplatform.automatic.translation.api.dto.AutomaticTranslationEvent;
 import org.exoplatform.services.listener.Event;
 import org.exoplatform.services.listener.Listener;
