@@ -16,12 +16,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
   <v-app role="main" id="automaticTranslationAdministration">
-    <v-main class="white card-border-radius pa-5">
-      <v-container fluid>
+    <v-main class="application-body pa-5">
+      <v-container class="py-0" fluid>
         <v-row>
-          <h4 class="font-weight-bold">
+          <div class="text-title">
             {{ $t('automatic.translation.administration.title') }}
-          </h4>
+          </div>
         </v-row>
         <v-row class="pt-5">
           {{ $t('automatic.translation.administration.header') }}
@@ -69,10 +69,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           class="ms-n3"
           no-gutters>
           <v-col>
-            <p class="font-weight-bold mb-0">
+            <p class="text-header mb-0">
               {{ $t('automatic.translation.administration.modules.label') }}
             </p>
-            <p class="text-caption mb-0">
+            <p class="text-subtitle mb-0">
               {{ $t('automatic.translation.administration.modules.description') }}
             </p>
           </v-col>
@@ -83,9 +83,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <span class="font-weight-bold">
               {{ $t('automatic.translation.administration.module.stream.label') }}
             </span>
-            <v-row
-              no-gutters
-              class="ps-2">
+            <v-row no-gutters>
               <v-col class="my-auto">
                 {{ $t('automatic.translation.administration.module.stream.short.message') }}
               </v-col>
@@ -96,9 +94,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   @click="updateFeaturesOptions" />
               </v-col>
             </v-row>
-            <v-row
-              no-gutters
-              class="ps-2">
+            <v-row no-gutters>
               <v-col class="my-auto">
                 {{ $t('automatic.translation.administration.module.stream.comments') }}
               </v-col>
@@ -117,9 +113,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <span class="font-weight-bold">
               {{ $t('automatic.translation.administration.module.news.label') }}
             </span>
-            <v-row
-              no-gutters
-              class="ps-2">
+            <v-row no-gutters>
               <v-col class="my-auto">
                 {{ $t('automatic.translation.administration.module.news.view') }}
               </v-col>
@@ -138,9 +132,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <span class="font-weight-bold">
               {{ $t('automatic.translation.administration.module.notes.label') }}
             </span>
-            <v-row
-              no-gutters
-              class="ps-2">
+            <v-row no-gutters>
               <v-col class="my-auto">
                 {{ $t('automatic.translation.administration.module.notes.write') }}
               </v-col>
@@ -151,9 +143,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   @click="updateFeaturesOptions" />
               </v-col>
             </v-row>
-            <v-row
-              no-gutters
-              class="ps-2">
+            <v-row no-gutters>
               <v-col class="my-auto">
                 {{ $t('automatic.translation.administration.module.notes.view') }}
               </v-col>
