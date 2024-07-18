@@ -68,6 +68,9 @@ export default {
     hasAutoTranslation() {
       return this.hasSummary && this.autoTranslatedTitle && this.autoTranslatedContent && this.autoTranslatedSummary
           || this.autoTranslatedTitle && this.autoTranslatedContent;
+    },
+    editorMetadataDrawerEnabled() {
+      return eXo?.env?.portal?.notesEditorMetadataDrawerEnabled;
     }
   },
   methods: {
@@ -78,9 +81,10 @@ export default {
         this.isAutoTranslating = true;
         this.$automaticTranslationExtensionsService.fetchAutoTranslation(this.news?.title).then(translated => {
           this.handleTranslatedTitle(translated.translation);
-          if (this.news?.summary) {
+          const summary = this.editorMetadataDrawerEnabled ? this.news?.properties?.summary : this.news?.summary;
+          if (summary) {
             this.hasSummary = true;
-            this.$automaticTranslationExtensionsService.fetchAutoTranslation(this.news?.summary).then(translated => {
+            this.$automaticTranslationExtensionsService.fetchAutoTranslation(summary).then(translated => {
               this.handleTranslatedSummary(translated.translation);
               this.fetchBodyTranslation();
             }).catch(() => this.isAutoTranslating = false);
@@ -113,8 +117,9 @@ export default {
       this.isResetAutoTranslating = true;
       this.autoTranslatedTitle = this.autoTranslatedSummary = this.autoTranslatedContent = null;
       this.updateNewsTitle(this.news.title);
-      this.updateNewsSummary(this.news.summary);
-      this.updateNewsContent(this.news.body);
+      const summary = this.editorMetadataDrawerEnabled ? this.news?.properties?.summary : this.news?.summary;
+      this.updateNewsSummary(summary);
+      this.updateNewsContent(this.news?.body);
       this.isResetAutoTranslating = false;
     },
     handleTranslatedTitle(translatedText) {
