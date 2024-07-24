@@ -26,16 +26,26 @@ export default {
 
   methods: {
     autoTranslate(noteContent) {
-      this.$automaticTranslationExtensionsService.fetchAutoTranslation(noteContent.title,noteContent.lang).then(translated => {
+      this.$automaticTranslationExtensionsService.fetchAutoTranslation(noteContent.title, noteContent.lang).then(translated => {
         this.updateNoteTitle(translated.translation);
-        if (noteContent.content) {
-          const content = this.excludeHtmlSpaceEntities(noteContent.content);
-          this.$automaticTranslationExtensionsService.fetchAutoTranslation(content,noteContent.lang).then(translated => {
-            const translatedContent = this.restoreHtmlSpaceEntities(translated.translation);
-            this.updateNoteContent(translatedContent);
+        if (noteContent?.properties?.summary) {
+          this.$automaticTranslationExtensionsService.fetchAutoTranslation(noteContent?.properties?.summary, noteContent.lang).then(translated => {
+            this.updateNoteSummary(translated.translation);
+            if (noteContent.content) {
+              this.fetchContentTranslation(noteContent);
+            }
           });
-        } 
-      }); 
+        } else if (noteContent.content) {
+          this.fetchContentTranslation(noteContent);
+        }
+      });
+    },
+    fetchContentTranslation(note) {
+      const content = this.excludeHtmlSpaceEntities(note.content);
+      this.$automaticTranslationExtensionsService.fetchAutoTranslation(content, note.lang).then(translated => {
+        const translatedContent = this.restoreHtmlSpaceEntities(translated.translation);
+        this.updateNoteContent(translatedContent);
+      });
     },
     excludeHtmlSpaceEntities(content) {
       return content.replace(/&nbsp;/gi, '<span class="notranslate">&nbsp;</span>');
@@ -47,7 +57,9 @@ export default {
     updateNoteContent(content) {
       this.$root.$emit('update-note-content', content);
     },
-
+    updateNoteSummary(summary) {
+      this.$root.$emit('update-note-summary', summary);
+    },
     updateNoteTitle(title) {
       this.$root.$emit('update-note-title', title);
     },
