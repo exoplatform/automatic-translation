@@ -15,24 +15,21 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-tooltip bottom>
-    <template #activator="{ on, attrs }">
-      <v-btn
-        icon
-        v-bind="attrs"
-        v-on="on"
-        @click="autoTranslate">
-        <v-icon
-          size="22"
-          :class="hasAutoTranslation && 'primary--text' || ''">
-          fa-language
-        </v-icon>
-      </v-btn>
-    </template>
-    <span>
-      {{ $t('notes.automatic.translation.label') }}
+  <v-chip
+    small
+    :outlined="!isAutoTranslationSelected"
+    :close="!!autoTranslatedContent"
+    color="primary"
+    class="my-auto mx-1"
+    @click="autoTranslate"
+    @click:close="resetAutoTranslation">
+    {{ $t('article.automatic.translation.label') }}
+    <span
+      v-if="sourceLanguageVersion"
+      class="text-uppercase ms-1">
+      ({{ sourceLanguageVersion }})
     </span>
-  </v-tooltip>
+  </v-chip>
 </template>
 
 <script>
@@ -40,21 +37,25 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 export default {
   data() {
     return {
-      isResetAutoTranslating: false,
       isAutoTranslating: false,
+      isResetAutoTranslating: false,
+      autoTranslation: { value: 'autoTranslation', text: this.$t('article.automatic.translation.label') },
+      previouslyTranslatedVersion: null,
       autoTranslatedContent: null,
       autoTranslatedTitle: null,
       autoTranslatedSummary: null,
-      hasSummary: false,
+      hasSummary: false
     };
   },
   props: {
     news: {
-      news: {
-        type: Object,
-        default: null
-      }
-    }
+      type: Object,
+      default: null,
+    },
+    selectedTranslation: {
+      type: Object,
+      default: null,
+    },
   },
   watch: {
     isAutoTranslating() {
@@ -65,32 +66,37 @@ export default {
     }
   },
   computed: {
-    hasAutoTranslation() {
-      return this.hasSummary && this.autoTranslatedTitle && this.autoTranslatedContent && this.autoTranslatedSummary
-          || this.autoTranslatedTitle && this.autoTranslatedContent;
+    isAutoTranslationSelected() {
+      return this.selectedTranslation?.value === this.autoTranslation?.value;
     },
-    editorMetadataDrawerEnabled() {
-      return eXo?.env?.portal?.notesEditorMetadataDrawerEnabled;
+    sourceLanguageVersion() {
+      return !!this.autoTranslatedContent && this.previouslyTranslatedVersion?.value;
     }
   },
   methods: {
     autoTranslate() {
-      if (this.hasAutoTranslation) {
-        this.resetAutoTranslation();
+      if (this.autoTranslatedContent) {
+        this.setAutoTranslationSelected();
       } else {
         this.isAutoTranslating = true;
         this.$automaticTranslationExtensionsService.fetchAutoTranslation(this.news?.title).then(translated => {
           this.handleTranslatedTitle(translated.translation);
-          const summary = this.editorMetadataDrawerEnabled ? this.news?.properties?.summary : this.news?.summary;
+          const summary = this.news?.properties?.summary;
           if (summary) {
             this.hasSummary = true;
             this.$automaticTranslationExtensionsService.fetchAutoTranslation(summary).then(translated => {
               this.handleTranslatedSummary(translated.translation);
               this.fetchBodyTranslation();
+              this.setAutoTranslationSelected();
+              this.previouslyTranslatedVersion = this.selectedTranslation;
+              this.isAutoTranslating = false;
             }).catch(() => this.isAutoTranslating = false);
           } else {
             this.hasSummary = false;
             this.fetchBodyTranslation();
+            this.setAutoTranslationSelected();
+            this.previouslyTranslatedVersion = this.selectedTranslation;
+            this.isAutoTranslating = false;
           }
         }).catch(() => this.isAutoTranslating = false);
       }
@@ -117,9 +123,10 @@ export default {
       this.isResetAutoTranslating = true;
       this.autoTranslatedTitle = this.autoTranslatedSummary = this.autoTranslatedContent = null;
       this.updateNewsTitle(this.news.title);
-      const summary = this.editorMetadataDrawerEnabled ? this.news?.properties?.summary : this.news?.summary;
+      const summary = this.news?.properties?.summary;
       this.updateNewsSummary(summary);
       this.updateNewsContent(this.news?.body);
+      this.updateSelectedTranslation(this.previouslyTranslatedVersion);
       this.isResetAutoTranslating = false;
     },
     handleTranslatedTitle(translatedText) {
@@ -149,6 +156,24 @@ export default {
       } else {
         document.dispatchEvent(new CustomEvent('hideTopBarLoading'));
       }
+    },
+    setAutoTranslationSelected() {
+      if (this.isAutoTranslationSelected) {
+        return;
+      }
+      if (this.autoTranslatedTitle) {
+        this.handleTranslatedTitle(this.autoTranslatedTitle);
+      }
+      if (this.autoTranslatedContent) {
+        this.handleTranslatedContent(this.autoTranslatedContent);
+      }
+      if (this.autoTranslatedSummary) {
+        this.handleTranslatedSummary(this.autoTranslatedSummary);
+      }
+      this.updateSelectedTranslation(this.autoTranslation);
+    },
+    updateSelectedTranslation(translation) {
+      this.$root.$emit('update-content-selected-translation', translation);
     },
   }
 };
