@@ -321,6 +321,7 @@ public class AutomaticTranslationServiceTest {
     assertTrue(automaticTranslationFeaturesOptions.getNotesTranslateView());
     assertTrue(automaticTranslationFeaturesOptions.getStreamTranslateShort());
     assertTrue(automaticTranslationFeaturesOptions.getStreamTranslateComment());
+    assertTrue(automaticTranslationFeaturesOptions.getNewsTranslateEdition());
     automaticTranslationFeaturesOptions.setNewsTranslateView(false);
     automaticTranslationFeaturesOptions.setNotesTranslateView(false);
     translationService.setFeaturesOptions(automaticTranslationFeaturesOptions);
@@ -332,6 +333,7 @@ public class AutomaticTranslationServiceTest {
     assertTrue(automaticTranslationFeaturesOptions.getStreamTranslateShort());
     assertTrue(automaticTranslationFeaturesOptions.getStreamTranslateComment());
     assertTrue(automaticTranslationFeaturesOptions.getNotesTranslateEdition());
+    assertTrue(automaticTranslationFeaturesOptions.getNewsTranslateEdition());
   }
 
 }

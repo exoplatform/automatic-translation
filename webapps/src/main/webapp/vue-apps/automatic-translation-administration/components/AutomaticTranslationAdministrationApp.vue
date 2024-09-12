@@ -115,6 +115,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             </span>
             <v-row no-gutters>
               <v-col class="my-auto">
+                {{ $t('automatic.translation.administration.module.news.write') }}
+              </v-col>
+              <v-col class="my-auto">
+                <v-switch
+                  v-model="featuresOptions.newsTranslateEdition"
+                  class="pa-0 mb-0  mt-2"
+                  @click="updateFeaturesOptions" />
+              </v-col>
+            </v-row>
+            <v-row no-gutters>
+              <v-col class="my-auto">
                 {{ $t('automatic.translation.administration.module.news.view') }}
               </v-col>
               <v-col class="my-auto">
