@@ -29,6 +29,8 @@ public class AutomaticTranslationFeaturesOptions implements Serializable {
 
   private Boolean newsTranslateView;
 
+  private Boolean newsTranslateEdition;
+
   private Boolean notesTranslateEdition;
 
   private Boolean notesTranslateView;
@@ -39,5 +41,6 @@ public class AutomaticTranslationFeaturesOptions implements Serializable {
     this.newsTranslateView = true;
     this.notesTranslateEdition = true;
     this.notesTranslateView = true;
+    this.newsTranslateEdition = true;
   }
 }

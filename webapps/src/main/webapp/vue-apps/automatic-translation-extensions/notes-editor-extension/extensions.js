@@ -31,6 +31,7 @@ export function initExt() {
       Vue.prototype.$automaticTranslationExtensionsService.getFeaturesOptions().then(data => {
         let featuresOptions = {
           notesTranslateEdition: true,
+          newsTranslateEdition: true,
         };
         if (data){
           featuresOptions = data;
@@ -50,6 +51,15 @@ export function initExtensions(featuresOptions) {
     extensionRegistry.registerExtension('notesEditor', 'translation-extension', {
       id: 'notes-editor-auto-translate',
       rank: 1000,
+      componentOptions: {
+        vueComponent: Vue.options.components['note-editor-automatic-translation'],
+      },
+    });
+  }
+  if (featuresOptions?.newsTranslateEdition){
+    extensionRegistry.registerExtension('contentEditor', 'translation-extension', {
+      id: 'content-editor-auto-translate',
+      rank: 1001,
       componentOptions: {
         vueComponent: Vue.options.components['note-editor-automatic-translation'],
       },
