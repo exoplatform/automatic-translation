@@ -4,7 +4,7 @@
   <parent>
     <artifactId>automatic-translation-parent</artifactId>
     <groupId>org.exoplatform.addons.automatic-translation</groupId>
-    <version>7.0.0-20241211</version>
+    <version>7.0.x-SNAPSHOT</version>
   </parent>
   <artifactId>automatic-translation-webapps</artifactId>
   <packaging>war</packaging>
