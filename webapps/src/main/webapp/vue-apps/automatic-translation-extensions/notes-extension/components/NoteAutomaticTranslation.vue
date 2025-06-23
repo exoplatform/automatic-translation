@@ -41,6 +41,7 @@ export default {
       isResetAutoTranslating: false,
       autoTranslation: { value: 'autoTranslation', text: this.$t('notes.automatic.translation.label') },
       previouslyTranslatedVersion: null,
+      previouslyTranslatedNoteId: null,
       autoTranslatedContent: null,
       autoTranslatedTitle: null,
       autoTranslatedSummary: null,
@@ -74,12 +75,13 @@ export default {
   },
   methods: {
     autoTranslate() {
-      if (this.autoTranslatedContent) {
+      if (this.note.id === this.previouslyTranslatedNoteId) {
         this.setAutoTranslationSelected();
       } else {
         this.isAutoTranslating = true;
         this.$automaticTranslationExtensionsService.fetchAutoTranslation(this.note.title).then(translated => {
           this.handleTranslatedTitle(translated.translation);
+          this.previouslyTranslatedNoteId = this.note.id;
           const summary = this.note?.properties?.summary;
           if (summary) {
             this.$automaticTranslationExtensionsService.fetchAutoTranslation(summary).then(translated => {
