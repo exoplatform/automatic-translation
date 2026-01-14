@@ -16,20 +16,28 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
   <div
-    v-if="isTranslatedBodyNotEmpty && !translationHidden">
-    <dynamic-html-element
-      v-sanitized-html="translatedBody"
-      :element="element"
-      class="reset-style-box text-break overflow-hidden font-italic text-light-color translationContent"
-      dir="auto" />
-    <div
-      class="font-italic text-light-color clickable caption"
-      :class="$vuetify.rtl ? 'float-left' : 'float-right'"
-      @click="hideTranslation">
-      <v-icon size="12">mdi-translate</v-icon>
-      <span>
-        {{ $t('automaticTranslation.hideTranslation') }}
-      </span>
+    v-if="(isTranslatedBodyNotEmpty && !translationHidden) || translationLoading">
+    <div v-if="translationLoading" class="comment-translation-loading mb-3">
+      <v-progress-circular
+        color="primary"
+        indeterminate
+        size="20" />
+    </div>
+    <div v-else>
+      <dynamic-html-element
+        v-sanitized-html="translatedBody"
+        :element="element"
+        class="reset-style-box text-break overflow-hidden font-italic text-light-color translationContent"
+        dir="auto" />
+      <div
+        class="font-italic text-light-color clickable caption"
+        :class="$vuetify.rtl ? 'float-left' : 'float-right'"
+        @click="hideTranslation">
+        <v-icon size="12">mdi-translate</v-icon>
+        <span>
+          {{ $t('automaticTranslation.hideTranslation') }}
+        </span>
+      </div>
     </div>
   </div>
 </template>
@@ -53,6 +61,7 @@ export default {
   data: () => ({
     translatedBody: null,
     translationHidden: true,
+    translationLoading: false
   }),
   computed: {
     isTranslatedBodyNotEmpty() {
@@ -68,6 +77,7 @@ export default {
   created() {
     document.addEventListener('activity-comment-translated', (event) => {
       if (event.detail.id === this.activity.id) {
+        this.translationLoading=false;
         this.retrieveCommentProperties();
         if (this.translatedBody) {
           this.showTranslation();
@@ -76,7 +86,14 @@ export default {
     });
     document.addEventListener('activity-translation-error', (event) => {
       if (event.detail.id === this.activity.id) {
+        this.translationLoading=false;
         this.$root.$emit('alert-message', this.$t('automaticTranslation.errorTranslation'), 'error');
+      }
+    });
+
+    document.addEventListener('activity-comment-start-translation', (event) => {
+      if (event.detail.id === this.activity.id  && event.detail.type === 'comment') {
+        this.translationLoading=true;
       }
     });
     this.retrieveCommentProperties();

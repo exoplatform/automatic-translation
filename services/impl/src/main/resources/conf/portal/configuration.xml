@@ -26,6 +26,18 @@
       <type>org.exoplatform.automatic.translation.impl.connectors.DeepLTranslateConnector</type>
       <description>DeepL Translate</description>
     </component-plugin>
+    <component-plugin>
+      <name>languageweaver</name>
+      <set-method>addConnector</set-method>
+      <type>org.exoplatform.automatic.translation.impl.connectors.LanguageWeaverTranslateConnector</type>
+      <description>Language Weaver</description>
+      <init-params>
+        <value-param>
+          <name>lwUrl</name>
+          <value>${exo.automatic-translation.language-weaver.url}</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
   </external-component-plugins>
 
   <external-component-plugins profiles="analytics">

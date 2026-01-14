@@ -26,25 +26,34 @@ export default {
 
   methods: {
     autoTranslate(noteContent) {
+      document.dispatchEvent(new CustomEvent('displayTopBarLoading'));
       this.$automaticTranslationExtensionsService.fetchAutoTranslation(noteContent.title, noteContent.lang).then(translated => {
         this.updateNoteTitle(translated.translation);
         if (noteContent?.properties?.summary) {
+          document.dispatchEvent(new CustomEvent('displayTopBarLoading'));
           this.$automaticTranslationExtensionsService.fetchAutoTranslation(noteContent?.properties?.summary, noteContent.lang).then(translated => {
             this.updateNoteSummary(translated.translation);
             if (noteContent.content) {
               this.fetchContentTranslation(noteContent);
             }
+          }).finally(() => {
+            document.dispatchEvent(new CustomEvent('hideTopBarLoading'));
           });
         } else if (noteContent.content) {
           this.fetchContentTranslation(noteContent);
         }
+      }).finally(() => {
+        document.dispatchEvent(new CustomEvent('hideTopBarLoading'));
       });
     },
     fetchContentTranslation(note) {
       const content = this.excludeHtmlSpaceEntities(note.content);
+      document.dispatchEvent(new CustomEvent('displayTopBarLoading'));
       this.$automaticTranslationExtensionsService.fetchAutoTranslation(content, note.lang).then(translated => {
         const translatedContent = this.restoreHtmlSpaceEntities(translated.translation);
         this.updateNoteContent(translatedContent);
+      }).finally(() => {
+        document.dispatchEvent(new CustomEvent('hideTopBarLoading'));
       });
     },
     excludeHtmlSpaceEntities(content) {

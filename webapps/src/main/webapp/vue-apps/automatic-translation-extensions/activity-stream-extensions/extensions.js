@@ -51,7 +51,9 @@ export function initExtensions(featuresOptions) {
     extensionRegistry.registerExtension('activity', 'action', {
       id: 'translate',
       rank: 9007199254740992,
-      isEnabled: () => true,
+      isEnabled: (activity) => {
+        return !activity?.type;
+      },
       labelKey: 'UIActivity.label.translate',
       icon: 'fa-globe-americas',
       click: (activity, activityTypeExtension) => {
@@ -60,6 +62,7 @@ export function initExtensions(featuresOptions) {
           type: 'activity',
           spaceId: activity && activity.activityStream && activity.activityStream.space && activity.activityStream.space.id
         };
+        document.dispatchEvent(new CustomEvent('activity-start-translation',{ detail: event }));
         if (!activity.translatedBody) {
           fetchTranslation(activityTypeExtension.getBody(activity),event).then(translated => {
             activity.translatedBody = translated.translation;
@@ -86,6 +89,8 @@ export function initExtensions(featuresOptions) {
           type: 'comment',
           spaceId: activity && activity.activityStream && activity.activityStream.space && activity.activityStream.space.id
         };
+        document.dispatchEvent(new CustomEvent('activity-comment-start-translation',{ detail: event }));
+
         if (!comment.translatedBody) {
           fetchTranslation(activityTypeExtension.getBody(comment),event).then(translated => {
             comment.translatedBody = translated.translation;
