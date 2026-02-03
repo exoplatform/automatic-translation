@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 eXo Platform SAS.
+ * Copyright (C) 2026 eXo Platform SAS.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -65,6 +65,8 @@ public class LanguageWeaverTranslateConnector extends AutomaticTranslationCompon
 
   public static final String ERROR = "error";
 
+  public static final String MESSAGE = "message";
+
   private HttpClient httpClient;
   private String languageWeaverUrl;
   private String translateUrl = "/api/v2/translations/quick"; // only for cloud version
@@ -82,27 +84,12 @@ public class LanguageWeaverTranslateConnector extends AutomaticTranslationCompon
     }
     PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
     connectionManager.setDefaultMaxPerRoute(DEFAULT_POOL_CONNECTION);
-    //HttpClientBuilder httpClientBuilder = HttpClients.custom()
-    //                                                 .setConnectionManager(connectionManager)
-    //                                                 .setConnectionReuseStrategy(new DefaultConnectionReuseStrategy())
-    //                                                 .setMaxConnPerRoute(DEFAULT_POOL_CONNECTION);
+    HttpClientBuilder httpClientBuilder = HttpClients.custom()
+                                                     .setConnectionManager(connectionManager)
+                                                     .setConnectionReuseStrategy(new DefaultConnectionReuseStrategy())
+                                                     .setMaxConnPerRoute(DEFAULT_POOL_CONNECTION);
 
-
-    try {
-      SSLContext sslContext = SSLContexts.custom()
-                                         .loadTrustMaterial(null, (chain, authType) -> true)
-                                         .build();
-
-      CloseableHttpClient httpClient = HttpClients.custom()
-                                                  .setSSLContext(sslContext)
-                                                  .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
-                                                  .build();
-
-
-      this.httpClient = httpClient;
-    } catch (Exception e) {
-      LOG.error("Error while creating HttpClient for Language Weaver connector", e);
-    }
+    this.httpClient = httpClientBuilder.build();
   }
 
   private void initLanguageCode() {
@@ -139,7 +126,7 @@ public class LanguageWeaverTranslateConnector extends AutomaticTranslationCompon
           String errorMessage = "Error when calling Language Weaver API";
           try (InputStream is = httpResponse.getEntity().getContent()) {
             JSONObject jsonResponse = new JSONObject(IOUtils.toString(is, StandardCharsets.UTF_8));
-            if (jsonResponse.getJSONObject(ERROR) != null && jsonResponse.getJSONObject(ERROR).getString("message") != null) {
+            if (jsonResponse.getJSONObject(ERROR) != null && jsonResponse.getJSONObject(ERROR).getString(MESSAGE) != null) {
               errorMessage = jsonResponse.getJSONObject(ERROR).getString("details");
             }
           }
@@ -207,11 +194,11 @@ public class LanguageWeaverTranslateConnector extends AutomaticTranslationCompon
 
         try (InputStream is = httpResponse.getEntity().getContent()) {
           JSONObject jsonResponse = new JSONObject(IOUtils.toString(is, StandardCharsets.UTF_8));
-          if (jsonResponse.getJSONObject(ERROR) != null && jsonResponse.getJSONObject(ERROR).getString("message") != null) {
+          if (jsonResponse.getJSONObject(ERROR) != null && jsonResponse.getJSONObject(ERROR).getString(MESSAGE) != null) {
             errorMessage = jsonResponse.getJSONObject(ERROR).getString("details");
           }
 
-          if (jsonResponse.getJSONObject(ERROR).getString("message") != null && jsonResponse.getJSONObject(ERROR).getString("message").equals("failed to auto-detect source language and find a matching language pair")) {
+          if (jsonResponse.getJSONObject(ERROR).getString(MESSAGE) != null && jsonResponse.getJSONObject(ERROR).getString(MESSAGE).equals("failed to auto-detect source language and find a matching language pair")) {
             //language pair not available
             //try with platform default locale if different from target locale
             Locale defaultLocale = localeConfigService.getDefaultLocaleConfig().getLocale();
