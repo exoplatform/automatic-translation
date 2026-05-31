@@ -16,55 +16,53 @@
  */
 package org.exoplatform.automatic.translation.impl.connectors;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.DefaultConnectionReuseStrategy;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.exoplatform.automatic.translation.api.AutomaticTranslationComponentPlugin;
-import org.exoplatform.commons.api.settings.SettingService;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
-import org.json.JSONObject;
-
-import java.io.InputStream;
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.core5.http.ClassicHttpRequest;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.json.JSONObject;
+
+import org.exoplatform.automatic.translation.api.AutomaticTranslationComponentPlugin;
+import org.exoplatform.commons.api.settings.SettingService;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+
 public class GoogleTranslateConnector extends AutomaticTranslationComponentPlugin {
 
-  private static final Log    LOG                      = ExoLogger.getLogger(GoogleTranslateConnector.class);
+  private static final Log          LOG                      = ExoLogger.getLogger(GoogleTranslateConnector.class);
 
-  private static final String GOOGLE_TRANSLATE_SERVICE = "google-translate";
+  private static final String       GOOGLE_TRANSLATE_SERVICE = "google-translate";
 
-  private static final String API_URL                  = "https://translation.googleapis.com/language/translate/v2";
+  private static final String       API_URL                  = "https://translation.googleapis.com/language/translate/v2";
 
-  private static final String KEY_PARAM                = "key";
+  private static final String       KEY_PARAM                = "key";
 
-  private static final String DATA_PATTERN             = "{'q': '{message}', 'target': '{targetLocale}'}";
+  private static final int          DEFAULT_POOL_CONNECTION  = 100;
 
-  private static final int    DEFAULT_POOL_CONNECTION  = 100;
+  private static final String       ERROR                    = "error";
 
-  private static final String ERROR                    = "error";
-
-  private HttpClient          httpClient;
+  private final CloseableHttpClient httpClient;
 
   public GoogleTranslateConnector(SettingService settingService) {
     super(settingService);
 
     PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
     connectionManager.setDefaultMaxPerRoute(DEFAULT_POOL_CONNECTION);
-    HttpClientBuilder httpClientBuilder = HttpClients.custom()
-                                                     .setConnectionManager(connectionManager)
-                                                     .setConnectionReuseStrategy(new DefaultConnectionReuseStrategy())
-                                                     .setMaxConnPerRoute(DEFAULT_POOL_CONNECTION);
-    this.httpClient = httpClientBuilder.build();
+    connectionManager.setMaxTotal(DEFAULT_POOL_CONNECTION);
+    this.httpClient = HttpClients.custom()
+                                 .setConnectionManager(connectionManager)
+                                 .build();
   }
 
   @Override
@@ -72,56 +70,72 @@ public class GoogleTranslateConnector extends AutomaticTranslationComponentPlugi
     long startTime = System.currentTimeMillis();
 
     String serviceUrl = API_URL + "?" + KEY_PARAM + "=" + getApiKey();
-    // we use here targetLocale.getLanguage instead of targetLocale.toLanguageTag as
-    // Google Cloud Translation supports
-    // only the language and not the country,
-    // except for chinese. But as zh correspond to simplified chinese, we can deal
-    // with that :
+
+    // We use targetLocale.getLanguage() instead of targetLocale.toLanguageTag()
+    // because
+    // Google Cloud Translation supports only the language and not the country,
+    // except for Chinese. As "zh" corresponds to simplified Chinese, we can
+    // deal with that.
     // https://cloud.google.com/translate/docs/languages
-    message = message.replace("'", "\\'");
-    String data = DATA_PATTERN.replace("{message}", message).replace("{targetLocale}", targetLocale.getLanguage());
+    String targetLanguage = targetLocale.getLanguage();
+
     try {
-      HttpPost httpTypeRequest = new HttpPost(serviceUrl);
-      httpTypeRequest.setEntity(new StringEntity(data, ContentType.APPLICATION_JSON));
-      HttpResponse httpResponse = httpClient.execute(httpTypeRequest);
-      String response = null;
-      int statusCode = httpResponse.getStatusLine().getStatusCode();
+      JSONObject requestBody = new JSONObject();
+      requestBody.put("q", message);
+      requestBody.put("target", targetLanguage);
+
+      HttpPost request = new HttpPost(serviceUrl);
+      request.setEntity(new StringEntity(requestBody.toString(), ContentType.APPLICATION_JSON));
+
+      HttpResult httpResult = execute(request);
+      int statusCode = httpResult.statusCode();
+
       if (statusCode == HttpURLConnection.HTTP_OK) {
-
-        // read the response
-        if (httpResponse.getEntity() != null) {
-          try (InputStream is = httpResponse.getEntity().getContent()) {
-            response = IOUtils.toString(is, StandardCharsets.UTF_8);
-          }
-        }
-
-        JSONObject jsonResponse = new JSONObject(response);
-        return jsonResponse.getJSONObject("data").getJSONArray("translations").getJSONObject(0).getString("translatedText");
-
-      } else {
-        String errorMessage = "Error when calling Google Translation API";
-        try (InputStream is = httpResponse.getEntity().getContent()) {
-          JSONObject jsonResponse = new JSONObject(IOUtils.toString(is, StandardCharsets.UTF_8));
-          if (jsonResponse.getJSONObject(ERROR) != null && jsonResponse.getJSONObject(ERROR).getString("message") != null) {
-            errorMessage = jsonResponse.getJSONObject(ERROR).getString("message");
-          }
-        }
-        LOG.error("remote_service={} operation={} parameters=\"message length:{},targetLocale:{}\" status=ko "
-            + "duration_ms={} error_msg=\"{}, status : {} \"",
-                  GOOGLE_TRANSLATE_SERVICE,
-                  "translate",
-                  message.length(),
-                  targetLocale.getLanguage(),
-                  System.currentTimeMillis() - startTime,
-                  errorMessage,
-                  statusCode);
-        return null;
+        JSONObject jsonResponse = new JSONObject(httpResult.body());
+        return jsonResponse.getJSONObject("data")
+                           .getJSONArray("translations")
+                           .getJSONObject(0)
+                           .getString("translatedText");
       }
 
+      String errorMessage = getErrorMessage(httpResult.body(), "Error when calling Google Translation API");
+
+      LOG.error("remote_service={} operation={} parameters=\"message length:{},targetLocale:{}\" status=ko " +
+          "duration_ms={} error_msg=\"{}, status : {} \"",
+                GOOGLE_TRANSLATE_SERVICE,
+                "translate",
+                message.length(),
+                targetLanguage,
+                System.currentTimeMillis() - startTime,
+                errorMessage,
+                statusCode);
+      return null;
     } catch (Exception e) {
-      LOG.error("Error when trying to send translation request to google API", e);
+      LOG.error("Error when trying to send translation request to Google Translation API", e);
     }
     return null;
+  }
+
+  private HttpResult execute(ClassicHttpRequest request) throws IOException {
+    return httpClient.execute(request, this::toHttpResult);
+  }
+
+  private HttpResult toHttpResult(ClassicHttpResponse response) throws IOException, ParseException {
+    String body = response.getEntity() == null ? "" : EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+    return new HttpResult(response.getCode(), body);
+  }
+
+  private String getErrorMessage(String responseBody, String defaultMessage) {
+    try {
+      JSONObject jsonResponse = new JSONObject(responseBody);
+      JSONObject error = jsonResponse.optJSONObject(ERROR);
+      return error == null ? defaultMessage : error.optString("message", defaultMessage);
+    } catch (Exception e) {
+      return defaultMessage;
+    }
+  }
+
+  private record HttpResult(int statusCode, String body) {
   }
 
 }
