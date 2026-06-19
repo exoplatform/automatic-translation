@@ -17,6 +17,7 @@
 package org.exoplatform.automatic.translation.impl;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.exoplatform.automatic.translation.api.AutomaticTranslationComponentPlugin;
 import org.exoplatform.automatic.translation.api.AutomaticTranslationService;
 import org.exoplatform.automatic.translation.api.dto.AutomaticTranslationConfiguration;
@@ -176,6 +177,7 @@ public class AutomaticTranslationServiceImpl implements AutomaticTranslationServ
     }
     String translatedMessage = translationConnectors.get(activeConnector).translate(message, targetLang);
     if (translatedMessage != null) {
+      translatedMessage = StringEscapeUtils.unescapeHtml4(translatedMessage);
       try {
         AutomaticTranslationEvent event = new AutomaticTranslationEvent();
         event.setSpaceId(spaceId);
