@@ -22,7 +22,7 @@ import org.exoplatform.automatic.translation.api.dto.AutomaticTranslationEvent;
 import org.exoplatform.services.listener.Event;
 import org.exoplatform.services.listener.Listener;
 
-public class AutomaticTranslationListener extends Listener<String,AutomaticTranslationEvent> {
+public class AutomaticTranslationListener extends Listener<String, AutomaticTranslationEvent> {
 
   @Override
   public void onEvent(Event<String, AutomaticTranslationEvent> event) throws Exception {
@@ -33,10 +33,10 @@ public class AutomaticTranslationListener extends Listener<String,AutomaticTrans
     statisticData.setOperation("translate");
     statisticData.setUserId(AnalyticsUtils.getCurrentUserIdentityId());
     statisticData.setSpaceId(data.getSpaceId());
-    statisticData.addParameter("messageLength", data.getMessageLength());
-    statisticData.addParameter("targetLanguage", data.getTargetLanguage());
-    statisticData.addParameter("contentType", data.getContentType());
-    statisticData.addParameter("connector", data.getConnectorName());
+    statisticData.addLong("messageLength", data.getMessageLength());
+    statisticData.addKeyword("targetLanguage", data.getTargetLanguage());
+    statisticData.addKeyword("contentType", data.getContentType());
+    statisticData.addKeyword("connector", data.getConnectorName());
     AnalyticsUtils.addStatisticData(statisticData);
   }
 }
