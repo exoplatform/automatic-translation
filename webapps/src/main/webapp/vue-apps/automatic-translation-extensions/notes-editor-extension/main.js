@@ -19,12 +19,17 @@ import './initComponents.js';
 import {initExt} from './extensions.js';
 import * as  automaticTranslationExtensionsService from '../js/AutomaticTranslationExtensionsService.js';
 
+const lang = eXo?.env?.portal?.language || 'en';
+
+const url = `/automaticTranslation/i18n/locale.portlet.automaticTranslation.NotesEditorExtension?lang=${lang}`;
+
 if (!Vue.prototype.$automaticTranslationExtensionsService) {
   window.Object.defineProperty(Vue.prototype, '$automaticTranslationExtensionsService', {
     value: automaticTranslationExtensionsService,
   });
 }
 
-export function init() {
+export async function init() {
+  await exoi18n.loadLanguageAsync(lang, url);
   initExt();
 }
