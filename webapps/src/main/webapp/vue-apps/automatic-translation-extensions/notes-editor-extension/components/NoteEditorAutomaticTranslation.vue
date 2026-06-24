@@ -26,21 +26,47 @@ export default {
 
   methods: {
     autoTranslate(noteContent) {
+      const promises = [
+        {
+          promise: this.$automaticTranslationExtensionsService.fetchAutoTranslation(noteContent.title, noteContent.lang)
+            .then(translated => this.updateNoteTitle(translated.translation)),
+          errorKey: 'NotesEditor.translate.title.error',
+          restore: () => this.updateNoteTitle(noteContent.title)
+        },
+        noteContent?.properties?.summary && {
+          promise: this.$automaticTranslationExtensionsService.fetchAutoTranslation(noteContent.properties.summary, noteContent.lang)
+            .then(translated => this.updateNoteSummary(translated.translation)),
+          errorKey: 'NotesEditor.translate.summary.error',
+          restore: () => this.updateNoteSummary(noteContent.properties.summary)
+        },
+        noteContent.content && {
+          promise: this.fetchContentTranslation(noteContent),
+          errorKey: 'NotesEditor.translate.content.error',
+          restore: () => this.updateNoteContent(noteContent.content)
+        }
+      ].filter(Boolean);
+
       document.dispatchEvent(new CustomEvent('displayTopBarLoading'));
-      this.$automaticTranslationExtensionsService.fetchAutoTranslation(noteContent.title, noteContent.lang).then(translated => {
-        this.updateNoteTitle(translated.translation);
-        if (noteContent?.properties?.summary) {
-          document.dispatchEvent(new CustomEvent('displayTopBarLoading'));
-          this.$automaticTranslationExtensionsService.fetchAutoTranslation(noteContent?.properties?.summary, noteContent.lang).then(translated => {
-            this.updateNoteSummary(translated.translation);
-            if (noteContent.content) {
-              this.fetchContentTranslation(noteContent);
-            }
-          }).finally(() => {
-            document.dispatchEvent(new CustomEvent('hideTopBarLoading'));
+      Promise.allSettled(promises.map(t => t.promise)).then(results => {
+        const failedIndices = results
+          .map((result, i) => (result.status === 'rejected' ? i : null))
+          .filter(i => i !== null);
+
+        failedIndices.forEach(i => promises[i].restore());
+
+        if (failedIndices.length > 1) {
+          const errors = failedIndices.map(i => results[i].reason);
+          this.$root.$emit('show-alert', {
+            type: 'error',
+            message: this.$t('NotesEditor.translate.error', {0: errors.map(e => e.message || e).join(', ')})
           });
-        } else if (noteContent.content) {
-          this.fetchContentTranslation(noteContent);
+        } else if (failedIndices.length === 1) {
+          const i = failedIndices[0];
+          const error = results[i].reason;
+          this.$root.$emit('show-alert', {
+            type: 'error',
+            message: this.$t(promises[i].errorKey, {0: [error.message || error]})
+          });
         }
       }).finally(() => {
         document.dispatchEvent(new CustomEvent('hideTopBarLoading'));
@@ -49,7 +75,7 @@ export default {
     fetchContentTranslation(note) {
       const content = this.excludeHtmlSpaceEntities(note.content);
       document.dispatchEvent(new CustomEvent('displayTopBarLoading'));
-      this.$automaticTranslationExtensionsService.fetchAutoTranslation(content, note.lang).then(translated => {
+      return this.$automaticTranslationExtensionsService.fetchAutoTranslation(content, note.lang).then(translated => {
         const translatedContent = this.restoreHtmlSpaceEntities(translated.translation);
         this.updateNoteContent(translatedContent);
       }).finally(() => {
