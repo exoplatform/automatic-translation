@@ -21,7 +21,7 @@ import * as  automaticTranslationExtensionsService from '../js/AutomaticTranslat
 
 const lang = eXo?.env?.portal?.language || 'en';
 
-const url = `/automaticTranslation/i18n/locale.portlet.automaticTranslation.NotesEditorExtension?lang=${lang}`;
+const url = `/automatic-translation/i18n/locale.portlet.automaticTranslation.NotesEditorExtension?lang=${lang}`;
 
 if (!Vue.prototype.$automaticTranslationExtensionsService) {
   window.Object.defineProperty(Vue.prototype, '$automaticTranslationExtensionsService', {
