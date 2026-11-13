@@ -28,6 +28,10 @@ import java.lang.reflect.Field;
 import java.util.Locale;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
@@ -70,5 +74,18 @@ public class DeepLTranslateConnectorTest {
     text = deepLTranslateConnector.translate("<h1>Bonjour</h1>", new Locale("en"));
     assertNull(text);
 
+  }
+
+  @Test
+  public void aChangedApiKeyReplacesTheClient() {
+    DeepLTranslateConnector connector = spy(new DeepLTranslateConnector(settingService));
+    doReturn("first-key:fx").when(connector).getApiKey();
+    Translator first = connector.getDeeplTranslator();
+    assertSame(first, connector.getDeeplTranslator());
+
+    // The key saved on this node or another one
+    doReturn("second-key:fx").when(connector).getApiKey();
+
+    assertNotSame(first, connector.getDeeplTranslator());
   }
 }
