@@ -22,6 +22,7 @@ import org.exoplatform.commons.api.settings.SettingService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import java.util.Locale;
+import java.util.Objects;
 
 public class DeepLTranslateConnector extends AutomaticTranslationComponentPlugin {
 
@@ -30,6 +31,9 @@ public class DeepLTranslateConnector extends AutomaticTranslationComponentPlugin
   private static final String          DEEPL_TRANSLATE_SERVICE = "deepl-translate";
 
   private Translator                   translator;
+
+  /** The API key {@link #translator} was built with. */
+  private String                       translatorApiKey;
 
   private final TextTranslationOptions textTranslationOptions;
 
@@ -71,9 +75,15 @@ public class DeepLTranslateConnector extends AutomaticTranslationComponentPlugin
     }
   }
 
-  private Translator getDeeplTranslator() {
-    if (translator == null) {
-      translator = new Translator(getApiKey());
+  /**
+   * @return a client built with the API key stored now: a key saved on any
+   *         node replaces the client the next time it is needed
+   */
+  synchronized Translator getDeeplTranslator() {
+    String apiKey = getApiKey();
+    if (translator == null || !Objects.equals(apiKey, translatorApiKey)) {
+      translator = new Translator(apiKey);
+      translatorApiKey = apiKey;
     }
     return translator;
   }
