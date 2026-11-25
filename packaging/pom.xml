@@ -11,6 +11,10 @@
   <packaging>pom</packaging>
   <name>eXo Automatic Translation - Packaging</name>
 
+  <properties>
+    <!-- Generate and publish the CycloneDX SBOM of the deliverable zip -->
+    <sbom.skip>false</sbom.skip>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
